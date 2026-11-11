@@ -642,6 +642,7 @@ function bestBefore(S,ex,day){let b=0;for(const d in S.sessions){if(d>=day)conti
 function exSeries(S,ex){return sessionDates(S).map(d=>{const sets=exSets(S,d,ex);if(!sets.length)return null;
   return{d,top:Math.max(...sets.map(x=>x.kg)),e1:Math.max(...sets.map(x=>e1rm(x.kg,x.r))),vol:sets.reduce((a,x)=>a+x.kg*x.r,0),reps:sets.reduce((a,x)=>a+x.r,0),sets}}).filter(Boolean)}
 function lastFor(S,ex,day){const ds=sessionDates(S).filter(d=>d<day).reverse();for(const d of ds){const sets=exSets(S,d,ex);if(sets.length)return{d,sets:sets.slice().sort((a,b)=>(a.n||0)-(b.n||0))}}return null}
+function refFor(S,ex,day){const lf=lastFor(S,ex,day);if(lf)return lf;const ds=sessionDates(S).filter(d=>d>day&&d!==day);for(const d of ds){const sets=exSets(S,d,ex);if(sets.length)return{d,sets:sets.slice().sort((a,b)=>(a.n||0)-(b.n||0)),after:true}}return null}
 function prevSession(S,day){const ds=sessionDates(S).filter(d=>d<day);return ds.length?ds[ds.length-1]:null}
 function firstOpen(S,day,exs){exs=exs||S.exercises;const i=exs.findIndex(e=>exSets(S,day,e.id).length<BASE_SETS);return i<0?Math.max(0,exs.length-1):i}
 const progOf=(S,id)=>(S.programs||[]).find(p=>p.id===id)||null;
@@ -775,7 +776,7 @@ function readiness(S,day){day=day||today();const h=health.daily[day]||{},ci=(S.c
 
 /* ---------- coaching: suggestions, experiments, plateaus, deload ---------- */
 const deloadOn=S=>!!(S.deloadUntil&&today()<=S.deloadUntil);
-function suggest(S,ex,day){const lf=lastFor(S,ex,day);if(!lf)return null;const [lo,hi]=repRange(S);
+function suggest(S,ex,day){const lf=refFor(S,ex,day);if(!lf)return null;if(lf.after)return{kg:Math.max(...lf.sets.map(x=>x.kg)),r:lf.sets[0].r,why:`Ifyllt från ${shortDate(lf.d)}. Ändra till det du faktiskt körde.`};const [lo,hi]=repRange(S);
   const top=Math.max(...lf.sets.map(x=>x.kg)),atTop=lf.sets.filter(x=>x.kg===top),inc=top<20?1:2.5;
   const minR=Math.min(...atTop.map(x=>x.r)),maxR=Math.max(...lf.sets.map(x=>x.r)),rirs=atTop.map(x=>x.rir).filter(v=>v!=null),easy=rirs.length&&Math.min(...rirs)>=2;
   if(deloadOn(S))return{kg:roundKg(top*.8),r:hi,why:"Lätt vecka: 20 % lättare än vanligt"};
@@ -1049,6 +1050,7 @@ function renderWorkout(){
     return `<button class="seg ${x.k==="walk"?"walk":""} ${sk?"skip":done?"done":part?"part":""} ${i===wo.idx?"cur":""}" data-woi="${i}" aria-label="${esc(stepName(x))}"></button>`}).join("");
   const exCount=steps.length-2,pos=st.k==="walk"?(st.w==="pre"?"Uppvärmning":"Nedvarvning"):`Övning ${wo.idx} / ${exCount}`;
   let h=`<div class="mod hud wohead"><div class="lbl"><span>${wp?esc(wp.name)+" · ":""}${pos}</span><span>${s.start?`<span class="clock" data-clock="sess">${clock(Date.now()-s.start)}</span>`:dayName(day)}</span></div><div class="segs">${segs}</div>`;
+  if(day<today()&&!s.start)h=h.replace('<div class="segs">',`<p class="note" style="color:var(--warn)">Du loggar i efterhand för ${dayName(day).toLowerCase()} (${shortDate(day)}). Tryck Minimera om du inte menade det.</p><div class="segs">`);
   h+=st.k==="walk"?renderWalkStep(S,day,s,st.w):renderExStep(S,day,s,st.e);
   const isLast=wo.idx===steps.length-1,ready_=stepDone(S,day,st);
   h+=`<div class="wonav"><button class="btn ghost" data-wonav="-1" ${wo.idx===0?"disabled":""} aria-label="Föregående">‹</button>
@@ -1068,10 +1070,10 @@ function renderWalkStep(S,day,s,w){
 }
 const SKIP_REASONS=["Upptagen maskin","Ont","Ont om tid","Orkade inte","Annat"];
 function renderExStep(S,day,s,ex){
-  const mine=exSets(S,day,ex.id),lf=lastFor(S,ex.id,day),prevBest=bestBefore(S,ex.id,day),sk=(s.skip||{})[ex.id],sg=suggest(S,ex.id,day);
+  const mine=exSets(S,day,ex.id),lf=refFor(S,ex.id,day),prevBest=bestBefore(S,ex.id,day),sk=(s.skip||{})[ex.id],sg=suggest(S,ex.id,day);
   const pl=plateaus(S).some(p=>p.e.id===ex.id),goal=(S.goals||{})[ex.id];
   let h=`<h1 class="woname">${esc(ex.name)}</h1>
-    <div class="woprev">${lf?`Förra gången${progOf(S,(S.sessions[lf.d]||{}).prog)?" i "+esc(progOf(S,S.sessions[lf.d].prog).name):""} (${shortDate(lf.d)}): <b>${lf.sets.map(x=>fmt(x.kg,2)+" × "+x.r+(x.rir!=null?` <i>(${x.rir===3?"3+":x.rir} kvar)</i>`:"")).join(" · ")}</b>`:"Första gången. Sätt en baslinje."}${prevBest?`<br>Rekord e1RM: <b>${fmt(prevBest,1)} kg</b>${goal?` · mål <b>${fmt(goal,1)} kg</b>`:""}`:""}${pl?`<br><span class="tag">Platå</span> Står still sedan några pass.`:""}</div></div>`;
+    <div class="woprev">${lf?`${lf.after?"Senare pass":"Förra gången"}${progOf(S,(S.sessions[lf.d]||{}).prog)?" i "+esc(progOf(S,S.sessions[lf.d].prog).name):""} (${shortDate(lf.d)}): <b>${lf.sets.map(x=>fmt(x.kg,2)+" × "+x.r+(x.rir!=null?` <i>(${x.rir===3?"3+":x.rir} kvar)</i>`:"")).join(" · ")}</b>`:"Första gången. Sätt en baslinje."}${prevBest?`<br>Rekord e1RM: <b>${fmt(prevBest,1)} kg</b>${goal?` · mål <b>${fmt(goal,1)} kg</b>`:""}`:""}${pl?`<br><span class="tag">Platå</span> Står still sedan några pass.`:""}</div></div>`;
   if(sk)return h+`<div class="mod"><p class="note">Överhoppad idag: ${esc(sk)}.</p><button class="btn" data-unskip="${ex.id}" style="margin-top:10px;width:100%">Ångra, jag kör den</button></div>`;
   const xp=expFor(S,day,sessExs(S,day,wo.prog));
   if(xp&&xp.ex===ex.id&&!xp.acc&&sg)h+=`<div class="mod expc"><div class="lbl"><span>Experiment</span><span>${EXP[xp.type].t}</span></div><p>${EXP[xp.type].d(sg)}</p><small>Appen jämför resultatet med dina vanliga pass och visar under Statistik vad som funkar för dig.</small>
