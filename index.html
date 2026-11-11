@@ -849,7 +849,7 @@ function points(S,from,to){const inR=d=>(!from||d>=from)&&(!to||d<=to),det={pass
   det.pr=prEvents(S).filter(x=>inR(x.d)).length;
   Object.keys(S.sessions).filter(inR).forEach(d=>{const w=S.sessions[d].walks||{};["pre","post"].forEach(k=>{if(w[k])det.walk+=+w[k].min||0})});
   det.checkin=Object.keys(S.checkins||{}).filter(inR).length;det.measure=Object.keys(S.measures||{}).filter(inR).length;
-  return{p:det.pass*10+det.habits*2+det.pr*5+Math.floor(det.walk/5)+det.checkin+det.measure*3,det}}
+  return{p:det.pass*10+det.habits*2+det.pr*5+Math.floor(det.walk/5)+det.checkin,det}}
 let boardRows=null,boardT=0,boardPushT=0;
 async function boardSync(){if(store.mode!=="supa"||!sbUser)return;const pr=prof(real);
   try{if(!pr.board||!String(pr.name).trim()){await sb.from("board").delete().eq("user_id",sbUser.id);return}
@@ -1381,7 +1381,7 @@ function renderBoard(){if(store.mode!=="supa"||!sbUser)return"";loadBoard();
   const rows=(boardRows||[]).map(r=>Object.assign({},r,{wk:r.week===ws?r.week_pts:0})).sort((a,b)=>b.wk-a.wk||b.total_pts-a.total_pts);
   if(boardRows===null)h+=`<p class="empty">Hämtar…</p>`;else if(!rows.length)h+=`<p class="empty">Ingen är med än.</p>`;
   else h+=`<div class="board">${rows.map((r,i)=>`<div class="${r.user_id===sbUser.id?"me":""}"><span class="pos">${i+1}</span><b>${esc(r.name)}${r.user_id===sbUser.id?"<small>du</small>":""}</b><span class="pts">${r.wk} p</span><span class="tot">${r.total_pts} totalt</span></div>`).join("")}</div>`;
-  return h+`<p class="foot" style="margin-top:10px">Pass 10 p · personbästa 5 p · mått 3 p · avbockad vana 2 p · dagliga frågor 1 p · 5 min gång 1 p</p></div>`}
+  return h+`<p class="foot" style="margin-top:10px">Pass 10 p · personbästa 5 p · avbockad vana 2 p · dagliga frågor 1 p · 5 min gång 1 p</p></div>`}
 let guideOpen=false;
 const INGEST=()=>SUPA?SUPA.url+"/rest/v1/rpc/formlogg_ingest":"";
 function guideHtml(){const rows=[["sleep","Sömnanalys · Värde är inte I sängen och inte Vaken","Senaste 1 dagar","Summa av Varaktighet"],["deep","Sömnanalys · Värde är Djup","Senaste 1 dagar","Summa av Varaktighet"],["rem","Sömnanalys · Värde är REM","Senaste 1 dagar","Summa av Varaktighet"],
