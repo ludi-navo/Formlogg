@@ -371,7 +371,7 @@ textarea{width:100%;min-height:110px;background:rgba(255,255,255,.03);border:1px
 .foot{font-size:12px;color:var(--dim);margin:2px 0 0}
 
 nav{position:fixed;left:0;right:0;bottom:0;z-index:25;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:linear-gradient(180deg,transparent,rgba(8,8,10,.92) 40%)}
-nav .in{max-width:420px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:4px;border-radius:18px;background:rgba(22,22,26,.82);border:1px solid var(--line2);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);box-shadow:0 18px 40px -16px rgba(0,0,0,.9)}
+nav .in{max-width:460px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:2px;padding:4px;border-radius:18px;background:rgba(22,22,26,.82);border:1px solid var(--line2);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);box-shadow:0 18px 40px -16px rgba(0,0,0,.9)}
 nav button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 7px;border-radius:14px;color:var(--muted);font-size:11px;font-weight:600;position:relative;transition:background .25s var(--ease),color .25s}
 nav button svg{width:20px;height:20px}
 nav button.on{background:linear-gradient(180deg,#fff 0%,#ececef 100%);color:var(--ink);box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 8px 24px -8px rgba(255,255,255,.45)}
@@ -398,6 +398,7 @@ nav button .live{position:absolute;top:6px;right:calc(50% - 18px);width:7px;heig
   <section class="sec on" id="s-day"></section>
   <section class="sec" id="s-gym"></section>
   <section class="sec" id="s-stats"></section>
+  <section class="sec" id="s-board"></section>
   <section class="sec" id="s-settings"></section>
 </div>
 
@@ -405,6 +406,7 @@ nav button .live{position:absolute;top:6px;right:calc(50% - 18px);width:7px;heig
   <div class="in">
     <button class="on" data-tab="day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3.5" y="3.5" width="17" height="17"/><path d="M8 12.5l3 3 5-6"/></svg>Idag</button>
     <button data-tab="gym"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2.5 12h19M5.5 8v8M8.5 6v12M15.5 6v12M18.5 8v8"/></svg>Pass<i class="live" id="liveDot" hidden></i></button>
+    <button data-tab="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"/></svg>Topplista</button>
     <button data-tab="stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3.5 20.5h17M6 16l4-5 3.5 3L19 6.5"/><circle cx="19" cy="6.5" r="1.4" fill="currentColor"/></svg>Statistik</button>
   </div>
 </nav>
@@ -843,20 +845,19 @@ function weekReport(S,ws){const we=addDays(ws,6),sd=sessionDates(S).filter(d=>d>
   Object.keys(S.sessions).filter(d=>d>=ws&&d<=we).forEach(d=>{const w=S.sessions[d].walks||{};["pre","post"].forEach(k=>{if(w[k]){walk+=+w[k].min||0;const h=walkHR(w[k]);if(h&&h.hr>=lo&&h.hr<=hi)z2m+=+w[k].min||0}})});
   const en=[];for(let d=ws;d<=we;d=addDays(d,1)){const c=(S.checkins||{})[d];if(c&&c.energy)en.push(c.energy)}
   return{ws,we,pass:sd.length,vol:sd.reduce((a,d)=>a+sessVol(S.sessions[d]),0),pr:prEvents(S).filter(p=>p.d>=ws&&p.d<=we).length,hab:days?hab/days*100:0,walk,z2m,energy:en.length?mean(en):null}}
-function points(S,from,to){const inR=d=>(!from||d>=from)&&(!to||d<=to),det={pass:0,habits:0,pr:0,walk:0,checkin:0,measure:0};
+function points(S,from,to){const inR=d=>(!from||d>=from)&&(!to||d<=to),det={pass:0,habits:0,walk:0,checkin:0};
   det.pass=sessionDates(S).filter(inR).length;
   Object.keys(S.days).filter(inR).forEach(d=>(S.days[d]||[]).forEach(id=>{const h=S.habits.find(x=>x.id===id);if(h&&!h.auto)det.habits++}));
-  det.pr=prEvents(S).filter(x=>inR(x.d)).length;
   Object.keys(S.sessions).filter(inR).forEach(d=>{const w=S.sessions[d].walks||{};["pre","post"].forEach(k=>{if(w[k])det.walk+=+w[k].min||0})});
-  det.checkin=Object.keys(S.checkins||{}).filter(inR).length;det.measure=Object.keys(S.measures||{}).filter(inR).length;
-  return{p:det.pass*10+det.habits*2+det.pr*5+Math.floor(det.walk/5)+det.checkin,det}}
+  det.checkin=Object.keys(S.checkins||{}).filter(inR).length;
+  return{p:det.pass*10+det.habits*2+Math.floor(det.walk/5)+det.checkin,det}}
 let boardRows=null,boardT=0,boardPushT=0;
 async function boardSync(){if(store.mode!=="supa"||!sbUser)return;const pr=prof(real);
   try{if(!pr.board||!String(pr.name).trim()){await sb.from("board").delete().eq("user_id",sbUser.id);return}
-    const ws=mondayOf(today()),w=points(real,ws,null),tot=points(real,null,null);
-    await sb.from("board").upsert({user_id:sbUser.id,name:String(pr.name).trim().slice(0,30),week:ws,week_pts:w.p,total_pts:tot.p,detail:w.det,updated_at:new Date().toISOString()});boardT=0}catch(e){}}
+    const mk=today().slice(0,7),w=points(real,mk+"-01",null),tot=points(real,null,null);
+    await sb.from("board").upsert({user_id:sbUser.id,name:String(pr.name).trim().slice(0,30),week:mk,week_pts:w.p,total_pts:tot.p,detail:w.det,updated_at:new Date().toISOString()});boardT=0}catch(e){}}
 async function loadBoard(force){if(store.mode!=="supa"||!sbUser)return;if(!force&&Date.now()-boardT<60000)return;boardT=Date.now();
-  try{const r=await sb.from("board").select("user_id,name,week,week_pts,total_pts");if(!r.error){boardRows=r.data||[];if(tab==="stats")render()}}catch(e){}}
+  try{const r=await sb.from("board").select("user_id,name,week,week_pts,total_pts");if(!r.error){boardRows=r.data||[];if(tab==="board")render()}}catch(e){}}
 
 /* ---------- charts ---------- */
 function niceTicks(min,max,count){const span=max-min||1,raw=span/count,mag=Math.pow(10,Math.floor(Math.log10(raw))),nr=raw/mag;
@@ -1219,7 +1220,6 @@ function renderStats(){
     <div class="kpi"><b>${since==null?"–":since}<small>d</small></b><span>Sedan senaste pass</span><i class="flat">${durs.length?"Snittid "+Math.round(mean(durs.slice(-10)))+" min":"&nbsp;"}</i></div></div>`;
   const ins=insights(S);
   h+=`<div class="mod hud"><div class="lbl"><span>Insikter</span><span>${ins.length} st</span></div><div class="ins">${ins.length?ins.map(([g,x])=>`<div><em>${g}</em><p>${x}</p></div>`).join(""):'<p class="empty">Logga ett par veckor så dyker mönster upp här.</p>'}</div></div>`;
-  if(!demoOn)h+=renderBoard();
   // weekly report
   {const ws=addDays(mondayOf(t),-7),r=weekReport(S,ws),p=weekReport(S,addDays(ws,-7)),c=(a,b,d=0,u="")=>b?`<i class="${dcls(a-b)}">${sgn(a-b,d)}${u}</i>`:"";
     if(sd.length||Object.keys(S.checkins||{}).length)h+=`<div class="mod"><div class="lbl"><span>Veckorapport</span><span>${shortDate(r.ws)} – ${shortDate(r.we)}</span></div>
@@ -1374,14 +1374,20 @@ function renderStats(){
   $("#s-stats").innerHTML=h;
 }
 
-function renderBoard(){if(store.mode!=="supa"||!sbUser)return"";loadBoard();
-  const ws=mondayOf(today()),pr=prof(real);
-  let h=`<div class="mod hud"><div class="lbl"><span>Topplista · denna vecka</span><span>Nollställs måndag</span></div>`;
+const MONTHS_LONG=["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
+function renderBoard(){const t=today(),mk=t.slice(0,7),mName=MONTHS_LONG[parse(t).getMonth()],dm=new Date(parse(t).getFullYear(),parse(t).getMonth()+1,0).getDate(),left=dm-parse(t).getDate();
+  if(store.mode!=="supa"||!sbUser)return `<div class="mod hud"><div class="lbl"><span>Topplista</span></div><p class="note" style="margin-top:8px">Topplistan fungerar i appen på hemskärmen när du är inloggad.</p></div>`;
+  loadBoard();const pr=prof(real),me=points(real,mk+"-01",null);
+  let h=`<div class="mod hud"><div class="lbl"><span>Topplista · ${mName}</span><span>${left===0?"Sista dagen":left+" dagar kvar"}</span></div>`;
   if(!pr.board||!String(pr.name).trim())h+=`<p class="note" style="margin-top:8px">Skriv ditt namn under Inställningar för att vara med.</p><button class="btn" data-goset="1" style="margin-top:10px;width:100%">Öppna inställningar</button>`;
-  const rows=(boardRows||[]).map(r=>Object.assign({},r,{wk:r.week===ws?r.week_pts:0})).sort((a,b)=>b.wk-a.wk||b.total_pts-a.total_pts);
+  const rows=(boardRows||[]).map(r=>Object.assign({},r,{wk:r.user_id===sbUser.id?me.p:r.week===mk?r.week_pts:0})).sort((a,b)=>b.wk-a.wk||b.total_pts-a.total_pts);
   if(boardRows===null)h+=`<p class="empty">Hämtar…</p>`;else if(!rows.length)h+=`<p class="empty">Ingen är med än.</p>`;
   else h+=`<div class="board">${rows.map((r,i)=>`<div class="${r.user_id===sbUser.id?"me":""}"><span class="pos">${i+1}</span><b>${esc(r.name)}${r.user_id===sbUser.id?"<small>du</small>":""}</b><span class="pts">${r.wk} p</span><span class="tot">${r.total_pts} totalt</span></div>`).join("")}</div>`;
-  return h+`<p class="foot" style="margin-top:10px">Pass 10 p · personbästa 5 p · avbockad vana 2 p · dagliga frågor 1 p · 5 min gång 1 p</p></div>`}
+  h+=`</div><div class="mod"><div class="lbl"><span>Dina poäng i ${mName}</span><span>${me.p} p</span></div>
+    <div class="det" style="margin-top:6px"><div><b>Pass</b><span>${me.det.pass} × 10 = ${me.det.pass*10} p</span></div><div><b>Avbockade vanor</b><span>${me.det.habits} × 2 = ${me.det.habits*2} p</span></div>
+    <div><b>Gång</b><span>${me.det.walk} min = ${Math.floor(me.det.walk/5)} p</span></div><div><b>Dagens frågor</b><span>${me.det.checkin} × 1 = ${me.det.checkin} p</span></div></div>
+    <p class="foot" style="margin-top:10px">Pass 10 p · avbockad vana 2 p · var femte minut gång 1 p · dagens frågor 1 p. Vanan Tränat räknas inte, den ingår i passet. Listan nollställs den 1:a varje månad, totalen sparas.</p></div>`;
+  return h}
 let guideOpen=false;
 const INGEST=()=>SUPA?SUPA.url+"/rest/v1/rpc/formlogg_ingest":"";
 function guideHtml(){const rows=[["sleep","Sömnanalys · Värde är inte I sängen och inte Vaken","Senaste 1 dagar","Summa av Varaktighet"],["deep","Sömnanalys · Värde är Djup","Senaste 1 dagar","Summa av Varaktighet"],["rem","Sömnanalys · Värde är REM","Senaste 1 dagar","Summa av Varaktighet"],
@@ -1435,14 +1441,14 @@ function render(){
   renderHeader();$("#gear").classList.toggle("on",tab==="settings");
   document.querySelectorAll(".sec").forEach(s=>s.classList.toggle("on",s.id==="s-"+tab));
   document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
-  if(tab==="day")renderDay();else if(tab==="gym")renderGym();else if(tab==="settings")$("#s-settings").innerHTML=renderSettings();else renderStats();
+  if(tab==="day")renderDay();else if(tab==="gym")renderGym();else if(tab==="settings")$("#s-settings").innerHTML=renderSettings();else if(tab==="board")$("#s-board").innerHTML=renderBoard();else renderStats();
 }
 
 /* ---------- events ---------- */
 const resetDrafts=()=>{for(const k in drafts)delete drafts[k]};
 document.addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b||b.disabled)return;const D=b.dataset;
-  if(D.tab){if(D.tab===tab&&tab==="gym"){detailDay=null}tab=D.tab;confirmDel=null;skipPick=null;render();window.scrollTo({top:0});if(tab==="stats")loadBoard(true);return}
+  if(D.tab){if(D.tab===tab&&tab==="gym"){detailDay=null}tab=D.tab;confirmDel=null;skipPick=null;render();window.scrollTo({top:0});if(tab==="board"){loadBoard(true);boardSync()}return}
   if(b.id==="prevDay"){sel=addDays(sel,-1);confirmDel=null;render();return}
   if(b.id==="nextDay"){if(sel<today()){sel=addDays(sel,1);render()}return}
   if(b.id==="exitDemo"){demoOn=false;demoDismissed=true;if(cfgMissing)saveConfig();render();return}
