@@ -570,7 +570,7 @@ function renderAuth(){
     <button class="wofoot" id="auSkip" style="font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);padding:8px 0;align-self:flex-start">Använd utan konto (bara i telefonen)</button></div>`;
 }
 function renderAccount(){
-  if(store.mode!=="supa")return "";
+  if(store.mode!=="supa")return window.FORMLOGG_SUPA?`<div class="mod hud"><div class="lbl"><span>Konto och molnsynk</span><span class="down">Ej ansluten</span></div><p class="note" style="margin-top:8px">Appen kunde inte ansluta till molnet, så just nu sparas allt bara i telefonen. Kolla att du har nät, stäng appen helt och öppna den igen.</p></div>`:"";
   const m=meta();
   return `<div class="mod"><div class="lbl"><span>Konto och molnsynk</span><span class="${sbUser?"up":"flat"}">${sbUser?"På":"Av"}</span></div>
     ${sbUser?`<p class="note" style="margin-top:8px">Inloggad som <b style="color:var(--fg)">${esc(sbUser.email||"")}</b>. Allt sparas automatiskt i molnet${m.synced?", senast "+new Date(m.synced).toLocaleString("sv-SE",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):""}.</p>
@@ -1425,7 +1425,7 @@ function renderSettings(){const S=real,p=prof(S),[lo,hi]=z2(S),seg=(k,opts)=>`<d
     <label class="tog"><span>Visa mig i topplistan</span><button class="switch ${p.board?"on":""}" data-pf="board|${p.board?"0":"1"}" aria-pressed="${p.board}" aria-label="Visa mig i topplistan"><i></i></button></label></div>
     <button class="btn solid" id="pfSave" style="width:100%;margin-top:14px">Spara profil</button>
     <p class="note" style="margin-top:10px">Förslagen siktar på ${repRange(S).join("–")} reps. Maxpuls cirka ${maxHR(S)}, zon 2 är ${lo}–${hi} slag per minut.</p></div>`;
-  return h+renderWatchSettings()+renderAccount()+renderBackup()}
+  return renderAccount()+h+renderWatchSettings()+renderBackup()}
 function render(){
   if(authMode){$("#datenav").hidden=true;$("#demoBox").innerHTML="";document.querySelector("nav").hidden=true;
     document.querySelectorAll(".sec").forEach(s=>s.classList.toggle("on",s.id==="s-day"));$("#s-day").innerHTML=renderAuth();return}
