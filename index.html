@@ -180,6 +180,86 @@ h2{font-family:var(--f-display);font-weight:600;font-size:18px;margin:0;letter-s
 .addrow.past .inp{flex:1 1 130px}
 .addrow.past .btn{flex:1 1 100%}
 select.inp{appearance:none;-webkit-appearance:none;color:var(--fg)}
+.hright{display:flex;align-items:center;gap:10px}
+.gear{width:34px;height:34px;border-radius:11px;border:1px solid var(--line2);background:rgba(255,255,255,.03);display:grid;place-items:center;color:var(--soft)}
+.gear svg{width:18px;height:18px}
+.gear.on{background:linear-gradient(180deg,#fff,#ececef);color:var(--ink);border-color:transparent}
+.q{display:flex;flex-direction:column;gap:7px;padding:12px 0;border-bottom:1px solid var(--line)}
+.q>span{font-size:14px;font-weight:500}
+.q small{display:flex;justify-content:space-between;font-size:10px;color:var(--dim)}
+.q small i{font-style:normal}
+.sc{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.sc.yn{grid-template-columns:1fr 1fr}.sc.s3{grid-template-columns:repeat(3,1fr)}
+.sc button{min-height:40px;border-radius:10px;border:1px solid var(--line2);background:rgba(255,255,255,.03);font-weight:600;font-size:14px;color:var(--soft)}
+.sc button.on{background:linear-gradient(180deg,#fff,#ececef);color:var(--ink);border-color:transparent}
+.sorer{display:grid;grid-template-columns:96px 1fr;gap:8px;align-items:center}
+.sorer em{font-style:normal;font-size:13px;color:var(--soft)}
+.ci .inp{margin-top:8px}
+.rdy .rdyrow{display:flex;align-items:center;gap:14px;margin-top:10px}
+.rdy .rdyrow b{font-family:var(--f-display);font-size:34px;font-weight:600;letter-spacing:-.05em;line-height:1}
+.rdy .rdyrow .bar{flex:1;grid-column:auto}
+.rdy small{display:block;margin-top:8px;font-size:12px;color:var(--dim)}
+.sugg{border:1px solid rgba(157,184,255,.25);background:var(--info-dim);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.sugg em{font-style:normal;font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--info)}
+.sugg b{font-family:var(--f-display);font-size:18px;font-weight:600;letter-spacing:-.03em}
+.sugg small{font-size:12px;color:var(--soft)}
+.wgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.wgrid .field input{padding-right:46px;font-size:17px}
+.tag{display:inline-block;font-family:var(--f-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:999px;background:rgba(245,199,107,.12);color:var(--warn);border:1px solid rgba(245,199,107,.3)}
+.expc{border-color:rgba(245,199,107,.3);background:linear-gradient(180deg,rgba(245,199,107,.08),rgba(245,199,107,.02))}
+.expc p{margin:8px 0 4px;font-size:15px;font-weight:500}
+.expc small{font-size:12px;color:var(--muted)}
+.expc .lbl span:last-child{color:var(--warn)}
+.seg.walk{flex:.55;background:rgba(157,184,255,.15)}
+.seg.walk.done{background:var(--info);box-shadow:0 0 10px rgba(157,184,255,.4)}
+.seg.skip{background:repeating-linear-gradient(45deg,rgba(255,255,255,.18) 0 3px,transparent 3px 6px)}
+.rir{display:inline-flex;align-items:center;gap:4px}
+.rir button{min-width:26px;height:22px;border-radius:999px;border:1px solid var(--line2);font-family:var(--f-mono);font-size:10px;color:var(--soft);padding:0 6px}
+.rir button.on{background:var(--pri);color:var(--ink);border-color:transparent}
+.reasons{display:flex;flex-wrap:wrap;gap:6px}
+.woprev i{font-style:normal;color:var(--muted);font-size:11px}
+.board{display:flex;flex-direction:column;margin-top:8px}
+.board div{display:grid;grid-template-columns:28px 1fr auto;grid-template-areas:"pos name pts" "pos name tot";gap:0 10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.board div:last-child{border-bottom:0}
+.board .pos{grid-area:pos;font-family:var(--f-display);font-size:20px;font-weight:600;color:var(--muted);text-align:center}
+.board b{grid-area:name;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.board b small{font-family:var(--f-mono);font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-left:6px}
+.board .pts{grid-area:pts;font-family:var(--f-display);font-weight:600;font-size:18px;text-align:right}
+.board .tot{grid-area:tot;font-size:11px;color:var(--dim);text-align:right}
+.board div.me{background:rgba(255,255,255,.04);border-radius:12px;padding:10px 8px;border-bottom-color:transparent}
+.board div:first-child .pos{color:var(--fg)}
+.copyrow{display:grid;grid-template-columns:62px 1fr auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.copyrow span{font-size:12px;color:var(--muted)}
+.copyrow code{font-family:var(--f-mono);font-size:11px;color:var(--soft);overflow-wrap:anywhere;min-width:0}
+.copyrow .btn{min-height:34px;padding:0 10px;font-size:12px}
+.form{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+.form label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted)}
+.form .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg3.big{display:flex}.seg3.big button{flex:1;font-family:var(--f-body);font-size:13px;font-weight:600;padding:9px 6px}
+.tog{flex-direction:row!important;justify-content:space-between;align-items:center}
+.tog span{color:var(--fg);font-size:14px}
+.switch{width:50px;height:30px;border-radius:999px;background:rgba(255,255,255,.12);position:relative;flex:none;transition:background .2s}
+.switch i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s var(--ease)}
+.switch.on{background:var(--good)}.switch.on i{transform:translateX(20px)}
+.mgrid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.mgrid2 .field input{padding-right:84px;font-size:16px}
+.guide{margin-top:14px;display:flex;flex-direction:column;gap:12px;font-size:14px}
+.guide ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px}
+.guide li{color:var(--soft)}
+.guide b{color:var(--fg)}
+.guide .tscroll table td,.guide .tscroll table th{font-size:11px}
+.guide code{font-family:var(--f-mono);font-size:12px;background:rgba(255,255,255,.06);padding:1px 5px;border-radius:5px;color:var(--fg)}
+.musc{display:flex;flex-wrap:wrap;gap:5px;padding:4px 0 10px}
+.musc button{font-size:11px;padding:4px 9px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.musc button.on{background:var(--pri);color:var(--ink);border-color:transparent}
+.msrow{display:grid;grid-template-columns:96px 1fr 44px;gap:10px;align-items:center;padding:7px 0}
+.msrow span{font-size:13px;color:var(--soft)}
+.msrow b{font-family:var(--f-mono);font-size:12px;font-weight:500;text-align:right}
+.msbar{height:8px;border-radius:999px;background:rgba(255,255,255,.06);position:relative;overflow:hidden}
+.msbar i{position:absolute;inset:0 auto 0 0;border-radius:999px}
+.msbar::before,.msbar::after{content:"";position:absolute;top:0;bottom:0;width:1px;background:rgba(255,255,255,.25);z-index:1}
+.msbar::before{left:50%}.msbar::after{left:calc(100% - 1px)}
+a.btn{text-decoration:none}
 /* workout */
 .wohead{display:flex;flex-direction:column;gap:12px}
 .segs{display:flex;gap:5px}
@@ -306,7 +386,7 @@ nav button .live{position:absolute;top:6px;right:calc(50% - 18px);width:7px;heig
   <header>
     <div class="hrow">
       <div class="brand"><i></i>Formlogg</div>
-      <div class="sync" id="sync">Lokalt</div>
+      <div class="hright"><div class="sync" id="sync">Lokalt</div><button class="gear" id="gear" aria-label="Inställningar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div>
     </div>
     <div class="datenav" id="datenav">
       <button class="arr" id="prevDay" aria-label="Föregående dag">‹</button>
@@ -318,6 +398,7 @@ nav button .live{position:absolute;top:6px;right:calc(50% - 18px);width:7px;heig
   <section class="sec on" id="s-day"></section>
   <section class="sec" id="s-gym"></section>
   <section class="sec" id="s-stats"></section>
+  <section class="sec" id="s-settings"></section>
 </div>
 
 <nav>
@@ -372,7 +453,7 @@ const DEF_PROGS=()=>[{id:"push",name:"Push",draft:true,ex:["bench","incdb","dips
 const DEFAULT=()=>({
   habits:[{id:"eat",name:"Ätit bra"},{id:"train",name:"Tränat",auto:true}],
   exercises:DEF_EX.map(([id,name])=>({id,name})), programs:DEF_PROGS(),
-  days:{}, body:{}, sessions:{}
+  days:{}, body:{}, sessions:{}, profile:{}, checkins:{}, measures:{}, goals:{}, deloadUntil:null, lastDeload:null
 });
 function migrate(R){let ch=false;
   if(!Array.isArray(R.exercises))R.exercises=[];
@@ -380,14 +461,15 @@ function migrate(R){let ch=false;
   const have=new Set(R.exercises.map(e=>e.id));
   R.programs.forEach(p=>{if(!Array.isArray(p.ex))p.ex=[];p.ex.forEach(id=>{if(!have.has(id)){const d=DEF_EX.find(x=>x[0]===id);R.exercises.push({id,name:d?d[1]:id});have.add(id);ch=true}})});
   if("programSet" in R){delete R.programSet;ch=true}
+  ["profile","checkins","measures","goals"].forEach(k=>{if(!R[k]||typeof R[k]!=="object"){R[k]={}}});
   return ch}
 let real=DEFAULT(), demo=null, demoOn=false, demoDismissed=false;
 let tab="day", sel=today(), statEx=null, statRange="all";
 let editHabits=false, manageEx=false, confirmDel=null, viewProg=null;
-let wo=null, summaryDay=null, detailDay=null, backupOpen=false;
+let wo=null, summaryDay=null, detailDay=null, backupOpen=false, skipPick=null, musEdit=null;
 const drafts={}, extra={};
 const V=()=>demoOn?demo:real;
-const hasData=s=>Object.keys(s.days).length>0||Object.keys(s.sessions).length>0||Object.keys(s.body||{}).length>0;
+const hasData=s=>Object.keys(s.days).length>0||Object.keys(s.sessions).length>0||Object.keys(s.body||{}).length>0||Object.keys(s.checkins||{}).length>0||Object.keys(s.measures||{}).length>0;
 
 /* ---------- demo: 12 weeks of the same program, 3 pass a week ---------- */
 function buildDemo(){
@@ -409,8 +491,10 @@ function buildDemo(){
         for(let k=0;k<cnt;k++){const r=Math.max(4,8-k-(rnd()>.65?1:0)-(slept?0:1));t+=(2+rnd()*1.5)*6e4;sets.push({e:ex.id,kg:w,r,n:k,t})}
         t+=2*6e4;
       });
-      d.sessions[day]={prog:pg.id,start,end:t+3*6e4,feel:Math.max(1,Math.min(5,Math.round(3+(slept?.8:-.6)+(ate?.3:0)+(rnd()-.5)*1.4))),sets};
+      d.sessions[day]={prog:pg.id,walks:{pre:{min:20,inc:6,spd:5,at:start-4*6e4},post:{min:20,inc:Math.min(15,7+Math.floor(n/8)),spd:5.2,at:t+25*6e4}},start,end:t+3*6e4,feel:Math.max(1,Math.min(5,Math.round(3+(slept?.8:-.6)+(ate?.3:0)+(rnd()-.5)*1.4))),sets};
     }
+    if(rnd()>.25)d.checkins[day]={energy:slept?4:2,stress:2+Math.round(rnd()*2),mood:3+Math.round(rnd()),motiv:slept?4:3,food:ate?4:2,protein:ate,alcohol:rnd()>.85,pain:false};
+    if(i%3===0)d.measures[day]={waist:Math.round((86+i*.03)*10)/10,neck:38.5,hip:98,arm:36.5,chest:102,thigh:58};
     if(rnd()>.45)d.body[day]=Math.round((80.4+i*.02+(rnd()-.5)*.7)*10)/10;
     if(list.length)d.days[day]=list;
   }
@@ -436,7 +520,8 @@ async function push(){
   if(!navigator.onLine){setSync("Offline · sparas sen");return}
   setSync("Sparar…");
   try{const {data,error}=await sb.from("formlogg").upsert({user_id:sbUser.id,data:real,updated_at:new Date().toISOString()}).select("updated_at").single();
-    if(error)throw error;setMeta({dirty:false,synced:data.updated_at,uid:sbUser.id});setSync("Synkad",true)}
+    if(error)throw error;setMeta({dirty:false,synced:data.updated_at,uid:sbUser.id});setSync("Synkad",true);
+    if(Date.now()-boardPushT>30000){boardPushT=Date.now();boardSync()}}
   catch(e){setSync("Ej synkad");schedulePushLater()}
 }
 let laterT;function schedulePushLater(){clearTimeout(laterT);laterT=setTimeout(()=>{if(meta().dirty)push()},30000)}
@@ -464,10 +549,12 @@ async function authDo(kind){
   authBusy=true;authMsg=kind==="up"?"Skapar konto…":"Loggar in…";render();
   try{
     if(kind==="up"){const {data,error}=await sb.auth.signUp({email,password:pw});if(error)throw error;
-      if(data.session){sbUser=data.session.user;authMode=false;authMsg="";await pull()}
-      else authMsg="Kontot är skapat. Öppna mejlet från Supabase och tryck på bekräftelselänken. Kom sedan tillbaka hit och logga in."}
+      if(data.session){sbUser=data.session.user;authMode=false;authMsg="";await pull();loadHealth(true)}
+      else{const r2=await sb.auth.signInWithPassword({email,password:pw});
+        if(!r2.error&&r2.data&&r2.data.user){sbUser=r2.data.user;authMode=false;authMsg="";await pull();loadHealth(true)}
+        else authMsg="Kontot är skapat. Öppna mejlet från Supabase och tryck på bekräftelselänken. Sidan som öppnas efteråt kan visa ett fel, det gör inget. Kom sedan tillbaka hit och tryck Logga in."}}
     else{const {data,error}=await sb.auth.signInWithPassword({email,password:pw});if(error)throw error;
-      sbUser=data.user;authMode=false;authMsg="";setMeta({skipLogin:false});await pull()}
+      sbUser=data.user;authMode=false;authMsg="";setMeta({skipLogin:false});await pull();loadHealth(true)}
   }catch(e){const m=String(e&&e.message||"");
     authMsg=/confirm/i.test(m)?"E-posten är inte bekräftad än. Tryck på länken i mejlet först.":/invalid login/i.test(m)?"Fel e-post eller lösenord.":/already registered/i.test(m)?"Det finns redan ett konto med den e-posten. Logga in i stället.":!navigator.onLine?"Du är offline. Försök igen när du har nät.":"Det gick inte: "+m}
   authBusy=false;render();
@@ -493,16 +580,15 @@ function renderAccount(){
 const chains={};
 function queue(k,fn){chains[k]=(chains[k]||Promise.resolve()).then(fn).catch(()=>toast("Kunde inte spara. Kolla anslutningen och försök igen."))}
 function saveConfig(){persistLocal();cfgMissing=false;if(store.mode!=="db")return;
-  const body={habits:clone(real.habits),exercises:clone(real.exercises),programs:clone(real.programs)};queue("cfg",()=>store.cfg.set(body))}
-function saveMonth(day){persistLocal();if(store.mode!=="db")return;const m=day.slice(0,7),days={},body={};
-  for(const k in real.days)if(k.slice(0,7)===m)days[k]=real.days[k];
-  for(const k in real.body)if(k.slice(0,7)===m)body[k]=real.body[k];
-  const ref=store.months.doc("m"+m);
-  queue("m"+m,()=>Object.keys(days).length||Object.keys(body).length?ref.set({days,body}):ref.delete())}
+  const body={habits:clone(real.habits),exercises:clone(real.exercises),programs:clone(real.programs),profile:clone(real.profile||{}),goals:clone(real.goals||{}),deloadUntil:real.deloadUntil||null,lastDeload:real.lastDeload||null};queue("cfg",()=>store.cfg.set(body))}
+function saveMonth(day){persistLocal();if(store.mode!=="db")return;const m=day.slice(0,7),o={days:{},body:{},checkins:{},measures:{}};
+  ["days","body","checkins","measures"].forEach(f=>{for(const k in (real[f]||{}))if(k.slice(0,7)===m)o[f][k]=real[f][k]});
+  const ref=store.months.doc("m"+m),any=Object.values(o).some(x=>Object.keys(x).length);
+  queue("m"+m,()=>any?ref.set(clone(o)):ref.delete())}
 function saveSession(day){persistLocal();if(store.mode!=="db")return;const s=real.sessions[day];
-  const body=s&&(s.sets.length||s.start)?clone(s):null;const ref=store.sess.doc(day);
+  const body=s&&(s.sets.length||s.start||s.walks)?clone(s):null;const ref=store.sess.doc(day);
   queue("s"+day,()=>body?ref.set(body):ref.delete())}
-function saveAll(oldSess){saveConfig();const months=new Set([...Object.keys(real.days),...Object.keys(real.body)].map(d=>d.slice(0,7)));
+function saveAll(oldSess){saveConfig();const months=new Set([...Object.keys(real.days),...Object.keys(real.body),...Object.keys(real.checkins||{}),...Object.keys(real.measures||{})].map(d=>d.slice(0,7)));
   months.forEach(m=>saveMonth(m+"-01"));Object.keys(real.sessions).forEach(saveSession);
   (oldSess||[]).forEach(d=>{if(!real.sessions[d])saveSession(d)})}
 
@@ -516,9 +602,9 @@ async function initStore(){
     try{sb=window.supabase.createClient(SUPA.url,SUPA.key,{auth:{persistSession:true,autoRefreshToken:true}});
       const {data}=await sb.auth.getSession();sbUser=data&&data.session?data.session.user:null}catch(e){sb=null}
     if(!sb){store={mode:"local"};setSync("På enheten");finish();return}
-    if(sbUser){setSync("Synkar…");finish();pull()}
+    if(sbUser){setSync("Synkar…");finish();pull();loadHealth(true)}
     else{authMode=!meta().skipLogin;setSync("Bara telefonen");finish()}
-    document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&sbUser){meta().dirty?push():pull()}});
+    document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&sbUser){meta().dirty?push():pull();loadHealth(true)}});
     window.addEventListener("online",()=>{if(sbUser&&meta().dirty)push()});
     return;
   }
@@ -535,8 +621,8 @@ async function initStore(){
     const timer=setTimeout(()=>{if(!ready){setSync("Offline");finish()}},10000);
     const check=()=>{if(got.c&&got.m&&got.s){clearTimeout(timer);setSync("Synkad",true);if(!ready)finish();else render()}};
     const err=()=>{setSync("Sparas ej");toast("Din logg går inte att nå just nu.")};
-    cfg.onSnapshot(s=>{if(s.exists){const d=s.data();real.habits=clone(d.habits||[]);real.exercises=clone(d.exercises||[]);real.programs=clone(d.programs||[]);real.programSet=d.programSet;cfgMissing=migrate(real)}got.c=1;check()},err);
-    store.months.onSnapshot(q=>{const days={},body={};q.docs.forEach(d=>{const x=d.data();Object.assign(days,clone(x.days||{}));Object.assign(body,clone(x.body||{}))});real.days=days;real.body=body;got.m=1;check()},err);
+    cfg.onSnapshot(s=>{if(s.exists){const d=s.data();real.habits=clone(d.habits||[]);real.exercises=clone(d.exercises||[]);real.programs=clone(d.programs||[]);real.programSet=d.programSet;real.profile=clone(d.profile||{});real.goals=clone(d.goals||{});real.deloadUntil=d.deloadUntil||null;real.lastDeload=d.lastDeload||null;cfgMissing=migrate(real)}got.c=1;check()},err);
+    store.months.onSnapshot(q=>{const o={days:{},body:{},checkins:{},measures:{}};q.docs.forEach(d=>{const x=d.data();for(const f in o)Object.assign(o[f],clone(x[f]||{}))});Object.assign(real,o);got.m=1;check()},err);
     store.sess.onSnapshot(q=>{const ss={};q.docs.forEach(d=>{ss[d.id]=clone(d.data())});real.sessions=ss;got.s=1;check()},err);
   }catch(e){store={mode:"local"};setSync("På enheten");finish()}
 }
@@ -544,7 +630,7 @@ function ensureReal(){
   if(demoOn){demoOn=false;demoDismissed=true;toast("Exempeldatan är borta. Nu loggar du på riktigt.")}
   if(cfgMissing)saveConfig();
 }
-function resumeActive(){const s=real.sessions[today()];if(!wo&&s&&s.start&&!s.end&&!demoOn){wo={day:today(),prog:s.prog,idx:firstOpen(real,today(),sessExs(real,today(),s.prog))}}}
+function resumeActive(){const s=real.sessions[today()];if(!wo&&s&&s.start&&!s.end&&!demoOn){wo={day:today(),prog:s.prog,idx:firstOpenStep(real,today(),s.prog)}}}
 
 /* ---------- derived data ---------- */
 const sessionDates=S=>Object.keys(S.sessions).filter(d=>(S.sessions[d].sets||[]).length).sort();
@@ -600,7 +686,7 @@ function startWorkout(day,pid){
   day=day||today();const s=real.sessions[day]?clone(real.sessions[day]):{sets:[]};s.prog=p.id;
   if(day===today()){if(!s.start)s.start=Date.now();delete s.end}
   real.sessions[day]=s;saveSession(day);
-  wo={day,prog:p.id,idx:firstOpen(real,day,progExs(real,p))};summaryDay=null;detailDay=null;tab="gym";render();window.scrollTo({top:0});
+  wo={day,prog:p.id,idx:firstOpenStep(real,day,p.id)};summaryDay=null;detailDay=null;tab="gym";render();window.scrollTo({top:0});
 }
 function woSet(ex,k){
   const day=wo.day,kgEl=document.getElementById("w-"+ex+"-"+k+"-kg"),rEl=document.getElementById("w-"+ex+"-"+k+"-r");
@@ -609,7 +695,7 @@ function woSet(ex,k){
   if(i>-1&&s.sets[i].kg===kg&&s.sets[i].r===r){s.sets.splice(i,1);real.sessions[day]=s;saveSession(day);delete drafts[day+"|"+ex+"|"+k];render();return}
   if(!(kg>=0)||!(r>0)){toast("Fyll i vikt och reps först.");return}
   const prevBest=bestBefore(real,ex,day);
-  const set={e:ex,kg,r,n:k,t:Date.now()};if(i>-1)s.sets[i]=set;else s.sets.push(set);
+  const set={e:ex,kg,r,n:k,t:Date.now()};if(i>-1&&s.sets[i].rir!=null)set.rir=s.sets[i].rir;if(i>-1)s.sets[i]=set;else s.sets.push(set);
   real.sessions[day]=s;delete drafts[day+"|"+ex+"|"+k];markTrained(day);saveSession(day);
   const v=e1rm(kg,r),todayBest=Math.max(...exSets(real,day,ex).map(x=>e1rm(x.kg,x.r)));
   if(prevBest>0&&v>prevBest&&v>=todayBest)toast("Personbästa! e1RM "+fmt(v,1)+" kg");
@@ -617,7 +703,8 @@ function woSet(ex,k){
 }
 function finishWorkout(){
   const day=wo.day,s=clone(real.sessions[day]||{sets:[]});
-  if(!s.sets.length){delete real.sessions[day];saveSession(day);wo=null;toast("Passet avbröts. Inget sparades.");render();return}
+  const hasW=s.walks&&(s.walks.pre||s.walks.post);
+  if(!s.sets.length&&!hasW){delete real.sessions[day];saveSession(day);wo=null;toast("Passet avbröts. Inget sparades.");render();return}
   if(s.start&&!s.end)s.end=Date.now();real.sessions[day]=s;saveSession(day);
   summaryDay=day;wo=null;render();window.scrollTo({top:0});
 }
@@ -635,6 +722,140 @@ function renameProg(){const v=$("#progName").value.trim().slice(0,30);if(!v)retu
 function addProg(){ensureReal();const p={id:uid("p"),name:"Nytt pass",ex:[]};real.programs.push(p);viewProg=p.id;manageEx=true;saveConfig();render()}
 function delProg(){const p=curProg();if(!p)return;if(confirmDel!=="p"+p.id){confirmDel="p"+p.id;render();return}
   ensureReal();real.programs=real.programs.filter(x=>x.id!==p.id);viewProg=real.programs[0]?real.programs[0].id:null;confirmDel=null;manageEx=false;saveConfig();render()}
+
+/* ---------- profile, muscles, zones ---------- */
+const MUSCLES={chest:"Bröst",back:"Rygg",shoulders:"Axlar",biceps:"Biceps",triceps:"Triceps",quads:"Framsida lår",hams:"Baksida lår",glutes:"Säte",calves:"Vader",core:"Bål",lowback:"Ländrygg"};
+const DEF_MUSCLE={bench:["chest","triceps","shoulders"],incdb:["chest","shoulders","triceps"],dips:["chest","triceps"],pushdown:["triceps"],dead:["back","hams","glutes","lowback"],chins:["back","biceps"],row:["back","biceps"],facepull:["shoulders","back"],curl:["biceps"],squat:["quads","glutes"],rdl:["hams","glutes","lowback"],legpress:["quads","glutes"],legcurl:["hams"],calf:["calves"],ohp:["shoulders","triceps"],latraise:["shoulders"],revfly:["shoulders","back"],hlr:["core"],backext:["lowback","glutes"]};
+const musclesOf=(S,id)=>{const e=S.exercises.find(x=>x.id===id);return e&&Array.isArray(e.m)?e.m:(DEF_MUSCLE[id]||[])};
+const prof=S=>Object.assign({name:"",sex:"m",height:"",birth:"",goal:"båda",walkGoal:"fett",board:true},S.profile||{});
+const REP_RANGE={styrka:[4,6],muskler:[8,12],"båda":[6,10]};
+const repRange=S=>REP_RANGE[prof(S).goal]||REP_RANGE["båda"];
+const maxHR=S=>{const b=+prof(S).birth;const age=b>1900?new Date().getFullYear()-b:30;return Math.round(208-.7*age)};
+const zone=(S,lo,hi)=>{const m=maxHR(S);return[Math.round(m*lo),Math.round(m*hi)]};
+const z2=S=>zone(S,.6,.7);
+const roundKg=x=>x<20?Math.round(x*2)/2:Math.round(x/1.25)*1.25;
+const hashStr=s=>{let h=7;for(const c of s)h=(h*31+c.charCodeAt(0))|0;return Math.abs(h)};
+const clamp=v=>Math.max(0,Math.min(100,v));
+
+/* ---------- Apple Watch data (Supabase) ---------- */
+let health={daily:{},workouts:[],token:null,lastAt:null,loaded:false},healthT=0;
+const H_SLEEP=["sleep","deep","rem","core","awake"];
+function normH(d){const o={};for(const k in d){const raw=d[k];if(k==="w_start"||k==="w_end"||k==="w_type"){o[k]=raw;continue}
+  let v=num(raw);if(!isFinite(v))continue;
+  if(H_SLEEP.includes(k))v=v>1440?v/3600:v>24?v/60:v;
+  if(k==="spo2"&&v<=1)v*=100;
+  if(k==="w_min"&&v>300)v/=60;
+  o[k]=v}return o}
+async function loadHealth(force){if(store.mode!=="supa"||!sbUser)return;if(!force&&Date.now()-healthT<30000)return;healthT=Date.now();
+  try{const since=addDays(today(),-120);
+    const [d,l]=await Promise.all([sb.from("health_daily").select("day,data").gte("day",since),
+      sb.from("health_log").select("at,data").gte("at",parse(since).toISOString()).order("at",{ascending:true}).limit(3000)]);
+    if(!d.error){const o={};(d.data||[]).forEach(r=>o[r.day]=normH(r.data||{}));health.daily=o}
+    if(!l.error){const seen=new Set(),w=[];(l.data||[]).forEach(r=>{health.lastAt=r.at;const x=normH(r.data||{});if(!x.w_start)return;
+      const st=Date.parse(x.w_start),en=Date.parse(x.w_end||"");if(!isFinite(st)||seen.has(x.w_start))return;seen.add(x.w_start);
+      w.push({start:st,end:isFinite(en)?en:st+(x.w_min||0)*6e4,min:x.w_min||(isFinite(en)?(en-st)/6e4:null),kcal:x.w_kcal,hr:x.w_hr,hrmax:x.w_hrmax,type:x.w_type})});health.workouts=w}
+    health.loaded=true;if(ready)render()}catch(e){}}
+let tokBusy=false;
+async function ensureToken(){if(store.mode!=="supa"||!sbUser||health.token||tokBusy)return;tokBusy=true;
+  try{let r=await sb.from("health_tokens").select("token").maybeSingle();if(!r.data&&!r.error)r=await sb.from("health_tokens").insert({}).select("token").single();
+    if(r.data){health.token=r.data.token;render()}}catch(e){}tokBusy=false}
+function hBase(k,day,n){const v=[];for(let i=1;i<=(n||14);i++){const x=(health.daily[addDays(day,-i)]||{})[k];if(x>0)v.push(x)}return v.length>=3?mean(v):null}
+function readiness(S,day){day=day||today();const h=health.daily[day]||{},ci=(S.checkins||{})[day]||{},parts=[];
+  const bh=hBase("hrv",day),br=hBase("rhr",day);
+  if(h.hrv>0&&bh)parts.push(["HRV",clamp(50+(h.hrv/bh-1)*250)]);
+  if(h.rhr>0&&br)parts.push(["Vilopuls",clamp(50-(h.rhr/br-1)*500)]);
+  if(h.sleep>0)parts.push(["Sömn",clamp((h.sleep-5)/3*100)]);
+  if(ci.energy)parts.push(["Energi",(ci.energy-1)*25]);
+  if(ci.sleepq&&!(h.sleep>0))parts.push(["Sömnkänsla",(ci.sleepq-1)*25]);
+  if(ci.stress)parts.push(["Stress",(5-ci.stress)*25]);
+  if(ci.sore){const v=Object.values(ci.sore);if(v.length)parts.push(["Träningsvärk",clamp(100-mean(v)*50)])}
+  if(ci.ill)parts.push(["Krasslig",10]);
+  if(!parts.length)return null;const score=Math.round(mean(parts.map(p=>p[1])));
+  return{score,parts,label:score>=70?"Kör tungt":score>=45?"Kör som vanligt":"Ta det lugnt",cls:score>=70?"up":score>=45?"flat":"down"}}
+
+/* ---------- coaching: suggestions, experiments, plateaus, deload ---------- */
+const deloadOn=S=>!!(S.deloadUntil&&today()<=S.deloadUntil);
+function suggest(S,ex,day){const lf=lastFor(S,ex,day);if(!lf)return null;const [lo,hi]=repRange(S);
+  const top=Math.max(...lf.sets.map(x=>x.kg)),atTop=lf.sets.filter(x=>x.kg===top),inc=top<20?1:2.5;
+  const minR=Math.min(...atTop.map(x=>x.r)),maxR=Math.max(...lf.sets.map(x=>x.r)),rirs=atTop.map(x=>x.rir).filter(v=>v!=null),easy=rirs.length&&Math.min(...rirs)>=2;
+  if(deloadOn(S))return{kg:roundKg(top*.8),r:hi,why:"Lätt vecka: 20 % lättare än vanligt"};
+  const rd=readiness(S,today());
+  if(rd&&rd.score<45)return{kg:top,r:Math.max(lo,minR),why:"Låg dagsform idag: håll vikten"};
+  if(minR>=hi||(minR>=hi-1&&easy))return{kg:roundKg(top+inc),r:lo,why:`Du klarade ${minR} reps${easy?" med reps kvar":""}. Öka vikten.`};
+  if(maxR<lo){const prev=lastFor(S,ex,lf.d),prevLow=prev&&Math.max(...prev.sets.map(x=>x.r))<lo&&Math.max(...prev.sets.map(x=>x.kg))>=top;
+    return prevLow?{kg:roundKg(top*.95),r:lo,why:`Två pass under ${lo} reps. Sänk 5 % och bygg upp igen.`}:{kg:top,r:lo,why:`Sikta på minst ${lo} reps innan du ökar.`}}
+  return{kg:top,r:Math.min(hi,minR+1),why:`Samma vikt, en rep till. Mål: ${hi} reps, sedan ökar vikten.`}}
+const EXP={lighter:{t:"Lättare, fler reps",d:s=>`Testa ${fmt(roundKg(s.kg*.9),2)} kg och sikta på ${s.r+3} reps per set.`},
+  heavier:{t:"Tyngre, färre reps",d:s=>`Testa ${fmt(roundKg(s.kg*1.05),2)} kg och sikta på ${Math.max(2,s.r-2)} reps per set.`},
+  rest_long:{t:"Längre vila",d:()=>"Vila 3 minuter mellan seten idag och se om du orkar fler reps."},
+  rest_short:{t:"Kortare vila",d:()=>"Vila max 60 sekunder mellan seten idag."},
+  tempo:{t:"Långsamt ner",d:()=>"Sänk vikten långsamt, 3 sekunder ner på varje rep."},
+  third:{t:"Ett extra set",d:()=>"Lägg till ett tredje set idag."}};
+function expFor(S,day,exs){const s=S.sessions[day]||{};if(s.exp)return s.exp;if(s.expNo)return null;
+  const pd=prevSession(S,day);if(pd&&S.sessions[pd].exp&&S.sessions[pd].exp.acc)return null;
+  const rd=readiness(S,today());if(rd&&rd.score<45)return null;
+  const cands=exs.filter(e=>lastFor(S,e.id,day)&&!(s.skip||{})[e.id]&&!exSets(S,day,e.id).length);if(!cands.length)return null;
+  const pl=plateaus(S).map(p=>p.e.id),pc=cands.filter(e=>pl.includes(e.id)),pool=pc.length?pc:cands;
+  const h=hashStr(day+(s.prog||"")),types=Object.keys(EXP);return{ex:pool[h%pool.length].id,type:types[(h>>4)%types.length]}}
+function plateaus(S){const out=[];usedEx(S).forEach(e=>{const s=exSeries(S,e.id);if(s.length<5)return;
+  const prev=Math.max(...s.slice(0,-3).map(x=>x.e1)),rec=Math.max(...s.slice(-3).map(x=>x.e1));if(rec<=prev*1.005)out.push({e,since:s[s.length-3].d})});return out}
+function deloadNeed(S){if(deloadOn(S))return null;const sd=sessionDates(S),t=today();if(sd.length<6)return null;
+  const fe=sd.slice(-3).map(d=>+S.sessions[d].feel).filter(Boolean),en=[];for(let i=0;i<5;i++){const c=(S.checkins||{})[addDays(t,-i)];if(c&&c.energy)en.push(c.energy)}
+  let down=0,tot=0;usedEx(S).forEach(e=>{const s=exSeries(S,e.id).filter(x=>daysBetween(x.d,t)<=21);if(s.length>=3){tot++;if(s[s.length-1].e1<s[0].e1)down++}});
+  const tired=(fe.length>=2&&mean(fe)<=2.5)||(en.length>=3&&mean(en)<=2.3),weaker=tot>=2&&down/tot>.5;
+  if(tired&&weaker)return"Styrkan har sjunkit i de flesta övningar och passen känns tunga.";
+  const lastDl=S.lastDeload||sd[0],since=sd.filter(d=>d>lastDl).length;
+  if(since>=24&&daysBetween(lastDl,t)>=56)return"Du har kört åtta veckor utan en lättare vecka.";return null}
+function perfChange(S,d){const ids=[...new Set(S.sessions[d].sets.map(x=>x.e))],r=[];ids.forEach(id=>{const lf=lastFor(S,id,d);if(!lf)return;
+  const now=Math.max(...exSets(S,d,id).map(x=>e1rm(x.kg,x.r))),b=Math.max(...lf.sets.map(x=>e1rm(x.kg,x.r)));if(b>0)r.push(now/b-1)});return r.length?mean(r):null}
+
+/* ---------- workout steps & treadmill ---------- */
+function woSteps(S,day,pid){return[{k:"walk",w:"pre"},...sessExs(S,day,pid).map(e=>({k:"ex",e})),{k:"walk",w:"post"}]}
+function stepDone(S,day,st){const s=S.sessions[day]||{};if(st.k==="walk")return!!((s.walks||{})[st.w]||(s.skipWalk||{})[st.w]);return exSets(S,day,st.e.id).length>=BASE_SETS||!!(s.skip||{})[st.e.id]}
+function firstOpenStep(S,day,pid){const st=woSteps(S,day,pid),s=S.sessions[day]||{},has=(s.sets||[]).length>0;
+  const i=st.findIndex((x,j)=>!(j===0&&has)&&!stepDone(S,day,x));return i<0?st.length-1:i}
+function walkTarget(S,w){const g=prof(S).walkGoal;if(w==="pre")return zone(S,.55,.65);return g==="kondition"?zone(S,.65,.75):g==="uppvärmning"?zone(S,.5,.6):zone(S,.6,.7)}
+function walkHR(x){if(!x||!x.at||!health.workouts.length)return null;let best=null,bd=50*6e4;health.workouts.forEach(w=>{const d=Math.abs(w.end-x.at);if(d<bd&&w.hr){bd=d;best=w}});return best?{hr:best.hr,hrmax:best.hrmax,kcal:best.kcal}:null}
+function walksOf(S,w){const out=[];Object.keys(S.sessions).sort().forEach(d=>{const x=((S.sessions[d]||{}).walks||{})[w];if(x)out.push(Object.assign({d},x,{hr:walkHR(x)}))});return out}
+function walkSuggest(S,w,day){const all=walksOf(S,w).filter(x=>x.d<day),last=all[all.length-1],[lo,hi]=walkTarget(S,w);
+  if(!last)return{min:20,inc:w==="pre"?6:8,spd:5,why:`Startförslag. Justera tills pulsen ligger på ${lo}–${hi}.`,lo,hi};
+  let inc=+last.inc||8,spd=+last.spd||5,why;const hr=last.hr&&last.hr.hr;
+  if(hr){if(hr<lo){if(inc<15){inc=Math.min(15,inc+1);why=`Pulsen var ${Math.round(hr)} förra gången, under ${lo}. Höj lutningen.`}else{spd=+(spd+.3).toFixed(1);why=`Pulsen var ${Math.round(hr)} på max lutning. Höj tempot lite.`}}
+    else if(hr>hi){if(inc>1){inc=Math.max(1,inc-1);why=`Pulsen var ${Math.round(hr)}, över ${hi}. Sänk lutningen en procent.`}else{spd=+Math.max(2,spd-.3).toFixed(1);why="Pulsen var för hög. Sänk tempot lite."}}
+    else{const inZ=all.slice(-3).filter(x=>x.hr&&x.hr.hr>=lo&&x.hr.hr<=hi).length;if(inZ>=3&&inc<15){inc=Math.min(15,inc+.5);why="Tre gånger i rätt zon. Konditionen har blivit bättre, höj en halv procent."}else why=`Pulsen ${Math.round(hr)} låg rätt förra gången. Kör samma.`}}
+  else if(all.length%3===0&&inc<15){inc=Math.min(15,inc+.5);why="Ingen puls från klockan än. Liten höjning för att utvecklas."}
+  else why="Samma som förra gången. Med puls från klockan kan appen styra mer exakt.";
+  return{min:+last.min||20,inc,spd,why,lo,hi}}
+
+/* ---------- body measurements ---------- */
+const MEAS=[["waist","Midja"],["hip","Höft"],["chest","Bröst"],["shoulders","Axlar"],["neck","Hals"],["arm","Överarm"],["forearm","Underarm"],["thigh","Lår"],["calf","Vad"]];
+const lastMeasureDay=S=>{const k=Object.keys(S.measures||{}).sort();return k.length?k[k.length-1]:null};
+const measureDue=S=>{const l=lastMeasureDay(S);return!l||daysBetween(l,today())>=3};
+function bodyFat(S,m){const p=prof(S),hg=+p.height;if(!m||!hg||!m.waist||!m.neck)return null;const L=Math.log10;let v;
+  if(p.sex==="f"){if(!m.hip)return null;v=495/(1.29579-.35004*L(m.waist+m.hip-m.neck)+.221*L(hg))-450}
+  else{if(m.waist<=m.neck)return null;v=495/(1.0324-.19077*L(m.waist-m.neck)+.15456*L(hg))-450}return isFinite(v)&&v>2&&v<60?v:null}
+function muscleSets(S,ws,we){const o={};Object.keys(MUSCLES).forEach(m=>o[m]=0);sessionDates(S).filter(d=>d>=ws&&d<=we).forEach(d=>S.sessions[d].sets.forEach(x=>musclesOf(S,x.e).forEach((m,i)=>{o[m]=(o[m]||0)+(i===0?1:.5)})));return o}
+
+/* ---------- weekly report & leaderboard ---------- */
+function weekReport(S,ws){const we=addDays(ws,6),sd=sessionDates(S).filter(d=>d>=ws&&d<=we),[lo,hi]=z2(S);
+  let hab=0,days=0,walk=0,z2m=0;for(let d=ws;d<=we&&d<=today();d=addDays(d,1)){days++;hab+=dayScore(S,d)}
+  Object.keys(S.sessions).filter(d=>d>=ws&&d<=we).forEach(d=>{const w=S.sessions[d].walks||{};["pre","post"].forEach(k=>{if(w[k]){walk+=+w[k].min||0;const h=walkHR(w[k]);if(h&&h.hr>=lo&&h.hr<=hi)z2m+=+w[k].min||0}})});
+  const en=[];for(let d=ws;d<=we;d=addDays(d,1)){const c=(S.checkins||{})[d];if(c&&c.energy)en.push(c.energy)}
+  return{ws,we,pass:sd.length,vol:sd.reduce((a,d)=>a+sessVol(S.sessions[d]),0),pr:prEvents(S).filter(p=>p.d>=ws&&p.d<=we).length,hab:days?hab/days*100:0,walk,z2m,energy:en.length?mean(en):null}}
+function points(S,from,to){const inR=d=>(!from||d>=from)&&(!to||d<=to),det={pass:0,habits:0,pr:0,walk:0,checkin:0,measure:0};
+  det.pass=sessionDates(S).filter(inR).length;
+  Object.keys(S.days).filter(inR).forEach(d=>(S.days[d]||[]).forEach(id=>{const h=S.habits.find(x=>x.id===id);if(h&&!h.auto)det.habits++}));
+  det.pr=prEvents(S).filter(x=>inR(x.d)).length;
+  Object.keys(S.sessions).filter(inR).forEach(d=>{const w=S.sessions[d].walks||{};["pre","post"].forEach(k=>{if(w[k])det.walk+=+w[k].min||0})});
+  det.checkin=Object.keys(S.checkins||{}).filter(inR).length;det.measure=Object.keys(S.measures||{}).filter(inR).length;
+  return{p:det.pass*10+det.habits*2+det.pr*5+Math.floor(det.walk/5)+det.checkin+det.measure*3,det}}
+let boardRows=null,boardT=0,boardPushT=0;
+async function boardSync(){if(store.mode!=="supa"||!sbUser)return;const pr=prof(real);
+  try{if(!pr.board||!String(pr.name).trim()){await sb.from("board").delete().eq("user_id",sbUser.id);return}
+    const ws=mondayOf(today()),w=points(real,ws,null),tot=points(real,null,null);
+    await sb.from("board").upsert({user_id:sbUser.id,name:String(pr.name).trim().slice(0,30),week:ws,week_pts:w.p,total_pts:tot.p,detail:w.det,updated_at:new Date().toISOString()});boardT=0}catch(e){}}
+async function loadBoard(force){if(store.mode!=="supa"||!sbUser)return;if(!force&&Date.now()-boardT<60000)return;boardT=Date.now();
+  try{const r=await sb.from("board").select("user_id,name,week,week_pts,total_pts");if(!r.error){boardRows=r.data||[];if(tab==="stats")render()}}catch(e){}}
 
 /* ---------- charts ---------- */
 function niceTicks(min,max,count){const span=max-min||1,raw=span/count,mag=Math.pow(10,Math.floor(Math.log10(raw))),nr=raw/mag;
@@ -699,6 +920,8 @@ function renderDay(){
     <div class="dayinfo"><div class="big">${!S.habits.length?"Inga vanor.":left===0?"Allt avbockat.":left===1?"En kvar.":left+" kvar."}</div>
     <p>${perfect?`${perfect} ${perfect===1?"perfekt dag":"perfekta dagar"} i rad`:"Bocka av allt för att starta en streak"}</p></div></div>
     <div class="week">${week}</div></div>`;
+  if(sel===today()&&!demoOn){h+=renderReadiness(S)+renderCheckin(S)+renderMeasure(S)+renderWatchNudge();
+    const wd=parse(today()).getDay();if((wd===1||wd===2)&&sessionDates(S).some(d=>d>=addDays(mondayOf(today()),-7)&&d<mondayOf(today())))h+=`<button class="mod cta" data-gostats="1" style="text-align:left"><div><b>Veckorapporten är klar</b><span>Se hur förra veckan gick</span></div><span class="btn">Visa</span></button>`}
   // workout shortcut
   if(sel===today()){const s=S.sessions[sel];
     if(s&&s.start&&!s.end)h+=`<button class="mod cta" data-resume="1" style="text-align:left;border-color:rgba(157,184,255,.35)"><div><b>Pass pågår</b><span>Tryck för att fortsätta · <span class="clock" data-clock="sess">${clock(Date.now()-s.start)}</span></span></div><span class="btn cyan">Fortsätt</span></button>`;
@@ -718,6 +941,37 @@ function renderDay(){
     <p class="note" style="margin-top:8px">Ger dig viktkurva och styrka i förhållande till kroppsvikt under Statistik.</p></div>`;
   $("#s-day").innerHTML=h;
 }
+
+let ciDraft={},measureOpen=false;
+function trainedRecently(S){const g=new Set();[0,1,2].forEach(i=>{((S.sessions[addDays(today(),-i)]||{}).sets||[]).forEach(x=>{const m=musclesOf(S,x.e)[0];if(m)g.add(m)})});return[...g]}
+function scaleRow(key,label,lo,hi){const v=ciDraft[key];return `<div class="q"><span>${label}</span><div class="sc">${[1,2,3,4,5].map(n=>`<button class="${v===n?"on":""}" data-ci="${key}|${n}">${n}</button>`).join("")}</div><small><i>${lo}</i><i>${hi}</i></small></div>`}
+function ynRow(key,label){const v=ciDraft[key];return `<div class="q"><span>${label}</span><div class="sc yn"><button class="${v===false?"on":""}" data-ci="${key}|n">Nej</button><button class="${v===true?"on":""}" data-ci="${key}|y">Ja</button></div></div>`}
+function renderReadiness(S){const rd=readiness(S,today());if(!rd)return"";
+  return `<div class="mod rdy"><div class="lbl"><span>Dagsform</span><span class="${rd.cls}">${rd.label}</span></div><div class="rdyrow"><b>${rd.score}</b><div class="bar"><i style="width:${rd.score}%;background:${rd.score>=70?"var(--good)":rd.score>=45?"var(--pri)":"var(--bad)"}"></i></div></div><small>${rd.parts.map(p=>p[0]+" "+Math.round(p[1])).join(" · ")}</small></div>`}
+function renderCheckin(S){const t=today();if((S.checkins||{})[t]||meta().ciSkip===t)return"";
+  const h=health.daily[t]||{};
+  let x=`<div class="mod hud ci"><div class="lbl"><span>Dagens frågor</span><span>Tar 20 sekunder</span></div>`;
+  if(h.sleep)x+=`<p class="note" style="margin-top:8px">Från klockan: ${fmtDur(h.sleep*60)} sömn${h.hrv?` · HRV ${Math.round(h.hrv)}`:""}${h.rhr?` · vilopuls ${Math.round(h.rhr)}`:""}.</p>`;
+  x+=scaleRow("energy","Hur pigg känner du dig?","Slut","Pigg");
+  if(!h.sleep)x+=scaleRow("sleepq","Hur sov du i natt?","Dåligt","Toppen");
+  x+=scaleRow("stress","Hur stressad är du?","Lugn","Mycket");
+  x+=scaleRow("mood","Hur är humöret?","Dåligt","Toppen");
+  x+=scaleRow("motiv","Hur sugen är du på att träna?","Inte alls","Väldigt");
+  const g=trainedRecently(S);if(g.length)x+=`<div class="q"><span>Träningsvärk?</span>${g.map(m=>{const v=(ciDraft.sore||{})[m];return `<div class="sorer"><em>${MUSCLES[m]||m}</em><div class="sc s3">${["Ingen","Lite","Mycket"].map((l,n)=>`<button class="${v===n?"on":""}" data-sore="${m}|${n}">${l}</button>`).join("")}</div></div>`}).join("")}</div>`;
+  x+=scaleRow("food","Hur bra åt du igår?","Dåligt","Perfekt");
+  x+=ynRow("protein","Fick du i dig nog med protein igår?")+ynRow("alcohol","Drack du alkohol igår?")+ynRow("pain","Har du ont någonstans?");
+  if(ciDraft.pain)x+=`<input class="inp" id="ciPainWhere" placeholder="Var? T.ex. vänster axel" value="${esc(ciDraft.painWhere||"")}" maxlength="60">`;
+  const bh=hBase("hrv",t);if(h.hrv&&bh&&h.hrv<bh*.85)x+=ynRow("ill","Klockan visar sämre återhämtning än vanligt. Känner du dig krasslig?");
+  x+=`<div style="display:grid;grid-template-columns:1fr 2fr;gap:8px;margin-top:12px"><button class="btn ghost" id="ciSkip">Inte idag</button><button class="btn solid" id="ciSave">Spara svaren</button></div></div>`;return x}
+function renderMeasure(S){const due=measureDue(S),l=lastMeasureDay(S);if(!due&&!measureOpen)return"";
+  if(!measureOpen)return `<div class="mod cta"><div><b>Dags att mäta</b><span>${l?"Senast "+shortDate(l)+" · var tredje dag":"Första mätningen · ta fram måttbandet"}</span></div><button class="btn solid" id="measOpen">Mät nu</button></div>`;
+  const prev=l?S.measures[l]:{},cur=(S.measures||{})[today()]||{};
+  return `<div class="mod"><div class="lbl"><span>Mått i cm</span><button id="measClose">Stäng</button></div><p class="note" style="margin-top:8px">Mät på morgonen, på samma ställe varje gång. Lämna tomt det du inte mäter. Hals och midja (och höft för kvinnor) ger fettprocent.</p>
+    <div class="mgrid2">${MEAS.map(([k,n])=>`<label class="field"><input id="ms-${k}" inputmode="decimal" placeholder="${prev&&prev[k]?String(prev[k]).replace(".",","):"0"}" value="${cur[k]!=null?String(cur[k]).replace(".",","):""}" aria-label="${n}"><span>${n}</span></label>`).join("")}</div>
+    <button class="btn solid" id="measSave" style="margin-top:12px;width:100%">Spara mått</button></div>`}
+const SHORTCUT_URL="shortcuts://run-shortcut?name=Formlogg";
+function renderWatchNudge(){if(store.mode!=="supa"||!sbUser)return"";const last=health.lastAt?Date.parse(health.lastAt):0;if(last&&Date.now()-last<3*36e5)return"";
+  return `<div class="mod cta"><div><b>${last?"Klockdatan är "+Math.round((Date.now()-last)/36e5)+" h gammal":"Koppla in Apple Watch"}</b><span>${last?"Hämta färska värden för dagsformen":"Inställningar → Apple Watch visar hur"}</span></div>${last?`<a class="btn" href="${SHORTCUT_URL}">Hämta</a>`:`<button class="btn" data-goset="1">Visa</button>`}</div>`}
 
 /* ---------- render: Pass ---------- */
 function renderGym(){
@@ -743,6 +997,8 @@ function renderGym(){
     if(!S.programs.length)h+=`<p class="empty">Inga pass. Lägg till ett nedan.</p>`;
     h+=`</div>`;
   }
+  if(!demoOn){if(deloadOn(S))h+=`<div class="mod cta" style="border-color:rgba(157,184,255,.3)"><div><b>Lätt vecka till ${shortDate(S.deloadUntil)}</b><span>Förslagen är 20 % lättare så kroppen hinner återhämta sig.</span></div><button class="btn ghost" id="dlEnd">Avsluta</button></div>`;
+    else{const dn=deloadNeed(S);if(dn&&!(meta().dlSkip&&meta().dlSkip>=today()))h+=`<div class="mod expc"><div class="lbl"><span>Förslag</span><span>Lätt vecka</span></div><p>${dn}</p><small>En vecka med 20 % lättare vikter brukar ge mer styrka efteråt.</small><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px"><button class="btn ghost" id="dlSkip">Inte nu</button><button class="btn solid" id="dlStart">Starta lätt vecka</button></div></div>`}}
   // programs
   if(!viewProg||!progOf(S,viewProg))viewProg=S.programs[0]?S.programs[0].id:null;
   const vp=progOf(S,viewProg);
@@ -753,7 +1009,8 @@ function renderGym(){
     h+=`<div class="addrow" style="margin-top:12px"><input id="progName" value="${esc(vp.name)}" maxlength="30" aria-label="Passets namn"><button class="btn" id="renProg">Byt namn</button></div>
       <div style="margin-top:8px">${progExs(S,vp).map((e,i,a)=>`<div class="mgrid"><span>${i+1}. ${esc(e.name)}</span>
       <button class="mv" data-mv="${e.id}|-1" ${i===0?"disabled":""} aria-label="Flytta upp">↑</button><button class="mv" data-mv="${e.id}|1" ${i===a.length-1?"disabled":""} aria-label="Flytta ner">↓</button>
-      <button class="del ${confirmDel==="x"+e.id?"sure":""}" data-dele="${e.id}">${confirmDel==="x"+e.id?"Säker?":"Ta bort"}</button></div>`).join("")||'<p class="empty">Inga övningar i passet än.</p>'}</div>
+      <button class="del ${confirmDel==="x"+e.id?"sure":""}" data-dele="${e.id}">${confirmDel==="x"+e.id?"Säker?":"Ta bort"}</button></div>
+      <div class="musc"><button data-musopen="${e.id}" style="border-style:dashed">${musEdit===e.id?"Klar":"Muskler: "+(musclesOf(S,e.id).map(m=>MUSCLES[m]).join(", ")||"välj")}</button>${musEdit===e.id?Object.keys(MUSCLES).map(m=>`<button class="${musclesOf(S,e.id).includes(m)?"on":""}" data-mus="${e.id}|${m}">${MUSCLES[m]}</button>`).join(""):""}</div>`).join("")||'<p class="empty">Inga övningar i passet än.</p>'}</div>
       <div class="addrow" style="margin-top:12px"><input id="newEx" list="exLib" placeholder="Lägg till övning, t.ex. Chins" maxlength="40"><button class="btn solid" id="addE">Lägg till</button></div>
       <datalist id="exLib">${S.exercises.map(e=>`<option value="${esc(e.name)}"></option>`).join("")}</datalist>
       <p class="note" style="margin-top:8px">Ordningen här är ordningen i passet. Samma övning i flera pass delar historik och statistik. Borttagna övningar finns kvar i historiken.</p>
@@ -777,23 +1034,51 @@ function renderGym(){
 
 function defaultDraft(day,ex,k){
   const sv=setAt(real,day,ex,k);if(sv)return{kg:sv.kg,r:sv.r};
-  const lf=lastFor(real,ex,day),prevRow=setAt(real,day,ex,k-1);
-  if(lf){const m=lf.sets.find(x=>(x.n||0)===k)||null;if(m)return{kg:m.kg,r:m.r};if(prevRow)return{kg:prevRow.kg,r:prevRow.r};const l=lf.sets[lf.sets.length-1];return{kg:l.kg,r:l.r}}
-  if(prevRow)return{kg:prevRow.kg,r:prevRow.r};return{kg:"",r:""};
+  const s=real.sessions[day]||{},sg=suggest(real,ex,day);
+  if(sg){let kg=sg.kg,r=sg.r;const x=s.exp;
+    if(x&&x.acc&&x.ex===ex){if(x.type==="lighter"){kg=roundKg(sg.kg*.9);r=sg.r+3}if(x.type==="heavier"){kg=roundKg(sg.kg*1.05);r=Math.max(2,sg.r-2)}}
+    return{kg,r}}
+  const prevRow=setAt(real,day,ex,k-1);if(prevRow)return{kg:prevRow.kg,r:prevRow.r};return{kg:"",r:""};
 }
+const stepName=x=>x.k==="walk"?(x.w==="pre"?"Gång före":"Gång efter"):x.e.name;
 function renderWorkout(){
-  const S=real,day=wo.day,exs=sessExs(S,day,wo.prog),s=S.sessions[day]||{sets:[]},wp=progOf(S,wo.prog);
-  if(!exs.length){wo=null;return renderGym()}
-  wo.idx=Math.max(0,Math.min(wo.idx,exs.length-1));
-  const ex=exs[wo.idx],mine=exSets(S,day,ex.id),lf=lastFor(S,ex.id,day),prevBest=bestBefore(S,ex.id,day);
+  const S=real,day=wo.day,s=S.sessions[day]||{sets:[]},wp=progOf(S,wo.prog),steps=woSteps(S,day,wo.prog);
+  if(!sessExs(S,day,wo.prog).length){wo=null;return renderGym()}
+  wo.idx=Math.max(0,Math.min(wo.idx,steps.length-1));const st=steps[wo.idx];
+  const segs=steps.map((x,i)=>{const done=stepDone(S,day,x),sk=x.k==="ex"?(s.skip||{})[x.e.id]:(s.skipWalk||{})[x.w],part=x.k==="ex"&&!done&&exSets(S,day,x.e.id).length;
+    return `<button class="seg ${x.k==="walk"?"walk":""} ${sk?"skip":done?"done":part?"part":""} ${i===wo.idx?"cur":""}" data-woi="${i}" aria-label="${esc(stepName(x))}"></button>`}).join("");
+  const exCount=steps.length-2,pos=st.k==="walk"?(st.w==="pre"?"Uppvärmning":"Nedvarvning"):`Övning ${wo.idx} / ${exCount}`;
+  let h=`<div class="mod hud wohead"><div class="lbl"><span>${wp?esc(wp.name)+" · ":""}${pos}</span><span>${s.start?`<span class="clock" data-clock="sess">${clock(Date.now()-s.start)}</span>`:dayName(day)}</span></div><div class="segs">${segs}</div>`;
+  h+=st.k==="walk"?renderWalkStep(S,day,s,st.w):renderExStep(S,day,s,st.e);
+  const isLast=wo.idx===steps.length-1,ready_=stepDone(S,day,st);
+  h+=`<div class="wonav"><button class="btn ghost" data-wonav="-1" ${wo.idx===0?"disabled":""} aria-label="Föregående">‹</button>
+    ${isLast?`<button class="btn ${ready_?"solid":""}" id="endWo">Avsluta pass</button>`:`<button class="btn ${ready_?"solid":""}" data-wonav="1">Nästa: ${esc(stepName(steps[wo.idx+1]))} ›</button>`}</div>
+    <div class="wofoot"><button id="pauseWo">Minimera</button>${isLast?"":`<button id="endWo2">Avsluta pass nu</button>`}</div>`;
+  $("#s-gym").innerHTML=h;
+}
+function renderWalkStep(S,day,s,w){
+  const done=(s.walks||{})[w],sk=(s.skipWalk||{})[w],sg=walkSuggest(S,w,day),v=done||sg,hr=done?walkHR(done):null;
+  let h=`<h1 class="woname">${w==="pre"?"Gång före":"Gång efter"}</h1><div class="woprev">Löpband i lutning. ${w==="pre"?"Värm upp lugnt":"Här jobbar du i zon 2"}: puls <b>${sg.lo}–${sg.hi}</b>. Starta <b>Inomhuspromenad</b> på klockan.</div></div>`;
+  if(sk)return h+`<div class="mod"><p class="note">Överhoppad idag.</p><button class="btn" data-unskipw="${w}" style="margin-top:10px;width:100%">Ångra</button></div>`;
+  h+=`<div class="mod rows"><div class="sugg"><em>Förslag</em><b>${fmt(sg.inc,1)} % · ${fmt(sg.spd,1)} km/h · ${sg.min} min</b><small>${esc(sg.why)}</small></div>
+    <div class="wgrid"><label class="field"><input id="wk-min" inputmode="numeric" value="${v.min}" aria-label="Minuter"><span>min</span></label><label class="field"><input id="wk-inc" inputmode="decimal" value="${String(v.inc).replace(".",",")}" aria-label="Lutning i procent"><span>% lut</span></label><label class="field"><input id="wk-spd" inputmode="decimal" value="${String(v.spd).replace(".",",")}" aria-label="Hastighet"><span>km/h</span></label></div>
+    <button class="btn ${done?"":"solid"}" data-walk="${w}" style="min-height:50px">${done?"Uppdatera":"Klar med gången"}</button>
+    ${done?`<p class="note">Sparad ${new Date(done.at).toLocaleTimeString("sv-SE",{hour:"2-digit",minute:"2-digit"})}${hr?` · snittpuls ${Math.round(hr.hr)}${hr.hrmax?` (max ${Math.round(hr.hrmax)})`:""}${hr.kcal?` · ${Math.round(hr.kcal)} kcal`:""}`:" · pulsen kopplas på när klockan har skickat passet"}</p>`:`<button class="add3" data-skipw="${w}">Hoppa över gången idag</button>`}</div>`;
+  return h;
+}
+const SKIP_REASONS=["Upptagen maskin","Ont","Ont om tid","Orkade inte","Annat"];
+function renderExStep(S,day,s,ex){
+  const mine=exSets(S,day,ex.id),lf=lastFor(S,ex.id,day),prevBest=bestBefore(S,ex.id,day),sk=(s.skip||{})[ex.id],sg=suggest(S,ex.id,day);
+  const pl=plateaus(S).some(p=>p.e.id===ex.id),goal=(S.goals||{})[ex.id];
+  let h=`<h1 class="woname">${esc(ex.name)}</h1>
+    <div class="woprev">${lf?`Förra gången${progOf(S,(S.sessions[lf.d]||{}).prog)?" i "+esc(progOf(S,S.sessions[lf.d].prog).name):""} (${shortDate(lf.d)}): <b>${lf.sets.map(x=>fmt(x.kg,2)+" × "+x.r+(x.rir!=null?` <i>(${x.rir===3?"3+":x.rir} kvar)</i>`:"")).join(" · ")}</b>`:"Första gången. Sätt en baslinje."}${prevBest?`<br>Rekord e1RM: <b>${fmt(prevBest,1)} kg</b>${goal?` · mål <b>${fmt(goal,1)} kg</b>`:""}`:""}${pl?`<br><span class="tag">Platå</span> Står still sedan några pass.`:""}</div></div>`;
+  if(sk)return h+`<div class="mod"><p class="note">Överhoppad idag: ${esc(sk)}.</p><button class="btn" data-unskip="${ex.id}" style="margin-top:10px;width:100%">Ångra, jag kör den</button></div>`;
+  const xp=expFor(S,day,sessExs(S,day,wo.prog));
+  if(xp&&xp.ex===ex.id&&!xp.acc&&sg)h+=`<div class="mod expc"><div class="lbl"><span>Experiment</span><span>${EXP[xp.type].t}</span></div><p>${EXP[xp.type].d(sg)}</p><small>Appen jämför resultatet med dina vanliga pass och visar under Statistik vad som funkar för dig.</small>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px"><button class="btn ghost" data-exp="0">Inte idag</button><button class="btn solid" data-exp="1|${ex.id}|${xp.type}">Testa</button></div></div>`;
+  else if(xp&&xp.ex===ex.id&&xp.acc)h+=`<div class="mod expc"><div class="lbl"><span>Experiment pågår</span><span>${EXP[xp.type].t}</span></div><p>${EXP[xp.type].d(sg||{kg:mine.length?mine[0].kg:0,r:mine.length?mine[0].r:0})}</p></div>`;
   const rows=Math.max(BASE_SETS,extra[day+"|"+ex.id]?MAX_SETS:0,...mine.map(x=>(x.n||0)+1));
-  const segs=exs.map((e,i)=>{const c=exSets(S,day,e.id).length;return `<button class="seg ${c>=BASE_SETS?"done":c?"part":""} ${i===wo.idx?"cur":""}" data-woi="${i}" aria-label="${esc(e.name)}"></button>`}).join("");
-  let h=`<div class="mod hud wohead">
-    <div class="lbl"><span>${wp?esc(wp.name)+" · ":""}${wo.idx+1} / ${exs.length}</span><span>${s.start?`<span class="clock" data-clock="sess">${clock(Date.now()-s.start)}</span>`:dayName(day)}</span></div>
-    <div class="segs">${segs}</div>
-    <h1 class="woname">${esc(ex.name)}</h1>
-    <div class="woprev">${lf?`Förra gången${progOf(S,(S.sessions[lf.d]||{}).prog)?" i "+esc(progOf(S,S.sessions[lf.d].prog).name):""} (${shortDate(lf.d)}): <b>${lf.sets.map(x=>fmt(x.kg,2)+" × "+x.r).join(" · ")}</b>`:"Första gången. Sätt en baslinje."}${prevBest?`<br>Rekord e1RM: <b>${fmt(prevBest,1)} kg</b>`:""}</div></div>`;
-  h+=`<div class="mod rows"><div class="rh"><span>Set</span><span>Vikt</span><span>Reps</span><span></span></div>`;
+  h+=`<div class="mod rows">${sg&&!mine.length?`<div class="sugg"><em>Förslag idag</em><b>${fmt(sg.kg,2)} kg × ${sg.r}</b><small>${esc(sg.why)}</small></div>`:""}<div class="rh"><span>Set</span><span>Vikt</span><span>Reps</span><span></span></div>`;
   for(let k=0;k<rows;k++){
     const sv=setAt(S,day,ex.id,k),dk=day+"|"+ex.id+"|"+k,dr=drafts[dk]||defaultDraft(day,ex.id,k);
     const changed=sv&&(num(dr.kg)!==sv.kg||parseInt(dr.r,10)!==sv.r);
@@ -801,6 +1086,7 @@ function renderWorkout(){
     let meta=ref?`Förra ${fmt(ref.kg,2)} × ${ref.r}`:"";
     if(sv&&ref){const dkg=sv.kg-ref.kg,dr_=sv.r-ref.r;meta+=dkg||dr_?` · <span class="${dkg>0||(dkg===0&&dr_>0)?"up":"down"}">${dkg?sgn(dkg,2)+" kg":""}${dkg&&dr_?" ":""}${dr_?sgn(dr_,0)+" reps":""}</span>`:" · samma"}
     if(sv&&prevBest>0&&e1rm(sv.kg,sv.r)>prevBest)meta+=` <span class="pr">PR</span>`;
+    if(sv)meta+=`<span class="rir">Reps kvar ${[0,1,2,3].map(v=>`<button class="${sv.rir===v?"on":""}" data-rir="${ex.id}|${k}|${v}">${v===3?"3+":v}</button>`).join("")}</span>`;
     h+=`<div class="row ${sv?"done":""}"><span class="sn">${k+1}</span>
       <label class="field"><input id="w-${ex.id}-${k}-kg" data-dk="${dk}" data-k="kg" inputmode="decimal" value="${esc(String(dr.kg).replace(".",","))}" placeholder="0" aria-label="Vikt set ${k+1}"><span>kg</span></label>
       <label class="field"><input id="w-${ex.id}-${k}-r" data-dk="${dk}" data-k="r" inputmode="numeric" value="${esc(dr.r)}" placeholder="0" aria-label="Reps set ${k+1}"><span>reps</span></label>
@@ -810,14 +1096,12 @@ function renderWorkout(){
   const r3done=!!setAt(S,day,ex.id,MAX_SETS-1);
   if(rows<MAX_SETS)h+=`<button class="add3" data-x3="${ex.id}">+ Lägg till set ${MAX_SETS}</button>`;
   else if(!r3done&&extra[day+"|"+ex.id])h+=`<button class="add3" data-x3="${ex.id}">− Ta bort set ${MAX_SETS}</button>`;
-  const lastT=Math.max(0,...s.sets.map(x=>x.t||0));
+  const lastT=Math.max(0,...(s.sets||[]).map(x=>x.t||0));
   if(s.start&&lastT&&Date.now()-lastT<20*6e4)h+=`<div class="rest"><span>Vila sedan senaste set</span><span class="clock" data-clock="rest" data-t="${lastT}">${clock(Date.now()-lastT)}</span></div>`;
+  if(!mine.length){h+=skipPick===ex.id?`<div class="lbl" style="margin-top:4px"><span>Varför hoppar du över?</span><button data-skipask="">Avbryt</button></div><div class="reasons">${SKIP_REASONS.map(r=>`<button class="chip" data-skip="${ex.id}|${r}">${r}</button>`).join("")}</div>`
+    :`<button class="add3" data-skipask="${ex.id}" style="border-style:solid;border-color:var(--line)">Hoppa över ${esc(ex.name.toLowerCase())} idag</button>`}
   h+=`</div>`;
-  const isLast=wo.idx===exs.length-1,ready_=mine.length>=BASE_SETS;
-  h+=`<div class="wonav"><button class="btn ghost" data-wonav="-1" ${wo.idx===0?"disabled":""} aria-label="Föregående övning">‹</button>
-    ${isLast?`<button class="btn ${ready_?"solid":""}" id="endWo">Avsluta pass</button>`:`<button class="btn ${ready_?"solid":""}" data-wonav="1">Nästa: ${esc(exs[wo.idx+1].name)} ›</button>`}</div>
-    <div class="wofoot"><button id="pauseWo">Minimera</button>${isLast?"":`<button id="endWo2">Avsluta pass nu</button>`}</div>`;
-  $("#s-gym").innerHTML=h;
+  return h;
 }
 
 function sessionCompare(S,day){
@@ -827,6 +1111,11 @@ function sessionCompare(S,day){
     const before=lf?Math.max(...lf.sets.map(x=>e1rm(x.kg,x.r))):null,pb=bestBefore(S,id,day);
     return{id,now,before,pr:pb>0&&now>pb}})};
 }
+function sessExtras(S,s){let h="";const w=s.walks||{};
+  if(w.pre||w.post)h+=`<div class="mod"><div class="lbl"><span>Gång på band</span><span>${(+((w.pre||{}).min||0))+(+((w.post||{}).min||0))} min</span></div><div class="det" style="margin-top:6px">${["pre","post"].filter(k=>w[k]).map(k=>{const x=w[k],hr=walkHR(x);return `<div><b>${k==="pre"?"Före":"Efter"}</b><span>${x.min} min · ${fmt(x.inc,1)} % · ${fmt(x.spd,1)} km/h${hr?` · puls ${Math.round(hr.hr)}`:""}</span></div>`}).join("")}</div></div>`;
+  if(s.exp&&s.exp.acc)h+=`<div class="mod expc"><div class="lbl"><span>Experiment</span><span>${EXP[s.exp.type]?EXP[s.exp.type].t:""}</span></div><p>${esc(exName(S,s.exp.ex))}</p><small>Effekten syns under Statistik → Experiment efter nästa pass med övningen.</small></div>`;
+  const sk=Object.keys(s.skip||{});if(sk.length)h+=`<div class="mod"><div class="lbl"><span>Överhoppat</span><span>${sk.length} st</span></div><div class="det" style="margin-top:6px">${sk.map(id=>`<div><b>${esc(exName(S,id))}</b><span>${esc(s.skip[id])}</span></div>`).join("")}</div></div>`;
+  return h}
 function renderSummary(day){
   const S=real,s=S.sessions[day];if(!s){summaryDay=null;return renderGym()}
   const c=sessionCompare(S,day),vol=sessVol(s),pv=c.ps?sessVol(c.ps):null,prs=c.rows.filter(r=>r.pr).length;
@@ -838,6 +1127,7 @@ function renderSummary(day){
     <div class="feel">${[["1","Tungt"],["2","Segt"],["3","Okej"],["4","Bra"],["5","Toppen"]].map(([v,l])=>`<button class="${s.feel==v?"on":""}" data-feel="${day}|${v}"><b>${v}</b><span>${l}</span></button>`).join("")}</div></div>
   <div class="mod"><div class="lbl"><span>Per övning</span><span>e1RM idag · mot förra</span></div><div class="cmp">
     ${c.rows.map(r=>`<div><b>${esc(exName(S,r.id))}${r.pr?"<em>PR</em>":""}</b><span>${fmt(r.now,1)} kg</span><span class="${r.before!=null?dcls(r.now-r.before):"flat"}">${r.before!=null?sgn(r.now-r.before,1):"ny"}</span></div>`).join("")}</div></div>
+  ${sessExtras(S,s)}
   <button class="btn solid" id="doneSum" style="min-height:52px">Klar</button>`;
   $("#s-gym").innerHTML=h;
 }
@@ -850,6 +1140,7 @@ function renderDetail(day){
   c.rows.forEach(r=>{const sets=exSets(S,day,r.id).sort((a,b)=>(a.n||0)-(b.n||0));
     h+=`<div class="mod"><div class="lbl"><span>${esc(exName(S,r.id))}${r.pr?" · PR":""}</span><span class="${r.before!=null?dcls(r.now-r.before):"flat"}">${r.before!=null?sgn(r.now-r.before,1)+" kg e1RM":""}</span></div>
       <div class="det" style="margin-top:6px">${sets.map(x=>`<div><b>Set ${(x.n||0)+1}</b><span>${fmt(x.kg,2)} kg × ${x.r} · e1RM ${fmt(e1rm(x.kg,x.r),1)}</span></div>`).join("")}</div></div>`});
+  h+=sessExtras(S,s);
   if(!demoOn)h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn" data-editday="${day}">Ändra pass</button><button class="btn warn ${confirmDel==="s"+day?"sure":""}" data-delsess="${day}">${confirmDel==="s"+day?"Säker? Tryck igen":"Ta bort pass"}</button></div>`;
   $("#s-gym").innerHTML=h;
 }
@@ -866,6 +1157,20 @@ function insights(S){
   if(proj)out.push(["PROGNOS",`I nuvarande takt (${sgn(proj.sl*7,2)} kg/vecka) når du <b>${proj.goal} kg e1RM i ${esc(proj.e.name.toLowerCase())}</b> runt ${shortDate(addDays(t,Math.round(proj.days)))}.`]);
   // PRs
   const pr=prEvents(S),pr30=pr.filter(p=>daysBetween(p.d,t)<30).length;if(pr.length)out.push(["REKORD",`<b>${pr30} personbästa</b> senaste 30 dagarna, ${pr.length} totalt.`]);
+  {const pl=plateaus(S);if(pl.length===1)out.push(["PLATÅ",`<b>${esc(pl[0].e.name)}</b> har stått still sedan ${shortDate(pl[0].since)}. Appen föreslår experiment för den under passen.`]);
+    else if(pl.length>1)out.push(["PLATÅ",`<b>${pl.length} övningar</b> står still: ${pl.slice(0,4).map(p=>esc(p.e.name.toLowerCase())).join(", ")}${pl.length>4?" med flera":""}. Appen föreslår experiment för dem under passen.`])}
+  const dn=deloadNeed(S);if(dn)out.push(["VILA",dn+" Förslag på lätt vecka finns under Pass."]);
+  Object.keys(S.goals||{}).forEach(id=>{const g=S.goals[id],sx=exSeries(S,id);if(!sx.length||!g)return;const last=sx[sx.length-1].e1;
+    if(last>=g){out.push(["MÅL",`Målet <b>${fmt(g,1)} kg</b> i ${esc(exName(S,id).toLowerCase())} är nått. Dags för ett nytt.`]);return}
+    const sl=regress(sx.filter(p=>daysBetween(p.d,t)<=70).map(p=>({d:p.d,v:p.e1})));out.push(["MÅL",`<b>${fmt(g-last,1)} kg</b> kvar till ${fmt(g,1)} kg i ${esc(exName(S,id).toLowerCase())}${sl&&sl>.01?`, beräknat runt ${shortDate(addDays(t,Math.round((g-last)/sl)))}`:""}.`])});
+  const skc={};sd.forEach(d=>Object.entries(S.sessions[d].skip||{}).forEach(([id,r])=>{const k=id+"|"+r;skc[k]=(skc[k]||0)+1}));
+  Object.entries(skc).filter(([,n])=>n>=2).forEach(([k,n])=>{const[id,r]=k.split("|");out.push(["HOPPAT",`Du har hoppat över <b>${esc(exName(S,id).toLowerCase())}</b> ${n} gånger (${esc(r.toLowerCase())}).`])});
+  const slp=sd.map(d=>({d,sl:(health.daily[d]||{}).sleep,p:perfChange(S,d)})).filter(x=>x.sl>0&&x.p!=null),gs=slp.filter(x=>x.sl>=7),bs=slp.filter(x=>x.sl<7);
+  if(gs.length>=3&&bs.length>=3){const df=(mean(gs.map(x=>x.p))-mean(bs.map(x=>x.p)))*100;if(Math.abs(df)>=1)out.push(["SÖMN",`Efter nätter med 7 h sömn eller mer presterar du <b>${sgn(df,1)} %</b> ${df>0?"bättre":"sämre"} i styrka än efter kortare nätter.`])}
+  const enp=sd.map(d=>({e:((S.checkins||{})[d]||{}).energy,p:perfChange(S,d)})).filter(x=>x.e&&x.p!=null),hiE=enp.filter(x=>x.e>=4),loE=enp.filter(x=>x.e<=2);
+  if(hiE.length>=3&&loE.length>=3){const df=(mean(hiE.map(x=>x.p))-mean(loE.map(x=>x.p)))*100;if(Math.abs(df)>=1)out.push(["ENERGI",`Dagar du känner dig pigg (4–5) är du <b>${sgn(df,1)} %</b> starkare än dagar du är trött.`])}
+  const alc=sd.map(d=>({a:((S.checkins||{})[d]||{}).alcohol,p:perfChange(S,d)})).filter(x=>x.a!=null&&x.p!=null),ya=alc.filter(x=>x.a),na=alc.filter(x=>!x.a);
+  if(ya.length>=2&&na.length>=3){const df=(mean(ya.map(x=>x.p))-mean(na.map(x=>x.p)))*100;if(df<=-1)out.push(["ALKOHOL",`Dagen efter alkohol är du i snitt <b>${sgn(df,1)} %</b> svagare.`])}
   // neglected program
   const s30=sd.filter(d=>daysBetween(d,t)<30);if(s30.length>=4&&S.programs.length>1){const cnt=S.programs.map(p=>({p,n:s30.filter(d=>S.sessions[d].prog===p.id).length}));
     const lo=cnt.reduce((a,b)=>b.n<a.n?b:a),hi=cnt.reduce((a,b)=>b.n>a.n?b:a);if(hi.n-lo.n>=2)out.push(["BALANS",`<b>${esc(lo.p.name)}</b> har du kört ${lo.n} ${lo.n===1?"gång":"gånger"} senaste 30 dagarna, mot ${hi.n} för ${esc(hi.p.name)}.`])}
@@ -912,6 +1217,13 @@ function renderStats(){
     <div class="kpi"><b>${since==null?"–":since}<small>d</small></b><span>Sedan senaste pass</span><i class="flat">${durs.length?"Snittid "+Math.round(mean(durs.slice(-10)))+" min":"&nbsp;"}</i></div></div>`;
   const ins=insights(S);
   h+=`<div class="mod hud"><div class="lbl"><span>Insikter</span><span>${ins.length} st</span></div><div class="ins">${ins.length?ins.map(([g,x])=>`<div><em>${g}</em><p>${x}</p></div>`).join(""):'<p class="empty">Logga ett par veckor så dyker mönster upp här.</p>'}</div></div>`;
+  if(!demoOn)h+=renderBoard();
+  // weekly report
+  {const ws=addDays(mondayOf(t),-7),r=weekReport(S,ws),p=weekReport(S,addDays(ws,-7)),c=(a,b,d=0,u="")=>b?`<i class="${dcls(a-b)}">${sgn(a-b,d)}${u}</i>`:"";
+    if(sd.length||Object.keys(S.checkins||{}).length)h+=`<div class="mod"><div class="lbl"><span>Veckorapport</span><span>${shortDate(r.ws)} – ${shortDate(r.we)}</span></div>
+      <div class="grid4" style="grid-template-columns:repeat(3,1fr)"><div><b>${r.pass} ${c(r.pass,p.pass)}</b><span>Pass</span></div><div><b>${fmt(r.vol/1000,1)} t</b><span>Volym</span></div><div><b>${r.pr}</b><span>Personbästa</span></div>
+      <div><b>${Math.round(r.hab)} %</b><span>Vanor</span></div><div><b>${r.walk} min</b><span>Gång</span></div><div><b>${r.energy!=null?fmt(r.energy,1):"–"}</b><span>Energi snitt</span></div></div>
+      <p class="note" style="margin-top:10px">${r.pass>p.pass?"Fler pass än veckan innan. ":r.pass<p.pass?"Färre pass än veckan innan. ":""}${r.pr?`${r.pr} nya rekord. `:""}${r.z2m?`${r.z2m} minuter i zon 2. `:""}${(insights(S)[0]||[])[1]?"Tips: "+insights(S)[0][1].replace(/<[^>]+>/g,""):""}</p></div>`}
   // per program
   if(S.programs.length){const tot30=sd.filter(d=>daysBetween(d,t)<30).length;
     h+=`<div class="mod"><div class="lbl"><span>Per pass</span><span>${tot30} pass senaste 30 d</span></div><div style="margin-top:6px">`;
@@ -959,6 +1271,61 @@ function renderStats(){
       <div class="reps">${Object.keys(rr).map(Number).sort((a,b)=>a-b).map(r=>`<span><em>${r}×</em>${fmt(rr[r],2)} kg</span>`).join("")}</div>`;
   }else h+=`<p class="empty" style="margin-top:12px">Inga set loggade för den här övningen ${statRange==="all"?"än":"i perioden"}.</p>`;
   h+=`</div>`;
+  // goal for the selected exercise
+  if(statEx&&!demoOn){const g=(S.goals||{})[statEx],lastE=all.length?all[all.length-1].e1:0;
+    h=h.replace(/<\/div>$/,"")+`<div class="lbl" style="margin-top:14px"><span>Mål e1RM</span><span>${g?Math.min(100,Math.round(lastE/g*100))+" %":"Inget mål"}</span></div>${g?`<div class="bar" style="margin-top:8px"><i style="width:${Math.min(100,lastE/g*100)}%"></i></div>`:""}
+      <div class="addrow" style="margin-top:10px"><label class="field" style="flex:1"><input id="goalIn" inputmode="decimal" placeholder="${lastE?fmt(Math.ceil((lastE+5)/5)*5,0):"100"}" value="${g?String(g).replace(".",","):""}" aria-label="Mål i kg"><span>kg</span></label><button class="btn" data-goal="${statEx}">${g?"Ändra mål":"Sätt mål"}</button></div></div>`}
+  // muscle groups this week
+  {const ws=mondayOf(t),cur=muscleSets(S,ws,t),prv=muscleSets(S,addDays(ws,-7),addDays(ws,-1)),keys=Object.keys(MUSCLES).filter(m=>cur[m]||prv[m]);
+    if(keys.length)h+=`<div class="mod"><div class="lbl"><span>Set per muskelgrupp</span><span>Denna vecka · mål 10–20</span></div><div style="margin-top:8px">${keys.map(m=>{const v=cur[m];return `<div class="msrow"><span>${MUSCLES[m]}</span><div class="msbar"><i style="width:${Math.min(100,v/20*100)}%;background:${v>=10&&v<=20?"var(--good)":v>20?"var(--warn)":"var(--soft)"}"></i></div><b>${fmt(v,1)}</b></div>`}).join("")}</div>
+      <p class="foot" style="margin-top:8px">Förra veckan: ${keys.map(m=>MUSCLES[m]+" "+fmt(prv[m],1)).join(" · ")}. Huvudmuskel räknas som 1 set, hjälpmuskel som ett halvt.</p></div>`}
+  // experiments
+  {const ex=sd.filter(d=>S.sessions[d].exp&&S.sessions[d].exp.acc).map(d=>{const x=S.sessions[d].exp,bf=lastFor(S,x.ex,d),cur=exSets(S,d,x.ex);
+      const b=bf?Math.max(...bf.sets.map(y=>e1rm(y.kg,y.r))):null,c=cur.length?Math.max(...cur.map(y=>e1rm(y.kg,y.r))):null,nd=sd.find(dd=>dd>d&&exSets(S,dd,x.ex).length),n=nd?Math.max(...exSets(S,nd,x.ex).map(y=>e1rm(y.kg,y.r))):null;
+      return{d,x,b,c,n}});
+    if(ex.length){const byT={};ex.forEach(e=>{if(e.b&&e.n){(byT[e.x.type]=byT[e.x.type]||[]).push(e.n/e.b-1)}});
+      h+=`<div class="mod"><div class="lbl"><span>Experiment</span><span>${ex.length} gjorda</span></div>
+        ${Object.keys(byT).length?`<div class="ins">${Object.entries(byT).map(([k,v])=>`<div><em>${v.length} st</em><p><b>${EXP[k].t}</b>: nästa pass med övningen blev i snitt <b class="${dcls(mean(v))}">${sgn(mean(v)*100,1)} %</b> starkare än före experimentet.</p></div>`).join("")}</div>`:""}
+        <div class="det" style="margin-top:6px">${ex.slice(-6).reverse().map(e=>`<div><b>${shortDate(e.d)} · ${esc(exName(S,e.x.ex))}</b><span>${EXP[e.x.type]?EXP[e.x.type].t:""}${e.b&&e.c?` · samma pass ${sgn((e.c/e.b-1)*100,1)} %`:""}${e.b&&e.n?` · nästa ${sgn((e.n/e.b-1)*100,1)} %`:" · väntar på nästa pass"}</span></div>`).join("")}</div></div>`}}
+  // treadmill walks
+  {const wk=[];Object.keys(S.sessions).sort().forEach(d=>{const w=S.sessions[d].walks||{};["pre","post"].forEach(k=>{if(w[k])wk.push(Object.assign({d,k},w[k],{hr:walkHR(w[k])}))})});
+    if(wk.length){const [lo,hi]=z2(S),post=wk.filter(x=>x.k==="post"),hrp=post.filter(x=>x.hr).map(x=>({d:x.d,v:x.hr.hr,inc:+x.inc}));
+      const zw=[],zl=[],cw=mondayOf(t);for(let i=7;i>=0;i--){const ws=addDays(cw,-i*7),we=addDays(ws,6);zw.push(wk.filter(x=>x.d>=ws&&x.d<=we).reduce((a,x)=>a+(+x.min||0),0));zl.push(i%2===0?parse(ws).getDate()+"/"+(parse(ws).getMonth()+1):"")}
+      const m30=wk.filter(x=>daysBetween(x.d,t)<30),kc=wk.map(x=>x.hr&&x.hr.kcal).filter(Boolean);
+      h+=`<div class="mod"><div class="lbl"><span>Gång på band</span><span>Zon 2: ${lo}–${hi}</span></div>
+        <div class="grid4" style="grid-template-columns:repeat(3,1fr)"><div><b>${m30.reduce((a,x)=>a+(+x.min||0),0)} min</b><span>30 dagar</span></div><div><b>${post.length?fmt(mean(post.slice(-5).map(x=>+x.inc)),1)+" %":"–"}</b><span>Lutning efter</span></div><div><b>${post.length?fmt(mean(post.slice(-5).map(x=>+x.spd)),1):"–"}</b><span>km/h efter</span></div>
+        <div><b>${hrp.length?Math.round(mean(hrp.slice(-5).map(x=>x.v))):"–"}</b><span>Puls efter</span></div><div><b>${wk.filter(x=>x.hr&&x.hr.hr>=lo&&x.hr.hr<=hi).reduce((a,x)=>a+(+x.min||0),0)} min</b><span>I zon 2</span></div><div><b>${kc.length?Math.round(kc.reduce((a,b)=>a+b,0)):"–"}</b><span>Kcal totalt</span></div></div>
+        ${barChart(zw,zl,v=>v+" min",7)}<div class="legend"><span>Minuter gång per vecka</span></div>
+        ${hrp.length>=2?lineChart(hrp,[{k:"v",color:"var(--info)",dots:true}],{h:150,label:"Puls under gång efter passet"})+`<div class="legend"><span><i style="background:var(--info)"></i>Snittpuls under gången efter passet. Samma lutning och lägre puls betyder bättre kondition.</span></div>`:`<p class="note" style="margin-top:10px">Starta Inomhuspromenad på klockan när du går, så fylls pulsen i här.</p>`}</div>`}}
+  // Apple Watch
+  {const days=Object.keys(health.daily).sort();if(days.length){const last=days.filter(d=>daysBetween(d,t)<30),H=k=>last.map(d=>({d,v:health.daily[d][k]})).filter(p=>p.v>0),avg=(k,n)=>{const v=days.filter(d=>daysBetween(d,t)<n).map(d=>health.daily[d][k]).filter(x=>x>0);return v.length?mean(v):null};
+    const lastV=k=>{for(let i=days.length-1;i>=0;i--){const v=health.daily[days[i]][k];if(v>0)return v}return null};
+    const cell=(k,label,dg,u)=>{const a=avg(k,7),b=avg(k,30);return `<div><b>${a!=null?fmt(a,dg)+(u||""):"–"}</b><span>${label}${a!=null&&b!=null?` · 30 d ${fmt(b,dg)}`:""}</span></div>`};
+    h+=`<div class="mod hud"><div class="lbl"><span>Apple Watch</span><span>Snitt 7 dagar</span></div>
+      <div class="grid4">${cell("sleep","Sömn h",1)}${cell("hrv","HRV ms",0)}${cell("rhr","Vilopuls",0)}${cell("steps","Steg",0)}${cell("deep","Djupsömn h",1)}${cell("rem","REM-sömn h",1)}${cell("resp","Andning/min",1)}${cell("spo2","Syremättnad",1," %")}${cell("kcal","Aktiva kcal",0)}${cell("exmin","Träningsmin",0)}
+      <div><b>${lastV("vo2")?fmt(lastV("vo2"),1):"–"}</b><span>VO2 max senast</span></div>${cell("temp","Handledstemp",2)}</div>
+      ${H("sleep").length>=2?lineChart(H("sleep"),[{k:"v",color:"var(--info)",area:true,dots:true}],{h:140,label:"Sömn"})+`<div class="legend"><span><i style="background:var(--info)"></i>Sömn i timmar, 30 dagar</span></div>`:""}
+      ${H("hrv").length>=2?lineChart(H("hrv"),[{k:"v",color:"var(--good)",dots:true}],{h:140,label:"HRV"})+`<div class="legend"><span><i style="background:var(--good)"></i>HRV, högre betyder bättre återhämtning</span></div>`:""}
+      ${H("rhr").length>=2?lineChart(H("rhr"),[{k:"v",color:"var(--bad)",dots:true}],{h:140,label:"Vilopuls"})+`<div class="legend"><span><i style="background:var(--bad)"></i>Vilopuls, lägre betyder bättre form</span></div>`:""}</div>`}}
+  // daily questions
+  {const ck=Object.keys(S.checkins||{}).filter(d=>daysBetween(d,t)<30).map(d=>S.checkins[d]);if(ck.length){const a=k=>{const v=ck.map(c=>c[k]).filter(x=>typeof x==="number");return v.length?fmt(mean(v),1):"–"},yes=k=>ck.filter(c=>c[k]===true).length;
+    const ep=Object.keys(S.checkins).sort().filter(d=>daysBetween(d,t)<30&&S.checkins[d].energy).map(d=>({d,v:S.checkins[d].energy}));
+    h+=`<div class="mod"><div class="lbl"><span>Dagliga frågor</span><span>${ck.length} svar · 30 d</span></div>
+      <div class="grid4" style="grid-template-columns:repeat(3,1fr)"><div><b>${a("energy")}</b><span>Energi</span></div><div><b>${a("stress")}</b><span>Stress</span></div><div><b>${a("mood")}</b><span>Humör</span></div>
+      <div><b>${a("motiv")}</b><span>Motivation</span></div><div><b>${a("food")}</b><span>Mat</span></div><div><b>${yes("protein")} d</b><span>Nog protein</span></div>
+      <div><b>${yes("alcohol")} d</b><span>Alkohol</span></div><div><b>${yes("pain")} d</b><span>Ont</span></div><div><b>${yes("ill")} d</b><span>Krasslig</span></div></div>
+      ${ep.length>=2?lineChart(ep,[{k:"v",color:"var(--pri)",dots:true}],{h:130,label:"Energi"})+`<div class="legend"><span><i style="background:var(--pri)"></i>Energi 1–5</span></div>`:""}</div>`}}
+  // measurements
+  {const md=Object.keys(S.measures||{}).sort();
+    h+=`<div class="mod"><div class="lbl"><span>Mått</span>${demoOn?"":`<button data-measgo="1">Mät nu</button>`}</div>`;
+    if(md.length){const lastM=S.measures[md[md.length-1]],firstM=S.measures[md[0]],m30=md.filter(d=>daysBetween(d,t)>=28)[0];
+      const bf=md.map(d=>({d,v:bodyFat(S,S.measures[d])})).filter(p=>p.v!=null),wa=md.map(d=>({d,v:S.measures[d].waist})).filter(p=>p.v>0);
+      h+=`<div class="tscroll"><table><thead><tr><th>Mått</th><th>Senast</th><th>Sedan start</th></tr></thead><tbody>${MEAS.filter(([k])=>lastM[k]).map(([k,n])=>`<tr><td>${n}</td><td>${fmt(lastM[k],1)} cm</td><td class="${firstM[k]?dcls(k==="waist"||k==="hip"?firstM[k]-lastM[k]:lastM[k]-firstM[k]):"flat"}">${firstM[k]&&md.length>1?sgn(lastM[k]-firstM[k],1):"–"}</td></tr>`).join("")}</tbody></table></div>
+        ${bf.length?`<div class="strhead"><div><div class="v">${fmt(bf[bf.length-1].v,1)}<small>%</small></div><div class="cap">Uppskattad fettprocent (US Navy)</div></div>${bf.length>1?`<span class="delta ${dcls(bf[0].v-bf[bf.length-1].v)}">${sgn(bf[bf.length-1].v-bf[0].v,1)} p sedan start</span>`:""}</div>${bf.length>=2?lineChart(bf,[{k:"v",color:"var(--pri)",dots:true}],{h:130,label:"Fettprocent"}):""}`
+          :`<p class="note" style="margin-top:10px">${prof(S).height?"Mät hals och midja"+(prof(S).sex==="f"?" och höft":"")+" så räknas fettprocenten ut.":"Fyll i din längd under Inställningar så räknas fettprocenten ut."}</p>`}
+        ${wa.length>=2?lineChart(wa,[{k:"v",color:"var(--info)",dots:true}],{h:120,label:"Midja"})+`<div class="legend"><span><i style="background:var(--info)"></i>Midja i cm</span></div>`:""}`;
+    }else h+=`<p class="empty" style="margin-top:8px">Inga mått än. Appen påminner dig var tredje dag under Idag.</p>`;
+    h+=`</div>`}
   // strength index
   const si=strengthIndex(S);
   if(si.length){const f=si[0],l=si[si.length-1];
@@ -1001,33 +1368,79 @@ function renderStats(){
     h+=`<tr><td>${esc(e.name)}</td><td>${fmt(bk.top,2)}<small>${shortDate(bk.d)}</small></td><td>${fmt(be.e1,1)}<small>${shortDate(be.d)}</small></td><td>${s.length}</td></tr>`});
   h+=`</tbody></table></div><div class="grid4"><div><b>${fmt(allSets)}</b><span>Set totalt</span></div><div><b>${fmt(allReps)}</b><span>Reps totalt</span></div>
     <div><b>${fmt(allVol/1000,1)} ton</b><span>Lyft totalt</span></div><div><b>${fmt(totMin/60,1)} h</b><span>Tid i gymmet</span></div></div></div>`;
-  h+=renderAccount();
-  // backup
-  h+=`<div class="mod"><div class="lbl"><span>Säkerhetskopia</span><button id="bkToggle">${backupOpen?"Stäng":"Öppna"}</button></div>`;
+  h+=`<p class="foot">e1RM = uppskattat maxlyft enligt Epley: vikt × (1 + reps/30). Prognoser bygger på trenden de senaste 10 veckorna. Fettprocent enligt US Navy-metoden.</p>`;
+  $("#s-stats").innerHTML=h;
+}
+
+function renderBoard(){if(store.mode!=="supa"||!sbUser)return"";loadBoard();
+  const ws=mondayOf(today()),pr=prof(real);
+  let h=`<div class="mod hud"><div class="lbl"><span>Topplista · denna vecka</span><span>Nollställs måndag</span></div>`;
+  if(!pr.board||!String(pr.name).trim())h+=`<p class="note" style="margin-top:8px">Skriv ditt namn under Inställningar för att vara med.</p><button class="btn" data-goset="1" style="margin-top:10px;width:100%">Öppna inställningar</button>`;
+  const rows=(boardRows||[]).map(r=>Object.assign({},r,{wk:r.week===ws?r.week_pts:0})).sort((a,b)=>b.wk-a.wk||b.total_pts-a.total_pts);
+  if(boardRows===null)h+=`<p class="empty">Hämtar…</p>`;else if(!rows.length)h+=`<p class="empty">Ingen är med än.</p>`;
+  else h+=`<div class="board">${rows.map((r,i)=>`<div class="${r.user_id===sbUser.id?"me":""}"><span class="pos">${i+1}</span><b>${esc(r.name)}${r.user_id===sbUser.id?"<small>du</small>":""}</b><span class="pts">${r.wk} p</span><span class="tot">${r.total_pts} totalt</span></div>`).join("")}</div>`;
+  return h+`<p class="foot" style="margin-top:10px">Pass 10 p · personbästa 5 p · mått 3 p · avbockad vana 2 p · dagliga frågor 1 p · 5 min gång 1 p</p></div>`}
+let guideOpen=false;
+const INGEST=()=>SUPA?SUPA.url+"/rest/v1/rpc/formlogg_ingest":"";
+function guideHtml(){const rows=[["sleep","Sömnanalys · Värde är inte I sängen och inte Vaken","Senaste 1 dagar","Summa av Varaktighet"],["deep","Sömnanalys · Värde är Djup","Senaste 1 dagar","Summa av Varaktighet"],["rem","Sömnanalys · Värde är REM","Senaste 1 dagar","Summa av Varaktighet"],
+  ["rhr","Vilopuls","Senaste 1 dagar","Genomsnitt"],["hrv","Pulsvariabilitet","Senaste 1 dagar","Genomsnitt"],["resp","Andningsfrekvens","Senaste 1 dagar","Genomsnitt"],["spo2","Syremättnad","Senaste 1 dagar","Genomsnitt"],["temp","Handledstemperatur vid sömn","Senaste 1 dagar","Genomsnitt"],
+  ["vo2","VO2 max","Senaste 30 dagar","Genomsnitt"],["steps","Steg","Idag","Summa"],["kcal","Aktiv energi","Idag","Summa"],["exmin","Träningsminuter","Idag","Summa"],["stand","Ståtid","Idag","Summa"]];
+  return `<div class="guide"><ol>
+  <li>Öppna appen <b>Genvägar</b>, tryck <b>+</b> och döp genvägen till exakt <code>Formlogg</code>.</li>
+  <li>För varje rad i tabellen lägger du till tre åtgärder i ordning:<br><b>Hitta hälsoexempel</b> (Find Health Samples) med typ och period enligt tabellen → <b>Beräkna statistik</b> (Calculate Statistics) → <b>Ställ in variabel</b> (Set Variable) med namnet i första kolumnen. För sömnraderna lägger du in <b>Hämta detaljer om hälsoexempel → Varaktighet</b> före Beräkna statistik. Saknas en typ på din klocka hoppar du bara över raden.
+    <div class="tscroll"><table><thead><tr><th>Variabel</th><th>Typ</th><th>Period</th><th>Statistik</th></tr></thead><tbody>${rows.map(r=>`<tr><td><code>${r[0]}</code></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join("")}</tbody></table></div></li>
+  <li><b>Senaste träningspasset</b>: lägg till <b>Hitta träningspass</b> (Find Workouts), sortera efter startdatum med senaste först, begränsa till 1. Använd <b>Hämta detaljer om träningspass</b> för att spara: Startdatum (formatera med <b>Formatera datum → ISO 8601</b>) som <code>w_start</code>, Slutdatum (ISO 8601) som <code>w_end</code>, Varaktighet som <code>w_min</code>, Aktiv energi som <code>w_kcal</code>, Typ som <code>w_type</code>. Lägg sedan till <b>Hitta hälsoexempel</b> med typ Puls, startdatum efter passets start och före passets slut, och <b>Beräkna statistik</b> två gånger: Genomsnitt som <code>w_hr</code> och Maximum som <code>w_hrmax</code>.</li>
+  <li>Lägg till <b>Ordlista</b> (Dictionary) med en rad per variabel: nyckeln är variabelns namn och värdet är variabeln.</li>
+  <li>Lägg till <b>Hämta innehåll från URL</b> (Get Contents of URL). URL är <b>Adress</b> ovan, metod <b>POST</b>. Under Rubriker: <code>apikey</code> = <b>Nyckel</b> ovan. Begärans brödtext: <b>JSON</b> med <code>p_token</code> (Text) = <b>Din kod</b> och <code>p_data</code> (Ordlista) = ordlistan från steg 4.</li>
+  <li>Kör genvägen en gång med ▶ och godkänn att den får läsa Hälsa. Kom tillbaka hit, och under Apple Watch ska det stå Senast med dagens tid.</li>
+  <li>Under fliken <b>Automation</b> skapar du tre automatiseringar som kör Formlogg, med <b>Kör omedelbart</b> påslaget: <b>Vakna</b> (lägg in Vänta 30 minuter först), <b>Apple Watch-träningspass slutar</b> och gärna <b>Tid på dygnet</b> några gånger om dagen.</li></ol>
+  <p class="note">Namnen på åtgärderna kan skilja lite mellan iOS-versioner. Fastnar du, ta en skärmdump och skicka till Claude.</p></div>`}
+function copyText(t){try{navigator.clipboard.writeText(t).then(()=>toast("Kopierat."),()=>toast("Kunde inte kopiera. Markera texten och kopiera själv."))}catch(e){toast("Kunde inte kopiera. Markera texten och kopiera själv.")}}
+function renderWatchSettings(){
+  if(store.mode!=="supa")return `<div class="mod"><div class="lbl"><span>Apple Watch</span></div><p class="note" style="margin-top:8px">Fungerar i appen på hemskärmen när du är inloggad.</p></div>`;
+  if(!sbUser)return `<div class="mod"><div class="lbl"><span>Apple Watch</span></div><p class="note" style="margin-top:8px">Logga in först, så kopplas klockan till ditt konto.</p></div>`;
+  ensureToken();const last=health.lastAt?new Date(health.lastAt):null;
+  return `<div class="mod"><div class="lbl"><span>Apple Watch</span><span class="${last&&Date.now()-last<864e5?"up":"flat"}">${last?"Senast "+last.toLocaleString("sv-SE",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"Ingen data än"}</span></div>
+    <p class="note" style="margin-top:8px">Klockan skickar data via en genväg i appen Genvägar. Genvägen behöver de här tre sakerna:</p>
+    <div class="copyrow"><span>Adress</span><code>${esc(INGEST())}</code><button class="btn ghost" data-copy="url">Kopiera</button></div>
+    <div class="copyrow"><span>Nyckel</span><code>${esc(SUPA.key)}</code><button class="btn ghost" data-copy="key">Kopiera</button></div>
+    <div class="copyrow"><span>Din kod</span><code>${health.token?esc(health.token):"Hämtar…"}</code><button class="btn ghost" data-copy="token" ${health.token?"":"disabled"}>Kopiera</button></div>
+    <p class="note" style="margin-top:8px">Koden är personlig och kopplar datan till just ditt konto. Dela den inte.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px"><a class="btn" href="${SHORTCUT_URL}">Hämta från klockan</a><button class="btn ghost" id="guideT">${guideOpen?"Dölj guide":"Visa guide"}</button></div>
+    ${guideOpen?guideHtml():""}</div>`}
+function renderBackup(){let h=`<div class="mod"><div class="lbl"><span>Säkerhetskopia</span><button id="bkToggle">${backupOpen?"Stäng":"Öppna"}</button></div>`;
   if(backupOpen){h+=`<p class="note" style="margin-top:8px">Kopiera texten och spara den någonstans, t.ex. i Anteckningar. Klistra in den här för att flytta din logg till en annan enhet.</p>
     <textarea id="bkOut" readonly style="margin-top:10px">${esc(JSON.stringify(real))}</textarea>
     <button class="btn cyan" id="bkCopy" style="margin-top:8px;width:100%">Kopiera</button>
     <textarea id="bkIn" placeholder="Klistra in en säkerhetskopia här" style="margin-top:14px"></textarea>
     <button class="btn warn ${confirmDel==="import"?"sure":""}" id="bkImport" style="margin-top:8px;width:100%">${confirmDel==="import"?"Ersätter all din data. Tryck igen":"Läs in och ersätt min data"}</button>`}
-  h+=`</div><p class="foot">e1RM = uppskattat maxlyft enligt Epley: vikt × (1 + reps/30). Prognoser bygger på trenden de senaste 10 veckorna.</p>`;
-  $("#s-stats").innerHTML=h;
-}
-
+  return h+`</div>`}
+function renderSettings(){const S=real,p=prof(S),[lo,hi]=z2(S),seg=(k,opts)=>`<div class="seg3 big">${opts.map(([v,l])=>`<button class="${p[k]===v?"on":""}" data-pf="${k}|${v}">${l}</button>`).join("")}</div>`;
+  let h=`<div class="mod hud"><div class="lbl"><span>Profil</span><span>Styr förslagen</span></div><div class="form">
+    <label>Namn i topplistan<input class="inp" id="pfName" maxlength="30" value="${esc(p.name)}" placeholder="Ditt namn"></label>
+    <label>Kön${seg("sex",[["m","Man"],["f","Kvinna"]])}</label>
+    <div class="two"><label>Längd (cm)<input class="inp" id="pfHeight" inputmode="numeric" value="${esc(p.height)}" placeholder="180"></label><label>Födelseår<input class="inp" id="pfBirth" inputmode="numeric" value="${esc(p.birth)}" placeholder="1998"></label></div>
+    <label>Träningsmål${seg("goal",[["styrka","Styrka"],["muskler","Muskelmassa"],["båda","Båda"]])}</label>
+    <label>Gången är främst för${seg("walkGoal",[["fett","Fettförbränning"],["kondition","Kondition"],["uppvärmning","Uppvärmning"]])}</label>
+    <label class="tog"><span>Visa mig i topplistan</span><button class="switch ${p.board?"on":""}" data-pf="board|${p.board?"0":"1"}" aria-pressed="${p.board}" aria-label="Visa mig i topplistan"><i></i></button></label></div>
+    <button class="btn solid" id="pfSave" style="width:100%;margin-top:14px">Spara profil</button>
+    <p class="note" style="margin-top:10px">Förslagen siktar på ${repRange(S).join("–")} reps. Maxpuls cirka ${maxHR(S)}, zon 2 är ${lo}–${hi} slag per minut.</p></div>`;
+  return h+renderWatchSettings()+renderAccount()+renderBackup()}
 function render(){
   if(authMode){$("#datenav").hidden=true;$("#demoBox").innerHTML="";document.querySelector("nav").hidden=true;
     document.querySelectorAll(".sec").forEach(s=>s.classList.toggle("on",s.id==="s-day"));$("#s-day").innerHTML=renderAuth();return}
   document.querySelector("nav").hidden=false;
-  renderHeader();
+  renderHeader();$("#gear").classList.toggle("on",tab==="settings");
   document.querySelectorAll(".sec").forEach(s=>s.classList.toggle("on",s.id==="s-"+tab));
   document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
-  if(tab==="day")renderDay();else if(tab==="gym")renderGym();else renderStats();
+  if(tab==="day")renderDay();else if(tab==="gym")renderGym();else if(tab==="settings")$("#s-settings").innerHTML=renderSettings();else renderStats();
 }
 
 /* ---------- events ---------- */
 const resetDrafts=()=>{for(const k in drafts)delete drafts[k]};
 document.addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b||b.disabled)return;const D=b.dataset;
-  if(D.tab){if(D.tab===tab&&tab==="gym"){detailDay=null}tab=D.tab;confirmDel=null;render();window.scrollTo({top:0});return}
+  if(D.tab){if(D.tab===tab&&tab==="gym"){detailDay=null}tab=D.tab;confirmDel=null;skipPick=null;render();window.scrollTo({top:0});if(tab==="stats")loadBoard(true);return}
   if(b.id==="prevDay"){sel=addDays(sel,-1);confirmDel=null;render();return}
   if(b.id==="nextDay"){if(sel<today()){sel=addDays(sel,1);render()}return}
   if(b.id==="exitDemo"){demoOn=false;demoDismissed=true;if(cfgMissing)saveConfig();render();return}
@@ -1038,14 +1451,14 @@ document.addEventListener("click",e=>{
   if(D.delh){delHabit(D.delh);return}
   if(b.id==="bwSave"){saveBody();return}
   if(D.start!==undefined){if(b.dataset.empty){viewProg=D.start;manageEx=true;render();toast("Lägg till övningar i passet först.");return}startWorkout(today(),D.start);return}
-  if(D.resume){const s=real.sessions[today()]||{};wo={day:today(),prog:s.prog,idx:firstOpen(real,today(),sessExs(real,today(),s.prog))};tab="gym";render();window.scrollTo({top:0});return}
+  if(D.resume){const s=real.sessions[today()]||{};wo={day:today(),prog:s.prog,idx:firstOpenStep(real,today(),s.prog)};tab="gym";render();window.scrollTo({top:0});return}
   if(D.vp){viewProg=D.vp;confirmDel=null;render();return}
   if(b.id==="addProg"||b.id==="addProg2"){addProg();return}
   if(b.id==="renProg"){renameProg();return}
   if(b.id==="delProg"){delProg();return}
   if(D.wset){const[ex,k]=D.wset.split("|");woSet(ex,+k);return}
-  if(D.woi!==undefined){wo.idx=+D.woi;render();window.scrollTo({top:0});return}
-  if(D.wonav){wo.idx+=+D.wonav;render();window.scrollTo({top:0});return}
+  if(D.woi!==undefined){wo.idx=+D.woi;skipPick=null;render();window.scrollTo({top:0});return}
+  if(D.wonav){wo.idx+=+D.wonav;skipPick=null;render();window.scrollTo({top:0});return}
   if(D.x3){const k=wo.day+"|"+D.x3;extra[k]=!extra[k];render();return}
   if(b.id==="endWo"||b.id==="endWo2"){finishWorkout();return}
   if(b.id==="pauseWo"){const d=wo.day;wo=null;if(d!==today()){const s=real.sessions[d];if(s&&!s.sets.length){delete real.sessions[d];saveSession(d)}}render();return}
@@ -1058,7 +1471,7 @@ document.addEventListener("click",e=>{
   if(D.delsess){deleteSession(D.delsess);return}
   if(b.id==="logPast"){const v=$("#pastDate").value;if(!v||v>=today()){toast("Välj ett datum före idag.");return}
     const pp=$("#pastProg").value;ensureReal();if(!real.sessions[v])real.sessions[v]={sets:[]};real.sessions[v].prog=real.sessions[v].prog||pp;const pid=real.sessions[v].prog;
-    wo={day:v,prog:pid,idx:firstOpen(real,v,sessExs(real,v,pid))};render();window.scrollTo({top:0});return}
+    wo={day:v,prog:pid,idx:firstOpenStep(real,v,pid)};render();window.scrollTo({top:0});return}
   if(b.id==="manEx"){manageEx=!manageEx;confirmDel=null;render();return}
   if(b.id==="addE"){addEx();return}
   if(D.dele){delEx(D.dele);return}
@@ -1071,6 +1484,45 @@ document.addEventListener("click",e=>{
   if(b.id==="goLogin"){authMode=true;authMsg="";render();window.scrollTo({top:0});return}
   if(b.id==="syncNow"){meta().dirty?push():pull();return}
   if(b.id==="logout"){(async()=>{try{if(meta().dirty)await push();await sb.auth.signOut()}catch(err){}sbUser=null;setMeta({skipLogin:false});authMode=true;authMsg="Du är utloggad.";render()})();return}
+  if(b.id==="gear"){tab=tab==="settings"?"day":"settings";confirmDel=null;render();window.scrollTo({top:0});return}
+  if(D.goset){tab="settings";render();window.scrollTo({top:0});return}
+  if(D.gostats){tab="stats";render();window.scrollTo({top:0});return}
+  if(D.pf){const[k,v]=D.pf.split("|");ensureReal();real.profile=Object.assign(prof(real),{[k]:k==="board"?v==="1":v});saveConfig();if(k==="board")boardSync();render();return}
+  if(b.id==="pfSave"){ensureReal();const hgt=parseInt($("#pfHeight").value,10),br=parseInt($("#pfBirth").value,10);
+    if($("#pfHeight").value&&!(hgt>=120&&hgt<=230)){toast("Skriv längden i cm, t.ex. 182.");return}
+    if($("#pfBirth").value&&!(br>=1920&&br<=new Date().getFullYear()-10)){toast("Skriv födelseåret med fyra siffror, t.ex. 1998.");return}
+    real.profile=Object.assign(prof(real),{name:$("#pfName").value.trim().slice(0,30),height:hgt||"",birth:br||""});saveConfig();boardSync();toast("Profilen är sparad.");render();return}
+  if(b.id==="guideT"){guideOpen=!guideOpen;render();return}
+  if(D.copy){copyText(D.copy==="url"?INGEST():D.copy==="key"?SUPA.key:health.token||"");return}
+  if(D.ci){const[k,v]=D.ci.split("|"),val=v==="y"?true:v==="n"?false:+v;ciDraft[k]=ciDraft[k]===val?undefined:val;if(ciDraft[k]===undefined)delete ciDraft[k];render();return}
+  if(D.sore){const[m,v]=D.sore.split("|");ciDraft.sore=ciDraft.sore||{};ciDraft.sore[m]=ciDraft.sore[m]===+v?undefined:+v;if(ciDraft.sore[m]===undefined)delete ciDraft.sore[m];render();return}
+  if(b.id==="ciSave"){if(!Object.keys(ciDraft).length){toast("Svara på minst en fråga, eller tryck Inte idag.");return}
+    const pw=$("#ciPainWhere");if(pw)ciDraft.painWhere=pw.value.trim().slice(0,60);ensureReal();real.checkins[today()]=Object.assign({},ciDraft,{at:Date.now()});ciDraft={};saveMonth(today());toast("Tack! Svaren är sparade.");render();return}
+  if(b.id==="ciSkip"){setMeta({ciSkip:today()});render();return}
+  if(b.id==="measOpen"||D.measgo){measureOpen=true;tab="day";sel=today();render();if(D.measgo)window.scrollTo({top:0});return}
+  if(b.id==="measClose"){measureOpen=false;render();return}
+  if(b.id==="measSave"){const o={};let bad=false;MEAS.forEach(([k])=>{const el=$("#ms-"+k),v=el?el.value.trim():"";if(!v)return;const n=num(v);if(n>5&&n<250)o[k]=Math.round(n*10)/10;else bad=true});
+    if(bad){toast("Ett mått ser fel ut. Skriv i cm, t.ex. 84,5.");return}if(!Object.keys(o).length){toast("Fyll i minst ett mått.");return}
+    ensureReal();real.measures[today()]=o;saveMonth(today());measureOpen=false;toast("Måtten är sparade.");render();return}
+  if(D.walk){const w=D.walk,mi=parseInt($("#wk-min").value,10),inc=num($("#wk-inc").value),spd=num($("#wk-spd").value);
+    if(!(mi>0&&mi<=180)){toast("Skriv minuter, t.ex. 20.");return}if(!(inc>=0&&inc<=15)){toast("Lutningen ska vara mellan 1 och 15 %.");return}if(!(spd>0&&spd<=20)){toast("Skriv hastigheten i km/h, t.ex. 5,2.");return}
+    const s=clone(real.sessions[wo.day]||{sets:[]});s.walks=s.walks||{};s.walks[w]={min:mi,inc:Math.round(inc*10)/10,spd:Math.round(spd*10)/10,at:(s.walks[w]&&s.walks[w].at)||Date.now()};
+    if(s.skipWalk)delete s.skipWalk[w];real.sessions[wo.day]=s;saveSession(wo.day);toast("Gången är sparad.");render();return}
+  if(D.skipw){const s=clone(real.sessions[wo.day]||{sets:[]});s.skipWalk=Object.assign({},s.skipWalk,{[D.skipw]:true});real.sessions[wo.day]=s;saveSession(wo.day);wo.idx++;render();window.scrollTo({top:0});return}
+  if(D.unskipw){const s=clone(real.sessions[wo.day]);if(s.skipWalk)delete s.skipWalk[D.unskipw];real.sessions[wo.day]=s;saveSession(wo.day);render();return}
+  if(D.skipask!==undefined){skipPick=D.skipask||null;render();return}
+  if(D.skip){const i=D.skip.indexOf("|"),ex=D.skip.slice(0,i),r=D.skip.slice(i+1);const s=clone(real.sessions[wo.day]||{sets:[]});s.skip=Object.assign({},s.skip,{[ex]:r});real.sessions[wo.day]=s;skipPick=null;saveSession(wo.day);wo.idx++;render();window.scrollTo({top:0});return}
+  if(D.unskip){const s=clone(real.sessions[wo.day]);if(s.skip)delete s.skip[D.unskip];real.sessions[wo.day]=s;saveSession(wo.day);render();return}
+  if(D.exp){const s=clone(real.sessions[wo.day]||{sets:[]});if(D.exp==="0"){s.expNo=true}else{const[,ex,type]=D.exp.split("|");s.exp={ex,type,acc:true};if(type==="third")extra[wo.day+"|"+ex]=true;
+      for(const k in drafts)if(k.startsWith(wo.day+"|"+ex+"|"))delete drafts[k]}real.sessions[wo.day]=s;saveSession(wo.day);render();return}
+  if(D.rir){const[ex,k,v]=D.rir.split("|");const s=clone(real.sessions[wo.day]);const st=s.sets.find(x=>x.e===ex&&(x.n||0)===+k);if(st){st.rir=st.rir===+v?undefined:+v;if(st.rir===undefined)delete st.rir}real.sessions[wo.day]=s;saveSession(wo.day);render();return}
+  if(b.id==="dlStart"){ensureReal();real.deloadUntil=addDays(today(),6);real.lastDeload=today();saveConfig();toast("Lätt vecka startad. Förslagen är 20 % lättare.");render();return}
+  if(b.id==="dlSkip"){setMeta({dlSkip:addDays(today(),7)});render();return}
+  if(b.id==="dlEnd"){ensureReal();real.deloadUntil=null;saveConfig();render();return}
+  if(D.goal){const v=num($("#goalIn").value);ensureReal();if(!$("#goalIn").value.trim()){delete real.goals[D.goal];saveConfig();render();return}
+    if(!(v>0&&v<1000)){toast("Skriv målet i kg, t.ex. 100.");return}real.goals[D.goal]=Math.round(v*10)/10;saveConfig();toast("Målet är sparat.");render();return}
+  if(D.musopen){musEdit=musEdit===D.musopen?null:D.musopen;render();return}
+  if(D.mus){const[id,m]=D.mus.split("|");ensureReal();const e=real.exercises.find(x=>x.id===id);if(!e)return;const cur=musclesOf(real,id).slice(),i=cur.indexOf(m);i>-1?cur.splice(i,1):cur.push(m);e.m=cur;saveConfig();render();return}
   if(b.id==="bkToggle"){backupOpen=!backupOpen;confirmDel=null;render();return}
   if(b.id==="bkCopy"){const ta=$("#bkOut");const fb=()=>{ta.focus();ta.select();toast("Markerat. Kopiera med kopiera-menyn.")};
     try{navigator.clipboard.writeText(ta.value).then(()=>toast("Kopierat."),fb)}catch(err){fb()}return}
@@ -1079,7 +1531,7 @@ document.addEventListener("click",e=>{
     if(confirmDel!=="import"){confirmDel="import";render();return}
     const old=Object.keys(real.sessions);demoOn=false;demoDismissed=true;real=Object.assign(DEFAULT(),o);migrate(real);confirmDel=null;backupOpen=false;saveAll(old);toast("Din logg är inläst.");render();return}
 });
-document.addEventListener("input",e=>{const el=e.target;if(el.dataset&&el.dataset.dk){const dk=el.dataset.dk;if(!drafts[dk]){const[d,ex,k]=dk.split("|");drafts[dk]=Object.assign({},defaultDraft(d,ex,+k))}drafts[dk][el.dataset.k]=el.value}});
+document.addEventListener("input",e=>{const el=e.target;if(el.id==="ciPainWhere"){ciDraft.painWhere=el.value;return}if(el.dataset&&el.dataset.dk){const dk=el.dataset.dk;if(!drafts[dk]){const[d,ex,k]=dk.split("|");drafts[dk]=Object.assign({},defaultDraft(d,ex,+k))}drafts[dk][el.dataset.k]=el.value}});
 document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const el=e.target;
   if(el.id==="auPw"&&!authBusy){authDo("in");return}
   if(el.id==="newHabit")addHabit();else if(el.id==="newEx")addEx();else if(el.id==="progName")renameProg();else if(el.id==="bwIn")saveBody();
