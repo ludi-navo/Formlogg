@@ -10,7 +10,7 @@
 <link rel="icon" href="icon-192.png">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
 </head><body>
-<script>window.FORMLOGG_SUPA={"url": "https://hnzvkylovohkzexsjgct.supabase.co", "key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhuenZreWxvdm9oa3pleHNqZ2N0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ0MDUxMDMsImV4cCI6MjEwOTk4MTEwM30.1aiB8FoTEY_5CtX1jfXrtk-Q_FVZzvYc3Yx8yPNfue0"};</script>
+<script>window.FORMLOGG_SUPA={"url": "https://hnzvkylovohkzexsjgct.supabase.co", "key": "sb_publishable_uLIGRDbT5tZ3VRcnViizug_3UF6k_6q"};</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <title>Formlogg</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -461,7 +461,7 @@ function saveAll(oldSess){saveConfig();const months=new Set([...Object.keys(real
   (oldSess||[]).forEach(d=>{if(!real.sessions[d])saveSession(d)})}
 
 function setSync(t,on){const el=$("#sync");el.textContent=t;el.classList.toggle("on",!!on)}
-function finish(){ready=true;demoOn=!hasData(real)&&!demoDismissed;if(demoOn&&!demo)demo=buildDemo();resumeActive();render()}
+function finish(){ready=true;demoOn=false;resumeActive();render()}
 
 async function initStore(){
   loadLocal();
@@ -676,7 +676,7 @@ function renderGym(){
   }
   // program
   h+=`<div class="mod"><div class="lbl"><span>Ditt pass</span><button id="manEx">${manageEx?"Klar":"Ändra"}</button></div>`;
-  if(!S.programSet)h+=`<div class="flag">Det här är ett exempelpass. Skicka dina övningar till Claude, eller tryck Ändra och lägg in dem själv.</div>`;
+  if(!S.programSet)h+=`<div class="flag">Det här är platshållare. Tryck Ändra och lägg in dina egna övningar i den ordning du kör dem.</div>`;
   if(manageEx){
     h+=`<div style="margin-top:8px">${S.exercises.map((e,i)=>`<div class="mgrid"><span>${i+1}. ${esc(e.name)}</span>
       <button class="mv" data-mv="${e.id}|-1" ${i===0?"disabled":""} aria-label="Flytta upp">↑</button><button class="mv" data-mv="${e.id}|1" ${i===S.exercises.length-1?"disabled":""} aria-label="Flytta ner">↓</button>
@@ -996,7 +996,7 @@ setInterval(()=>{const s=real.sessions[today()];
 
 let tt;function toast(m){const el=$("#toast");el.textContent=m;el.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>el.classList.remove("show"),2800)}
 
-demo=buildDemo();demoOn=true;render();
+render();
 initStore();
 })();
 </script>
