@@ -160,6 +160,26 @@ h2{font-family:var(--f-display);font-weight:600;font-size:18px;margin:0;letter-s
 .list .r{font-family:var(--f-mono);font-size:12px;color:var(--soft);text-align:right;white-space:nowrap}
 .flag{border:1px solid rgba(157,184,255,.25);background:var(--info-dim);border-radius:12px;padding:10px 12px;font-size:13px;margin-top:10px}
 
+.pcard{display:grid;grid-template-columns:1fr auto;grid-template-areas:"top go" "meta go";gap:6px 12px;align-items:center;text-align:left;width:100%;padding:16px 16px 15px 18px;border-radius:var(--r);border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.012));box-shadow:var(--shadow);transition:transform .15s var(--ease)}
+.pcard:active{transform:scale(.985)}
+.pc-top{grid-area:top;display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
+.pc-top b{font-family:var(--f-display);font-size:21px;font-weight:600;letter-spacing:-.04em;line-height:1.1}
+.pc-top em{font-style:normal;font-family:var(--f-mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:rgba(10,10,10,.08);border:1px solid rgba(10,10,10,.15)}
+.pc-meta{grid-area:meta;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--muted)}
+.pc-go{grid-area:go;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;border:1px solid var(--line2);background:rgba(255,255,255,.04)}
+.pc-go svg{width:16px;height:16px}
+.pcard.next{background:linear-gradient(180deg,#fff 0%,#ececef 100%);color:var(--ink);border-color:transparent;box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 14px 34px -14px rgba(255,255,255,.45)}
+.pcard.next .pc-meta{color:#55555e}
+.pcard.next .pc-go{background:var(--ink);color:#fff;border-color:transparent}
+.lastp{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;text-align:left;margin-top:12px;padding:12px 14px;border-radius:14px;border:1px solid var(--line2);background:rgba(255,255,255,.04)}
+.lastp .lbl{display:block;margin-bottom:3px}
+.lastp b{display:block;font-family:var(--f-display);font-weight:600;font-size:16px;letter-spacing:-.03em}
+.lastp small{font-size:12px;color:var(--muted)}
+.lastp .r{font-size:12px;font-weight:600;color:var(--soft);white-space:nowrap}
+.addrow.past{flex-wrap:wrap}
+.addrow.past .inp{flex:1 1 130px}
+.addrow.past .btn{flex:1 1 100%}
+select.inp{appearance:none;-webkit-appearance:none;color:var(--fg)}
 /* workout */
 .wohead{display:flex;flex-direction:column;gap:12px}
 .segs{display:flex;gap:5px}
@@ -343,14 +363,27 @@ const PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12.5
 const BASE_SETS=2, MAX_SETS=3;
 
 /* ---------- state ---------- */
+const DEF_EX=[["bench","Bänkpress"],["incdb","Lutande hantelpress"],["dips","Dips"],["pushdown","Triceps pushdown"],
+  ["dead","Marklyft"],["chins","Chins"],["row","Skivstångsrodd"],["facepull","Face pulls"],["curl","Bicepscurl"],
+  ["squat","Knäböj"],["rdl","Rumänsk marklyft"],["legpress","Benpress"],["legcurl","Bencurl"],["calf","Vadpress"],
+  ["ohp","Axelpress"],["latraise","Sidolyft"],["revfly","Omvända flyes"],["hlr","Hängande benlyft"],["backext","Ryggresningar"]];
+const DEF_PROGS=()=>[{id:"push",name:"Push",draft:true,ex:["bench","incdb","dips","pushdown"]},{id:"pull",name:"Pull",draft:true,ex:["dead","chins","row","facepull","curl"]},
+  {id:"legs",name:"Legs",draft:true,ex:["squat","rdl","legpress","legcurl","calf"]},{id:"core",name:"Axlar, bål & ländrygg",draft:true,ex:["ohp","latraise","revfly","hlr","backext"]}];
 const DEFAULT=()=>({
   habits:[{id:"eat",name:"Ätit bra"},{id:"train",name:"Tränat",auto:true}],
-  exercises:[{id:"bench",name:"Bänkpress"},{id:"squat",name:"Knäböj"},{id:"dead",name:"Marklyft"},{id:"ohp",name:"Axelpress"},{id:"row",name:"Skivstångsrodd"}],
-  programSet:false, days:{}, body:{}, sessions:{}
+  exercises:DEF_EX.map(([id,name])=>({id,name})), programs:DEF_PROGS(),
+  days:{}, body:{}, sessions:{}
 });
+function migrate(R){let ch=false;
+  if(!Array.isArray(R.exercises))R.exercises=[];
+  if(!Array.isArray(R.programs)||!R.programs.length){R.programs=DEF_PROGS();ch=true}
+  const have=new Set(R.exercises.map(e=>e.id));
+  R.programs.forEach(p=>{if(!Array.isArray(p.ex))p.ex=[];p.ex.forEach(id=>{if(!have.has(id)){const d=DEF_EX.find(x=>x[0]===id);R.exercises.push({id,name:d?d[1]:id});have.add(id);ch=true}})});
+  if("programSet" in R){delete R.programSet;ch=true}
+  return ch}
 let real=DEFAULT(), demo=null, demoOn=false, demoDismissed=false;
 let tab="day", sel=today(), statEx=null, statRange="all";
-let editHabits=false, manageEx=false, confirmDel=null;
+let editHabits=false, manageEx=false, confirmDel=null, viewProg=null;
 let wo=null, summaryDay=null, detailDay=null, backupOpen=false;
 const drafts={}, extra={};
 const V=()=>demoOn?demo:real;
@@ -358,8 +391,8 @@ const hasData=s=>Object.keys(s.days).length>0||Object.keys(s.sessions).length>0|
 
 /* ---------- demo: 12 weeks of the same program, 3 pass a week ---------- */
 function buildDemo(){
-  const d=DEFAULT();d.programSet=true;d.habits.splice(1,0,{id:"sleep",name:"Sovit 7 h+"});
-  const base={bench:62.5,squat:80,dead:100,ohp:40,row:55},step={bench:.3,squat:.55,dead:.65,ohp:.14,row:.3};
+  const d=DEFAULT();d.habits.splice(1,0,{id:"sleep",name:"Sovit 7 h+"});
+  const base={bench:62.5,squat:80,dead:100,ohp:40,row:55,incdb:22,dips:10,pushdown:25,chins:5,facepull:20,curl:14,rdl:70,legpress:120,legcurl:35,calf:60,latraise:8,revfly:7,hlr:0,backext:10},step={};
   let seed=11;const rnd=()=>(seed=(seed*9301+49297)%233280)/233280;
   let n=0;
   for(let i=84;i>=1;i--){
@@ -370,12 +403,13 @@ function buildDemo(){
     if(trains){
       n++;list.push("train");
       const start=parse(day).getTime()+(16.5+rnd()*2)*36e5;let t=start+6*6e4;const sets=[];
-      d.exercises.forEach(ex=>{
-        const w=Math.round((base[ex.id]+step[ex.id]*n)/1.25)*1.25,cnt=rnd()>.75?3:2;
+      const pg=d.programs[(n-1)%d.programs.length];
+      progExs(d,pg).forEach(ex=>{
+        const w=Math.round(((base[ex.id]||20)*(1+.0035*n))/1.25)*1.25,cnt=rnd()>.75?3:2;
         for(let k=0;k<cnt;k++){const r=Math.max(4,8-k-(rnd()>.65?1:0)-(slept?0:1));t+=(2+rnd()*1.5)*6e4;sets.push({e:ex.id,kg:w,r,n:k,t})}
         t+=2*6e4;
       });
-      d.sessions[day]={start,end:t+3*6e4,feel:Math.max(1,Math.min(5,Math.round(3+(slept?.8:-.6)+(ate?.3:0)+(rnd()-.5)*1.4))),sets};
+      d.sessions[day]={prog:pg.id,start,end:t+3*6e4,feel:Math.max(1,Math.min(5,Math.round(3+(slept?.8:-.6)+(ate?.3:0)+(rnd()-.5)*1.4))),sets};
     }
     if(rnd()>.45)d.body[day]=Math.round((80.4+i*.02+(rnd()-.5)*.7)*10)/10;
     if(list.length)d.days[day]=list;
@@ -386,7 +420,7 @@ function buildDemo(){
 /* ---------- storage: claude db when available, else this device ---------- */
 const LKEY="formlogg-v1";
 let store={mode:"local"}, ready=false, cfgMissing=true;
-function loadLocal(){try{const r=localStorage.getItem(LKEY);if(r){real=Object.assign(DEFAULT(),JSON.parse(r));cfgMissing=false}}catch(e){}}
+function loadLocal(){try{const r=localStorage.getItem(LKEY);if(r){real=Object.assign(DEFAULT(),JSON.parse(r));cfgMissing=migrate(real)}}catch(e){}}
 function persistLocal(){if(store.mode==="db")return;try{localStorage.setItem(LKEY,JSON.stringify(real))}catch(e){}
   if(store.mode==="supa"){setMeta({dirty:true});schedulePush()}}
 
@@ -414,7 +448,7 @@ async function pull(){
     if(!data){if(hasData(real))await push();else setSync("Synkad",true);return}
     if(sameUser&&m.dirty&&hasData(real)){await push();return}
     if(!sameUser||data.updated_at!==m.synced){
-      real=Object.assign(DEFAULT(),data.data||{});cfgMissing=false;
+      real=Object.assign(DEFAULT(),data.data||{});cfgMissing=migrate(real);
       try{localStorage.setItem(LKEY,JSON.stringify(real))}catch(e){}
       setMeta({synced:data.updated_at,dirty:false,uid:sbUser.id});
       if(hasData(real)){demoOn=false;demoDismissed=true}
@@ -459,7 +493,7 @@ function renderAccount(){
 const chains={};
 function queue(k,fn){chains[k]=(chains[k]||Promise.resolve()).then(fn).catch(()=>toast("Kunde inte spara. Kolla anslutningen och försök igen."))}
 function saveConfig(){persistLocal();cfgMissing=false;if(store.mode!=="db")return;
-  const body={habits:clone(real.habits),exercises:clone(real.exercises),programSet:!!real.programSet};queue("cfg",()=>store.cfg.set(body))}
+  const body={habits:clone(real.habits),exercises:clone(real.exercises),programs:clone(real.programs)};queue("cfg",()=>store.cfg.set(body))}
 function saveMonth(day){persistLocal();if(store.mode!=="db")return;const m=day.slice(0,7),days={},body={};
   for(const k in real.days)if(k.slice(0,7)===m)days[k]=real.days[k];
   for(const k in real.body)if(k.slice(0,7)===m)body[k]=real.body[k];
@@ -501,7 +535,7 @@ async function initStore(){
     const timer=setTimeout(()=>{if(!ready){setSync("Offline");finish()}},10000);
     const check=()=>{if(got.c&&got.m&&got.s){clearTimeout(timer);setSync("Synkad",true);if(!ready)finish();else render()}};
     const err=()=>{setSync("Sparas ej");toast("Din logg går inte att nå just nu.")};
-    cfg.onSnapshot(s=>{if(s.exists){const d=s.data();real.habits=clone(d.habits||[]);real.exercises=clone(d.exercises||[]);real.programSet=!!d.programSet;cfgMissing=false}got.c=1;check()},err);
+    cfg.onSnapshot(s=>{if(s.exists){const d=s.data();real.habits=clone(d.habits||[]);real.exercises=clone(d.exercises||[]);real.programs=clone(d.programs||[]);real.programSet=d.programSet;cfgMissing=migrate(real)}got.c=1;check()},err);
     store.months.onSnapshot(q=>{const days={},body={};q.docs.forEach(d=>{const x=d.data();Object.assign(days,clone(x.days||{}));Object.assign(body,clone(x.body||{}))});real.days=days;real.body=body;got.m=1;check()},err);
     store.sess.onSnapshot(q=>{const ss={};q.docs.forEach(d=>{ss[d.id]=clone(d.data())});real.sessions=ss;got.s=1;check()},err);
   }catch(e){store={mode:"local"};setSync("På enheten");finish()}
@@ -510,7 +544,7 @@ function ensureReal(){
   if(demoOn){demoOn=false;demoDismissed=true;toast("Exempeldatan är borta. Nu loggar du på riktigt.")}
   if(cfgMissing)saveConfig();
 }
-function resumeActive(){const s=real.sessions[today()];if(!wo&&s&&s.start&&!s.end&&!demoOn){wo={day:today(),idx:firstOpen(real,today())}}}
+function resumeActive(){const s=real.sessions[today()];if(!wo&&s&&s.start&&!s.end&&!demoOn){wo={day:today(),prog:s.prog,idx:firstOpen(real,today(),sessExs(real,today(),s.prog))}}}
 
 /* ---------- derived data ---------- */
 const sessionDates=S=>Object.keys(S.sessions).filter(d=>(S.sessions[d].sets||[]).length).sort();
@@ -523,7 +557,15 @@ function exSeries(S,ex){return sessionDates(S).map(d=>{const sets=exSets(S,d,ex)
   return{d,top:Math.max(...sets.map(x=>x.kg)),e1:Math.max(...sets.map(x=>e1rm(x.kg,x.r))),vol:sets.reduce((a,x)=>a+x.kg*x.r,0),reps:sets.reduce((a,x)=>a+x.r,0),sets}}).filter(Boolean)}
 function lastFor(S,ex,day){const ds=sessionDates(S).filter(d=>d<day).reverse();for(const d of ds){const sets=exSets(S,d,ex);if(sets.length)return{d,sets:sets.slice().sort((a,b)=>(a.n||0)-(b.n||0))}}return null}
 function prevSession(S,day){const ds=sessionDates(S).filter(d=>d<day);return ds.length?ds[ds.length-1]:null}
-function firstOpen(S,day){const i=S.exercises.findIndex(e=>exSets(S,day,e.id).length<BASE_SETS);return i<0?Math.max(0,S.exercises.length-1):i}
+function firstOpen(S,day,exs){exs=exs||S.exercises;const i=exs.findIndex(e=>exSets(S,day,e.id).length<BASE_SETS);return i<0?Math.max(0,exs.length-1):i}
+const progOf=(S,id)=>(S.programs||[]).find(p=>p.id===id)||null;
+const progExs=(S,p)=>p?p.ex.map(id=>S.exercises.find(e=>e.id===id)).filter(Boolean):[];
+function sessExs(S,day,pid){const p=progOf(S,pid);if(p)return progExs(S,p);const ids=[...new Set(((S.sessions[day]||{}).sets||[]).map(x=>x.e))];
+  const l=ids.map(id=>S.exercises.find(e=>e.id===id)).filter(Boolean);return l.length?l:progExs(S,S.programs[0])}
+function nextProg(S){const sd=sessionDates(S);for(let i=sd.length-1;i>=0;i--){const k=S.programs.findIndex(p=>p.id===S.sessions[sd[i]].prog);if(k>-1)return S.programs[(k+1)%S.programs.length]}return S.programs[0]||null}
+const progSessions=(S,pid)=>sessionDates(S).filter(d=>S.sessions[d].prog===pid);
+function usedEx(S){const ids=new Set();S.programs.forEach(p=>p.ex.forEach(i=>ids.add(i)));sessionDates(S).forEach(d=>S.sessions[d].sets.forEach(x=>ids.add(x.e)));return S.exercises.filter(e=>ids.has(e.id))}
+const exWithData=S=>usedEx(S).filter(e=>exSeries(S,e.id).length);
 function dayScore(S,day){if(!S.habits.length)return 0;const c=(S.days[day]||[]).filter(id=>S.habits.some(h=>h.id===id)).length;return c/S.habits.length}
 function streakOf(test){let n=0,d=today();if(!test(d))d=addDays(d,-1);while(test(d)&&n<3650){n++;d=addDays(d,-1)}return n}
 function firstDay(S){const k=[...Object.keys(S.days),...Object.keys(S.sessions),...Object.keys(S.body||{})].sort();return k[0]||today()}
@@ -552,12 +594,13 @@ function saveBody(){const raw=$("#bwIn").value.trim();ensureReal();
   real.body[sel]=Math.round(v*10)/10;saveMonth(sel);toast("Sparat: "+fmt(real.body[sel],1)+" kg");render()}
 function markTrained(day){const auto=real.habits.find(h=>h.auto);if(auto&&!(real.days[day]||[]).includes(auto.id)){real.days[day]=(real.days[day]||[]).concat(auto.id);saveMonth(day)}}
 
-function startWorkout(day){
-  ensureReal();if(!real.exercises.length){tab="gym";manageEx=true;toast("Lägg till minst en övning först.");render();return}
-  day=day||today();const s=real.sessions[day]?clone(real.sessions[day]):{sets:[]};
+function startWorkout(day,pid){
+  ensureReal();const p=progOf(real,pid)||nextProg(real);
+  if(!p||!p.ex.length){tab="gym";viewProg=p?p.id:null;manageEx=true;toast("Lägg till minst en övning i passet först.");render();return}
+  day=day||today();const s=real.sessions[day]?clone(real.sessions[day]):{sets:[]};s.prog=p.id;
   if(day===today()){if(!s.start)s.start=Date.now();delete s.end}
   real.sessions[day]=s;saveSession(day);
-  wo={day,idx:firstOpen(real,day)};summaryDay=null;detailDay=null;tab="gym";render();window.scrollTo({top:0});
+  wo={day,prog:p.id,idx:firstOpen(real,day,progExs(real,p))};summaryDay=null;detailDay=null;tab="gym";render();window.scrollTo({top:0});
 }
 function woSet(ex,k){
   const day=wo.day,kgEl=document.getElementById("w-"+ex+"-"+k+"-kg"),rEl=document.getElementById("w-"+ex+"-"+k+"-r");
@@ -581,9 +624,17 @@ function finishWorkout(){
 function setFeel(day,v){const s=clone(real.sessions[day]);s.feel=v;real.sessions[day]=s;saveSession(day);render()}
 function deleteSession(day){if(confirmDel!=="s"+day){confirmDel="s"+day;render();return}
   delete real.sessions[day];saveSession(day);confirmDel=null;detailDay=null;toast("Passet är borttaget.");render()}
-function addEx(){const v=$("#newEx").value.trim();if(!v)return;ensureReal();real.exercises.push({id:uid("e"),name:v.slice(0,40)});real.programSet=true;saveConfig();render()}
-function delEx(id){if(confirmDel!==id){confirmDel=id;render();return}ensureReal();real.exercises=real.exercises.filter(e=>e.id!==id);real.programSet=true;confirmDel=null;saveConfig();render()}
-function moveEx(id,dir){ensureReal();const a=real.exercises,i=a.findIndex(e=>e.id===id),j=i+dir;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];real.programSet=true;saveConfig();render()}
+const curProg=()=>progOf(real,viewProg)||real.programs[0];
+function addEx(){const v=$("#newEx").value.trim().slice(0,40);if(!v)return;ensureReal();const p=curProg();if(!p)return;
+  let e=real.exercises.find(x=>x.name.toLowerCase()===v.toLowerCase());if(!e){e={id:uid("e"),name:v};real.exercises.push(e)}
+  if(p.ex.includes(e.id)){toast(e.name+" finns redan i passet.");return}
+  p.ex.push(e.id);p.draft=false;saveConfig();render();setTimeout(()=>{const i=$("#newEx");i&&i.focus()},0)}
+function delEx(id){const k="x"+id;if(confirmDel!==k){confirmDel=k;render();return}ensureReal();const p=curProg();p.ex=p.ex.filter(x=>x!==id);p.draft=false;confirmDel=null;saveConfig();render()}
+function moveEx(id,dir){ensureReal();const a=curProg().ex,i=a.indexOf(id),j=i+dir;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];curProg().draft=false;saveConfig();render()}
+function renameProg(){const v=$("#progName").value.trim().slice(0,30);if(!v)return;ensureReal();curProg().name=v;saveConfig();toast("Namnet är sparat.");render()}
+function addProg(){ensureReal();const p={id:uid("p"),name:"Nytt pass",ex:[]};real.programs.push(p);viewProg=p.id;manageEx=true;saveConfig();render()}
+function delProg(){const p=curProg();if(!p)return;if(confirmDel!=="p"+p.id){confirmDel="p"+p.id;render();return}
+  ensureReal();real.programs=real.programs.filter(x=>x.id!==p.id);viewProg=real.programs[0]?real.programs[0].id:null;confirmDel=null;manageEx=false;saveConfig();render()}
 
 /* ---------- charts ---------- */
 function niceTicks(min,max,count){const span=max-min||1,raw=span/count,mag=Math.pow(10,Math.floor(Math.log10(raw))),nr=raw/mag;
@@ -651,7 +702,7 @@ function renderDay(){
   // workout shortcut
   if(sel===today()){const s=S.sessions[sel];
     if(s&&s.start&&!s.end)h+=`<button class="mod cta" data-resume="1" style="text-align:left;border-color:rgba(157,184,255,.35)"><div><b>Pass pågår</b><span>Tryck för att fortsätta · <span class="clock" data-clock="sess">${clock(Date.now()-s.start)}</span></span></div><span class="btn cyan">Fortsätt</span></button>`;
-    else if(!(s&&s.sets&&s.sets.length))h+=`<div class="mod cta"><div><b>Dags att träna?</b><span>${S.exercises.length} övningar i ditt pass</span></div><button class="btn solid" data-start="1">${PLAY.replace("<svg",'<svg width="14" height="14"')}Starta</button></div>`;}
+    else if(!(s&&s.sets&&s.sets.length)&&nextProg(S))h+=`<div class="mod cta"><div><b>Nästa på tur: ${esc(nextProg(S).name)}</b><span>${nextProg(S).ex.length} övningar · eller välj ett annat under Pass</span></div><button class="btn solid" data-start="${nextProg(S).id}">${PLAY.replace("<svg",'<svg width="14" height="14"')}Starta</button></div>`;}
   h+=`<div class="mod"><div class="lbl"><span>Vanor</span><button id="editH">${editHabits?"Klar":"Redigera"}</button></div><div class="habits">`;
   S.habits.forEach(x=>{const on=done.includes(x.id),st=streakOf(d=>(S.days[d]||[]).includes(x.id));
     h+=`<div class="hrow2"><button class="habit ${on?"done":""}" data-habit="${x.id}" aria-pressed="${on}">
@@ -676,36 +727,51 @@ function renderGym(){
   const S=V(),t=today(),s=S.sessions[t],sd=sessionDates(S);
   const durs=sd.map(d=>dur(S.sessions[d])).filter(x=>x).slice(-10),last=sd.length?sd[sd.length-1]:null;
   let h="";
-  if(s&&s.sets&&s.sets.length&&s.end){
-    h+=`<div class="mod hud start"><div class="lbl"><span>Dagens pass</span><span>Klart</span></div><h2>Bra jobbat.</h2>
+  if(s&&s.sets&&s.sets.length&&s.end){const tp=progOf(S,s.prog);
+    h+=`<div class="mod hud start"><div class="lbl"><span>Dagens pass${tp?" · "+esc(tp.name):""}</span><span>Klart</span></div><h2>Bra jobbat.</h2>
       <div class="facts"><div><b>${s.sets.length}</b><span>Set</span></div><div><b>${fmtDur(dur(s))}</b><span>Tid</span></div><div><b>${fmt(sessVol(s))}</b><span>Volym kg</span></div></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn ghost" data-summary="${t}">Sammanfattning</button><button class="btn" data-start="1">Fortsätt passet</button></div></div>`;
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn ghost" data-summary="${t}">Sammanfattning</button><button class="btn" data-start="${s.prog||""}">Fortsätt passet</button></div></div>`;
   }else{
-    h+=`<div class="mod hud start"><div class="lbl"><span>${DAYS_LONG[parse(t).getDay()]} ${shortDate(t)}</span><span>${S.exercises.length} övningar · ${BASE_SETS} set</span></div>
-      <h2>${last?`Senaste passet: ${dayName(last).toLowerCase()}`:"Ditt första pass"}</h2>
-      <div class="facts"><div><b>${durs.length?Math.round(mean(durs)):"–"}<small style="font-size:12px;color:var(--muted)"> min</small></b><span>Snittid</span></div><div><b>${last?daysBetween(last,t):"–"}</b><span>Dagar sedan</span></div><div><b>${sd.length}</b><span>Pass totalt</span></div></div>
-      <button class="bigbtn" data-start="1">${PLAY}Starta pass</button></div>`;
+    const np=nextProg(S);
+    h+=`<div class="start" style="gap:10px"><div class="lbl" style="padding:0 2px"><span>Välj pass</span><span>${last?"Senast "+dayName(last).toLowerCase():"Inga pass än"}</span></div>`;
+    S.programs.forEach(p=>{const ps=progSessions(S,p.id),lp=ps.length?ps[ps.length-1]:null,isN=np&&np.id===p.id;
+      const pd=ps.map(d=>dur(S.sessions[d])).filter(Boolean).slice(-5);
+      h+=`<button class="pcard ${isN?"next":""}" data-start="${p.id}" ${p.ex.length?"":"data-empty=\"1\""}>
+        <div class="pc-top"><b>${esc(p.name)}</b>${isN?'<em>Nästa på tur</em>':""}</div>
+        <div class="pc-meta"><span>${p.ex.length} övningar</span><span>${lp?"Förra: "+(daysBetween(lp,t)===0?"idag":daysBetween(lp,t)===1?"igår":shortDate(lp)):"Aldrig kört"}</span><span>${ps.length} pass</span>${pd.length?`<span>~${Math.round(mean(pd))} min</span>`:""}</div>
+        <span class="pc-go">${PLAY}</span></button>`});
+    if(!S.programs.length)h+=`<p class="empty">Inga pass. Lägg till ett nedan.</p>`;
+    h+=`</div>`;
   }
-  // program
-  h+=`<div class="mod"><div class="lbl"><span>Ditt pass</span><button id="manEx">${manageEx?"Klar":"Ändra"}</button></div>`;
-  if(!S.programSet)h+=`<div class="flag">Det här är platshållare. Tryck Ändra och lägg in dina egna övningar i den ordning du kör dem.</div>`;
-  if(manageEx){
-    h+=`<div style="margin-top:8px">${S.exercises.map((e,i)=>`<div class="mgrid"><span>${i+1}. ${esc(e.name)}</span>
-      <button class="mv" data-mv="${e.id}|-1" ${i===0?"disabled":""} aria-label="Flytta upp">↑</button><button class="mv" data-mv="${e.id}|1" ${i===S.exercises.length-1?"disabled":""} aria-label="Flytta ner">↓</button>
-      <button class="del ${confirmDel===e.id?"sure":""}" data-dele="${e.id}">${confirmDel===e.id?"Säker?":"Ta bort"}</button></div>`).join("")}</div>
-      <div class="addrow" style="margin-top:12px"><input id="newEx" placeholder="Ny övning, t.ex. Chins" maxlength="40"><button class="btn" id="addE">Lägg till</button></div>
-      <p class="note" style="margin-top:8px">Ordningen här är ordningen i passet. Borttagna övningar finns kvar i historiken.</p>`;
-  }else{
-    h+=`<div class="prog">${S.exercises.map((e,i)=>{const lf=lastFor(S,e.id,addDays(t,1)),ser=exSeries(S,e.id);
+  // programs
+  if(!viewProg||!progOf(S,viewProg))viewProg=S.programs[0]?S.programs[0].id:null;
+  const vp=progOf(S,viewProg);
+  h+=`<div class="mod"><div class="lbl"><span>Dina pass</span><button id="manEx">${manageEx?"Klar":"Ändra"}</button></div>
+    <div class="chips">${S.programs.map(p=>`<button class="chip ${p.id===viewProg?"on":""}" data-vp="${p.id}">${esc(p.name)}</button>`).join("")}${manageEx?`<button class="chip" id="addProg">+ Nytt pass</button>`:""}</div>`;
+  if(vp&&vp.draft)h+=`<div class="flag">Förslag på övningar. Tryck Ändra och byt till dina egna, så är passet ditt.</div>`;
+  if(vp&&manageEx){
+    h+=`<div class="addrow" style="margin-top:12px"><input id="progName" value="${esc(vp.name)}" maxlength="30" aria-label="Passets namn"><button class="btn" id="renProg">Byt namn</button></div>
+      <div style="margin-top:8px">${progExs(S,vp).map((e,i,a)=>`<div class="mgrid"><span>${i+1}. ${esc(e.name)}</span>
+      <button class="mv" data-mv="${e.id}|-1" ${i===0?"disabled":""} aria-label="Flytta upp">↑</button><button class="mv" data-mv="${e.id}|1" ${i===a.length-1?"disabled":""} aria-label="Flytta ner">↓</button>
+      <button class="del ${confirmDel==="x"+e.id?"sure":""}" data-dele="${e.id}">${confirmDel==="x"+e.id?"Säker?":"Ta bort"}</button></div>`).join("")||'<p class="empty">Inga övningar i passet än.</p>'}</div>
+      <div class="addrow" style="margin-top:12px"><input id="newEx" list="exLib" placeholder="Lägg till övning, t.ex. Chins" maxlength="40"><button class="btn solid" id="addE">Lägg till</button></div>
+      <datalist id="exLib">${S.exercises.map(e=>`<option value="${esc(e.name)}"></option>`).join("")}</datalist>
+      <p class="note" style="margin-top:8px">Ordningen här är ordningen i passet. Samma övning i flera pass delar historik och statistik. Borttagna övningar finns kvar i historiken.</p>
+      <button class="btn warn ${confirmDel==="p"+vp.id?"sure":""}" id="delProg" style="margin-top:12px;width:100%">${confirmDel==="p"+vp.id?"Säker? Historiken finns kvar":"Ta bort passet "+esc(vp.name)}</button>`;
+  }else if(vp){
+    const vps=progSessions(S,vp.id),lps=vps.length?vps[vps.length-1]:null,lpx=lps?S.sessions[lps]:null;
+    if(lpx)h+=`<button class="lastp" data-detail="${lps}"><div><span class="lbl">Förra ${esc(vp.name)}-passet</span><b>${dayName(lps)}</b><small>${lpx.sets.length} set · ${fmt(sessVol(lpx))} kg${dur(lpx)?" · "+fmtDur(dur(lpx)):""}${lpx.feel?" · känsla "+lpx.feel+"/5":""}</small></div><span class="r">Visa ›</span></button>`;
+    else h+=`<p class="note" style="margin-top:12px">Du har inte kört ${esc(vp.name)} än. Efter första passet ser du här exakt vad du lyfte.</p>`;
+    h+=`<div class="prog">${progExs(S,vp).map((e,i)=>{const own=lps?exSets(S,lps,e.id).sort((a,b)=>(a.n||0)-(b.n||0)):[];const lf=own.length?{d:lps,sets:own}:lastFor(S,e.id,addDays(t,1)),ser=exSeries(S,e.id);
       let tr="";if(ser.length>1){const d=ser[ser.length-1].e1-ser[Math.max(0,ser.length-5)].e1;tr=`<span class="${dcls(d)}">${d>.05?"▲":d<-.05?"▼":"■"} ${sgn(d,1)}</span>`}
-      return `<div class="pitem"><span class="n">${pad(i+1)}</span><div style="min-width:0"><b>${esc(e.name)}</b><small>${lf?lf.sets.map(x=>fmt(x.kg,2)+"×"+x.r).join(" · "):"Inget loggat än"}</small></div><span class="tr">${tr}</span></div>`}).join("")||'<p class="empty">Inga övningar. Tryck Ändra.</p>'}</div>`;
-  }
+      return `<div class="pitem"><span class="n">${pad(i+1)}</span><div style="min-width:0"><b>${esc(e.name)}</b><small>${lf?lf.sets.map(x=>fmt(x.kg,2)+" kg × "+x.r).join("  ·  ")+(lf.d!==lps?" ("+shortDate(lf.d)+")":""):"Inget loggat än"}</small></div><span class="tr">${tr}</span></div>`}).join("")||'<p class="empty">Inga övningar. Tryck Ändra.</p>'}</div>`;
+  }else if(manageEx)h+=`<button class="btn" id="addProg2" style="margin-top:12px;width:100%">+ Nytt pass</button>`;
   h+=`</div>`;
   // history
   h+=`<div class="mod"><div class="lbl"><span>Historik</span><span>${sd.length} pass</span></div><div class="list" style="margin-top:4px">`;
-  sd.slice(-8).reverse().forEach(d=>{const x=S.sessions[d];h+=`<button data-detail="${d}"><div><b>${dayName(d)}</b><span>${x.sets.length} set${dur(x)?" · "+fmtDur(dur(x)):""}${x.feel?" · känsla "+x.feel+"/5":""}</span></div><div class="r">${fmt(sessVol(x))} kg</div></button>`});
+  sd.slice(-8).reverse().forEach(d=>{const x=S.sessions[d];h+=`<button data-detail="${d}"><div><b>${dayName(d)}</b><span>${progOf(S,x.prog)?esc(progOf(S,x.prog).name)+" · ":""}${x.sets.length} set${dur(x)?" · "+fmtDur(dur(x)):""}${x.feel?" · känsla "+x.feel+"/5":""}</span></div><div class="r">${fmt(sessVol(x))} kg</div></button>`});
   if(!sd.length)h+=`<p class="empty">Inga pass än.</p>`;
-  h+=`</div><div class="addrow" style="margin-top:12px"><input type="date" id="pastDate" class="inp" max="${addDays(t,-1)}" value="${addDays(t,-1)}" aria-label="Datum för missat pass"><button class="btn ghost" id="logPast">Logga i efterhand</button></div></div>`;
+  h+=`</div><div class="addrow past" style="margin-top:12px"><input type="date" id="pastDate" class="inp" max="${addDays(t,-1)}" value="${addDays(t,-1)}" aria-label="Datum för missat pass"><select id="pastProg" class="inp" aria-label="Vilket pass">${S.programs.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("")}</select><button class="btn ghost" id="logPast">Logga i efterhand</button></div></div>`;
   $("#s-gym").innerHTML=h;
 }
 
@@ -716,17 +782,17 @@ function defaultDraft(day,ex,k){
   if(prevRow)return{kg:prevRow.kg,r:prevRow.r};return{kg:"",r:""};
 }
 function renderWorkout(){
-  const S=real,day=wo.day,exs=S.exercises,s=S.sessions[day]||{sets:[]};
+  const S=real,day=wo.day,exs=sessExs(S,day,wo.prog),s=S.sessions[day]||{sets:[]},wp=progOf(S,wo.prog);
   if(!exs.length){wo=null;return renderGym()}
   wo.idx=Math.max(0,Math.min(wo.idx,exs.length-1));
   const ex=exs[wo.idx],mine=exSets(S,day,ex.id),lf=lastFor(S,ex.id,day),prevBest=bestBefore(S,ex.id,day);
   const rows=Math.max(BASE_SETS,extra[day+"|"+ex.id]?MAX_SETS:0,...mine.map(x=>(x.n||0)+1));
   const segs=exs.map((e,i)=>{const c=exSets(S,day,e.id).length;return `<button class="seg ${c>=BASE_SETS?"done":c?"part":""} ${i===wo.idx?"cur":""}" data-woi="${i}" aria-label="${esc(e.name)}"></button>`}).join("");
   let h=`<div class="mod hud wohead">
-    <div class="lbl"><span>Övning ${wo.idx+1} / ${exs.length}</span><span>${s.start?`<span class="clock" data-clock="sess">${clock(Date.now()-s.start)}</span>`:dayName(day)}</span></div>
+    <div class="lbl"><span>${wp?esc(wp.name)+" · ":""}${wo.idx+1} / ${exs.length}</span><span>${s.start?`<span class="clock" data-clock="sess">${clock(Date.now()-s.start)}</span>`:dayName(day)}</span></div>
     <div class="segs">${segs}</div>
     <h1 class="woname">${esc(ex.name)}</h1>
-    <div class="woprev">${lf?`Förra gången (${shortDate(lf.d)}): <b>${lf.sets.map(x=>fmt(x.kg,2)+" × "+x.r).join(" · ")}</b>`:"Första gången. Sätt en baslinje."}${prevBest?`<br>Rekord e1RM: <b>${fmt(prevBest,1)} kg</b>`:""}</div></div>`;
+    <div class="woprev">${lf?`Förra gången${progOf(S,(S.sessions[lf.d]||{}).prog)?" i "+esc(progOf(S,S.sessions[lf.d].prog).name):""} (${shortDate(lf.d)}): <b>${lf.sets.map(x=>fmt(x.kg,2)+" × "+x.r).join(" · ")}</b>`:"Första gången. Sätt en baslinje."}${prevBest?`<br>Rekord e1RM: <b>${fmt(prevBest,1)} kg</b>`:""}</div></div>`;
   h+=`<div class="mod rows"><div class="rh"><span>Set</span><span>Vikt</span><span>Reps</span><span></span></div>`;
   for(let k=0;k<rows;k++){
     const sv=setAt(S,day,ex.id,k),dk=day+"|"+ex.id+"|"+k,dr=drafts[dk]||defaultDraft(day,ex.id,k);
@@ -764,7 +830,7 @@ function sessionCompare(S,day){
 function renderSummary(day){
   const S=real,s=S.sessions[day];if(!s){summaryDay=null;return renderGym()}
   const c=sessionCompare(S,day),vol=sessVol(s),pv=c.ps?sessVol(c.ps):null,prs=c.rows.filter(r=>r.pr).length;
-  let h=`<div class="mod hud start"><div class="lbl"><span>Pass klart · ${dayName(day)}</span><span>${prs?prs+" PR":""}</span></div>
+  let h=`<div class="mod hud start"><div class="lbl"><span>${progOf(S,s.prog)?esc(progOf(S,s.prog).name)+" klart":"Pass klart"} · ${dayName(day)}</span><span>${prs?prs+" PR":""}</span></div>
     <h2>${prs?`${prs} nya personbästa.`:pv!=null&&vol>pv?"Mer volym än förra passet.":"Passet är sparat."}</h2>
     <div class="facts"><div><b>${fmtDur(dur(s))}</b><span>Tid</span></div><div><b>${s.sets.length}</b><span>Set</span></div><div><b>${fmt(vol)}</b><span>Volym kg</span></div></div>
     ${pv!=null?`<p class="note">Volym mot förra passet (${shortDate(c.pd)}): <span class="${dcls(vol-pv)}">${sgn((vol-pv)/pv*100,1)} %</span></p>`:""}</div>
@@ -779,7 +845,7 @@ function renderDetail(day){
   const S=V(),s=S.sessions[day];if(!s){detailDay=null;return renderGym()}
   const c=sessionCompare(S,day);
   let h=`<button class="btn ghost" id="backDet" style="align-self:flex-start">‹ Tillbaka</button>
-  <div class="mod hud start"><div class="lbl"><span>${DAYS_LONG[parse(day).getDay()]} ${shortDate(day)} ${parse(day).getFullYear()}</span><span>${s.feel?"Känsla "+s.feel+"/5":""}</span></div>
+  <div class="mod hud start"><div class="lbl"><span>${progOf(S,s.prog)?esc(progOf(S,s.prog).name)+" · ":""}${DAYS_LONG[parse(day).getDay()]} ${shortDate(day)}</span><span>${s.feel?"Känsla "+s.feel+"/5":""}</span></div>
     <div class="facts"><div><b>${fmtDur(dur(s))}</b><span>Tid</span></div><div><b>${s.sets.length}</b><span>Set</span></div><div><b>${fmt(sessVol(s))}</b><span>Volym kg</span></div></div></div>`;
   c.rows.forEach(r=>{const sets=exSets(S,day,r.id).sort((a,b)=>(a.n||0)-(b.n||0));
     h+=`<div class="mod"><div class="lbl"><span>${esc(exName(S,r.id))}${r.pr?" · PR":""}</span><span class="${r.before!=null?dcls(r.now-r.before):"flat"}">${r.before!=null?sgn(r.now-r.before,1)+" kg e1RM":""}</span></div>
@@ -800,6 +866,9 @@ function insights(S){
   if(proj)out.push(["PROGNOS",`I nuvarande takt (${sgn(proj.sl*7,2)} kg/vecka) når du <b>${proj.goal} kg e1RM i ${esc(proj.e.name.toLowerCase())}</b> runt ${shortDate(addDays(t,Math.round(proj.days)))}.`]);
   // PRs
   const pr=prEvents(S),pr30=pr.filter(p=>daysBetween(p.d,t)<30).length;if(pr.length)out.push(["REKORD",`<b>${pr30} personbästa</b> senaste 30 dagarna, ${pr.length} totalt.`]);
+  // neglected program
+  const s30=sd.filter(d=>daysBetween(d,t)<30);if(s30.length>=4&&S.programs.length>1){const cnt=S.programs.map(p=>({p,n:s30.filter(d=>S.sessions[d].prog===p.id).length}));
+    const lo=cnt.reduce((a,b)=>b.n<a.n?b:a),hi=cnt.reduce((a,b)=>b.n>a.n?b:a);if(hi.n-lo.n>=2)out.push(["BALANS",`<b>${esc(lo.p.name)}</b> har du kört ${lo.n} ${lo.n===1?"gång":"gånger"} senaste 30 dagarna, mot ${hi.n} för ${esc(hi.p.name)}.`])}
   // weekday
   if(sd.length>=4){const wd=[0,0,0,0,0,0,0];sd.forEach(d=>wd[parse(d).getDay()]++);const top=wd.indexOf(Math.max(...wd));out.push(["RYTM",`Du tränar oftast på <b>${DAYS_PL[top]}</b> (${Math.round(wd[top]/sd.length*100)} % av passen).`])}
   // gap
@@ -843,6 +912,14 @@ function renderStats(){
     <div class="kpi"><b>${since==null?"–":since}<small>d</small></b><span>Sedan senaste pass</span><i class="flat">${durs.length?"Snittid "+Math.round(mean(durs.slice(-10)))+" min":"&nbsp;"}</i></div></div>`;
   const ins=insights(S);
   h+=`<div class="mod hud"><div class="lbl"><span>Insikter</span><span>${ins.length} st</span></div><div class="ins">${ins.length?ins.map(([g,x])=>`<div><em>${g}</em><p>${x}</p></div>`).join(""):'<p class="empty">Logga ett par veckor så dyker mönster upp här.</p>'}</div></div>`;
+  // per program
+  if(S.programs.length){const tot30=sd.filter(d=>daysBetween(d,t)<30).length;
+    h+=`<div class="mod"><div class="lbl"><span>Per pass</span><span>${tot30} pass senaste 30 d</span></div><div style="margin-top:6px">`;
+    S.programs.forEach(p=>{const ps=progSessions(S,p.id),p30=ps.filter(d=>daysBetween(d,t)<30),pd=ps.map(d=>dur(S.sessions[d])).filter(Boolean),pv=ps.map(d=>sessVol(S.sessions[d]));
+      const lastV=pv.length?pv[pv.length-1]:null,prevV=pv.length>1?pv[pv.length-2]:null,share=tot30?Math.round(p30.length/tot30*100):0;
+      h+=`<div class="hstat"><b>${esc(p.name)}</b><span class="nums">${p30.length} st · <em>${share} %</em></span><div class="bar"><i style="width:${share}%"></i></div>
+        <small>${ps.length} totalt · ${pd.length?"snitt "+Math.round(mean(pd))+" min · ":""}${pv.length?"snittvolym "+fmt(mean(pv)/1000,1)+" t":"inga pass än"}${prevV?` · senaste <span class="${dcls(lastV-prevV)}">${sgn((lastV-prevV)/prevV*100,0)} %</span> mot förra`:""}${ps.length?" · senast "+shortDate(ps[ps.length-1]):""}</small></div>`});
+    h+=`</div></div>`;}
   // heatmap
   const weeks=18,start=addDays(mondayOf(t),-(weeks-1)*7);let cells="";
   for(let w=0;w<weeks;w++)for(let d=0;d<7;d++){const day=addDays(start,w*7+d);if(day>t){cells+='<i class="f"></i>';continue}
@@ -859,11 +936,12 @@ function renderStats(){
   if(!S.habits.length)h+=`<p class="empty">Lägg till vanor under Idag.</p>`;
   h+=`</div></div>`;
   // strength per exercise
-  if(!statEx||!S.exercises.some(e=>e.id===statEx))statEx=((S.exercises.find(e=>exSeries(S,e.id).length))||S.exercises[0]||{}).id;
+  const chipEx=exWithData(S).length?exWithData(S):usedEx(S);
+  if(!statEx||!chipEx.some(e=>e.id===statEx))statEx=(chipEx[0]||{}).id;
   let ser=statEx?exSeries(S,statEx):[];const all=ser;
   if(statRange!=="all")ser=ser.filter(p=>daysBetween(p.d,t)<+statRange);
   h+=`<div class="mod hud"><div class="lbl"><span>Styrka per övning</span><span class="seg3">${[["30","30 d"],["90","90 d"],["all","Allt"]].map(([k,l])=>`<button class="${statRange===k?"on":""}" data-range="${k}">${l}</button>`).join("")}</span></div>
-    <div class="chips">${S.exercises.map(e=>`<button class="chip ${e.id===statEx?"on":""}" data-sx="${e.id}">${esc(e.name)}</button>`).join("")}</div>`;
+    <div class="chips">${chipEx.map(e=>`<button class="chip ${e.id===statEx?"on":""}" data-sx="${e.id}">${esc(e.name)}</button>`).join("")}</div>`;
   if(ser.length){
     const first=ser[0],last=ser[ser.length-1],dl=last.e1-first.e1,dp=first.e1?dl/first.e1*100:0;
     const bestKg=Math.max(...all.map(s=>s.top)),bestE=Math.max(...all.map(s=>s.e1)),tv=all.reduce((a,s)=>a+s.vol,0);
@@ -917,7 +995,8 @@ function renderStats(){
   const allSets=sd.reduce((a,d)=>a+S.sessions[d].sets.length,0),allReps=sd.reduce((a,d)=>a+S.sessions[d].sets.reduce((b,x)=>b+x.r,0),0),allVol=sd.reduce((a,d)=>a+sessVol(S.sessions[d]),0);
   const totMin=durs.reduce((a,b)=>a+b,0);
   h+=`<div class="mod"><div class="lbl"><span>Personbästa</span><span>${prEvents(S).length} PR totalt</span></div><div class="tscroll"><table><thead><tr><th>Övning</th><th>Tyngst</th><th>e1RM</th><th>Pass</th></tr></thead><tbody>`;
-  S.exercises.forEach(e=>{const s=exSeries(S,e.id);if(!s.length){h+=`<tr><td>${esc(e.name)}</td><td>–</td><td>–</td><td>0</td></tr>`;return}
+  const prEx=exWithData(S);if(!prEx.length)h+=`<tr><td colspan="4" style="font-family:var(--f-body);color:var(--muted);text-align:left">Inga set loggade än.</td></tr>`;
+  prEx.forEach(e=>{const s=exSeries(S,e.id);
     const bk=s.reduce((a,b)=>b.top>=a.top?b:a),be=s.reduce((a,b)=>b.e1>=a.e1?b:a);
     h+=`<tr><td>${esc(e.name)}</td><td>${fmt(bk.top,2)}<small>${shortDate(bk.d)}</small></td><td>${fmt(be.e1,1)}<small>${shortDate(be.d)}</small></td><td>${s.length}</td></tr>`});
   h+=`</tbody></table></div><div class="grid4"><div><b>${fmt(allSets)}</b><span>Set totalt</span></div><div><b>${fmt(allReps)}</b><span>Reps totalt</span></div>
@@ -958,8 +1037,12 @@ document.addEventListener("click",e=>{
   if(b.id==="addH"){addHabit();return}
   if(D.delh){delHabit(D.delh);return}
   if(b.id==="bwSave"){saveBody();return}
-  if(D.start){startWorkout(today());return}
-  if(D.resume){wo={day:today(),idx:firstOpen(real,today())};tab="gym";render();window.scrollTo({top:0});return}
+  if(D.start!==undefined){if(b.dataset.empty){viewProg=D.start;manageEx=true;render();toast("Lägg till övningar i passet först.");return}startWorkout(today(),D.start);return}
+  if(D.resume){const s=real.sessions[today()]||{};wo={day:today(),prog:s.prog,idx:firstOpen(real,today(),sessExs(real,today(),s.prog))};tab="gym";render();window.scrollTo({top:0});return}
+  if(D.vp){viewProg=D.vp;confirmDel=null;render();return}
+  if(b.id==="addProg"||b.id==="addProg2"){addProg();return}
+  if(b.id==="renProg"){renameProg();return}
+  if(b.id==="delProg"){delProg();return}
   if(D.wset){const[ex,k]=D.wset.split("|");woSet(ex,+k);return}
   if(D.woi!==undefined){wo.idx=+D.woi;render();window.scrollTo({top:0});return}
   if(D.wonav){wo.idx+=+D.wonav;render();window.scrollTo({top:0});return}
@@ -971,10 +1054,11 @@ document.addEventListener("click",e=>{
   if(D.summary){summaryDay=D.summary;render();return}
   if(D.detail){detailDay=D.detail;confirmDel=null;render();window.scrollTo({top:0});return}
   if(b.id==="backDet"){detailDay=null;confirmDel=null;render();return}
-  if(D.editday){ensureReal();wo={day:D.editday,idx:0};detailDay=null;render();window.scrollTo({top:0});return}
+  if(D.editday){ensureReal();wo={day:D.editday,idx:0,prog:(real.sessions[D.editday]||{}).prog};detailDay=null;render();window.scrollTo({top:0});return}
   if(D.delsess){deleteSession(D.delsess);return}
   if(b.id==="logPast"){const v=$("#pastDate").value;if(!v||v>=today()){toast("Välj ett datum före idag.");return}
-    ensureReal();if(!real.sessions[v])real.sessions[v]={sets:[]};wo={day:v,idx:firstOpen(real,v)};render();window.scrollTo({top:0});return}
+    const pp=$("#pastProg").value;ensureReal();if(!real.sessions[v])real.sessions[v]={sets:[]};real.sessions[v].prog=real.sessions[v].prog||pp;const pid=real.sessions[v].prog;
+    wo={day:v,prog:pid,idx:firstOpen(real,v,sessExs(real,v,pid))};render();window.scrollTo({top:0});return}
   if(b.id==="manEx"){manageEx=!manageEx;confirmDel=null;render();return}
   if(b.id==="addE"){addEx();return}
   if(D.dele){delEx(D.dele);return}
@@ -993,12 +1077,12 @@ document.addEventListener("click",e=>{
   if(b.id==="bkImport"){let o;try{o=JSON.parse($("#bkIn").value)}catch(err){toast("Texten går inte att läsa. Klistra in hela säkerhetskopian.");return}
     if(!o||!Array.isArray(o.exercises)||typeof o.sessions!=="object"){toast("Det där ser inte ut som en Formlogg-kopia.");return}
     if(confirmDel!=="import"){confirmDel="import";render();return}
-    const old=Object.keys(real.sessions);demoOn=false;demoDismissed=true;real=Object.assign(DEFAULT(),o);confirmDel=null;backupOpen=false;saveAll(old);toast("Din logg är inläst.");render();return}
+    const old=Object.keys(real.sessions);demoOn=false;demoDismissed=true;real=Object.assign(DEFAULT(),o);migrate(real);confirmDel=null;backupOpen=false;saveAll(old);toast("Din logg är inläst.");render();return}
 });
 document.addEventListener("input",e=>{const el=e.target;if(el.dataset&&el.dataset.dk){const dk=el.dataset.dk;if(!drafts[dk]){const[d,ex,k]=dk.split("|");drafts[dk]=Object.assign({},defaultDraft(d,ex,+k))}drafts[dk][el.dataset.k]=el.value}});
 document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const el=e.target;
   if(el.id==="auPw"&&!authBusy){authDo("in");return}
-  if(el.id==="newHabit")addHabit();else if(el.id==="newEx")addEx();else if(el.id==="bwIn")saveBody();
+  if(el.id==="newHabit")addHabit();else if(el.id==="newEx")addEx();else if(el.id==="progName")renameProg();else if(el.id==="bwIn")saveBody();
   else if(el.dataset&&el.dataset.dk){const[,ex,k]=el.dataset.dk.split("|");el.blur();woSet(ex,+k)}});
 document.addEventListener("focusin",e=>{const el=e.target;if(el.dataset&&el.dataset.dk&&el.select)setTimeout(()=>{try{el.select()}catch(x){}},0)});
 
