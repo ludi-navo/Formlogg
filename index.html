@@ -762,7 +762,9 @@ async function loadHealth(force){if(store.mode!=="supa"||!sbUser)return;if(!forc
     const [d,l]=await Promise.all([sb.from("health_daily").select("day,data").gte("day",since),
       sb.from("health_log").select("at,data").gte("at",parse(since).toISOString()).order("at",{ascending:true}).limit(3000)]);
     if(!d.error){const o={};(d.data||[]).forEach(r=>o[r.day]=normH(r.data||{}));health.daily=o}
-    if(!l.error){const seen=new Set(),w=[];(l.data||[]).forEach(r=>{health.lastAt=r.at;const x=normH(r.data||{});if(!x.w_start)return;
+    if(!l.error){const seen=new Set(),w=[];(l.data||[]).forEach(r=>{health.lastAt=r.at;const x=normH(r.data||{});
+      if(x.hr20>0){const at=Date.parse(r.at);w.push({start:at-20*6e4,end:at,min:20,hr:x.hr20,hrmax:x.hr20max||null,type:"puls20"})}
+      if(!x.w_start)return;
       const hasT=v=>/T\d|\d:\d/.test(String(v||""));if(!hasT(x.w_start))return;
       const st=Date.parse(x.w_start),en=hasT(x.w_end)?Date.parse(x.w_end):NaN;if(!isFinite(st)||seen.has(x.w_start))return;seen.add(x.w_start);
       w.push({start:st,end:isFinite(en)?en:st+(x.w_min||0)*6e4,min:x.w_min||(isFinite(en)?(en-st)/6e4:null),kcal:x.w_kcal,hr:x.w_hr,hrmax:x.w_hrmax,type:x.w_type})});health.workouts=w}
