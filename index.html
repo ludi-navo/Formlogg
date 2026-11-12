@@ -822,7 +822,10 @@ function stepDone(S,day,st){const s=S.sessions[day]||{};if(st.k==="walk")return!
 function firstOpenStep(S,day,pid){const st=woSteps(S,day,pid),s=S.sessions[day]||{},has=(s.sets||[]).length>0;
   const i=st.findIndex((x,j)=>!(j===0&&has)&&!stepDone(S,day,x));return i<0?st.length-1:i}
 function walkTarget(S,w){const g=prof(S).walkGoal;if(w==="pre")return zone(S,.55,.65);return g==="kondition"?zone(S,.65,.75):g==="uppvärmning"?zone(S,.5,.6):zone(S,.6,.7)}
-function walkHR(x){if(!x||!x.at||!health.workouts.length)return null;let best=null,bd=50*6e4;health.workouts.forEach(w=>{const d=Math.abs(w.end-x.at);if(d<bd&&w.hr){bd=d;best=w}});return best?{hr:best.hr,hrmax:best.hrmax,kcal:best.kcal}:null}
+const isWalkType=w=>/promenad|walk|gång|gang|vandr|hik/i.test(String(w.type||""));
+function walkHR(x){if(!x||!x.at||!health.workouts.length)return null;const near=health.workouts.filter(w=>w.hr&&Math.abs(w.end-x.at)<50*6e4);if(!near.length)return null;
+  const pool=near.some(isWalkType)?near.filter(isWalkType):near.filter(w=>!/styrk|strength|funktion/i.test(String(w.type||"")));const list=pool.length?pool:near;
+  const best=list.reduce((a,b)=>Math.abs(b.end-x.at)<Math.abs(a.end-x.at)?b:a);return{hr:best.hr,hrmax:best.hrmax,kcal:best.kcal}}
 function walksOf(S,w){const out=[];Object.keys(S.sessions).sort().forEach(d=>{const x=((S.sessions[d]||{}).walks||{})[w];if(x)out.push(Object.assign({d},x,{hr:walkHR(x)}))});return out}
 function walkSuggest(S,w,day){const all=walksOf(S,w).filter(x=>x.d<day),last=all[all.length-1],[lo,hi]=walkTarget(S,w);
   if(!last)return{min:20,inc:w==="pre"?6:8,spd:5,why:`Startförslag. Justera tills pulsen ligger på ${lo}–${hi}.`,lo,hi};
@@ -1310,6 +1313,7 @@ function renderStats(){
     h+=`<div class="mod hud"><div class="lbl"><span>Apple Watch</span><span>Snitt 7 dagar</span></div>
       <div class="grid4">${cell("sleep","Sömn h",1)}${cell("hrv","HRV ms",0)}${cell("rhr","Vilopuls",0)}${cell("steps","Steg",0)}${cell("deep","Djupsömn h",1)}${cell("rem","REM-sömn h",1)}${cell("resp","Andning/min",1)}${cell("spo2","Syremättnad",1," %")}${cell("kcal","Aktiva kcal",0)}${cell("exmin","Träningsmin",0)}
       <div><b>${lastV("vo2")?fmt(lastV("vo2"),1):"–"}</b><span>VO2 max senast</span></div>${cell("temp","Handledstemp",2)}</div>
+      <p class="foot" style="margin-top:10px">Steg, kalorier och träningsminuter från klockan innehåller redan gången på bandet. De läggs inte ihop med gången du loggar i passet och ger inga poäng.</p>
       ${H("sleep").length>=2?lineChart(H("sleep"),[{k:"v",color:"var(--info)",area:true,dots:true}],{h:140,label:"Sömn"})+`<div class="legend"><span><i style="background:var(--info)"></i>Sömn i timmar, 30 dagar</span></div>`:""}
       ${H("hrv").length>=2?lineChart(H("hrv"),[{k:"v",color:"var(--good)",dots:true}],{h:140,label:"HRV"})+`<div class="legend"><span><i style="background:var(--good)"></i>HRV, högre betyder bättre återhämtning</span></div>`:""}
       ${H("rhr").length>=2?lineChart(H("rhr"),[{k:"v",color:"var(--bad)",dots:true}],{h:140,label:"Vilopuls"})+`<div class="legend"><span><i style="background:var(--bad)"></i>Vilopuls, lägre betyder bättre form</span></div>`:""}</div>`}}
