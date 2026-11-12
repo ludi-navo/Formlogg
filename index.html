@@ -748,6 +748,8 @@ function normH(d){const o={};for(const k in d){const raw=d[k];if(k==="w_start"||
   const hm=txt.match(/^(\d+)h(?:(\d+)min)?/i);if(hm)v=+hm[1]+(+(hm[2]||0))/60;if(!isFinite(v))continue;
   if(H_SLEEP.includes(k))v=v>1440?v/3600:v>24?v/60:v;
   if(k==="spo2"&&v<=1)v*=100;
+  if(k==="hrv"&&v>0&&v<1)v*=1000;
+  if(k==="w_min"){const cm=txt.match(/^(\d+):(\d+)(?::(\d+))?$/);if(cm)v=cm[3]!=null?(+cm[1])*60+(+cm[2])+(+cm[3])/60:(+cm[1])+(+cm[2])/60}
   if(k==="w_min"&&v>300)v/=60;
   o[k]=v}return o}
 async function loadHealth(force){if(store.mode!=="supa"||!sbUser)return;if(!force&&Date.now()-healthT<30000)return;healthT=Date.now();
