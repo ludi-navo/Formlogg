@@ -203,6 +203,11 @@ select.inp{appearance:none;-webkit-appearance:none;color:var(--fg)}
 .sugg em{font-style:normal;font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--info)}
 .sugg b{font-family:var(--f-display);font-size:18px;font-weight:600;letter-spacing:-.03em}
 .sugg small{font-size:12px;color:var(--soft)}
+.howto{border:1px solid rgba(157,184,255,.25);background:var(--info-dim);border-radius:14px;padding:12px 14px}
+.howto em{font-style:normal;font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--info)}
+.howto ol{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--soft)}
+.howto b{color:var(--fg)}
+.sec>.howto{margin:0}
 .wgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .wgrid .field input{padding-right:46px;font-size:17px}
 .tag{display:inline-block;font-family:var(--f-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:999px;background:rgba(245,199,107,.12);color:var(--warn);border:1px solid rgba(245,199,107,.3)}
@@ -1068,14 +1073,17 @@ function renderWorkout(){
 }
 function renderWalkStep(S,day,s,w){
   const done=(s.walks||{})[w],sk=(s.skipWalk||{})[w],sg=walkSuggest(S,w,day),v=done||sg,hr=done?walkHR(done):null;
-  let h=`<h1 class="woname">${w==="pre"?"Gång före":"Gång efter"}</h1><div class="woprev">Löpband i lutning. ${w==="pre"?"Värm upp lugnt":"Här jobbar du i zon 2"}: puls <b>${sg.lo}–${sg.hi}</b>. Starta <b>Inomhuspromenad</b> på klockan.</div></div>`;
+  let h=`<h1 class="woname">${w==="pre"?"Gång före":"Gång efter"}</h1><div class="woprev">Löpband i lutning. ${w==="pre"?"Värm upp lugnt":"Här jobbar du i zon 2"}: puls <b>${sg.lo}–${sg.hi}</b>.</div></div>`;
   if(sk)return h+`<div class="mod"><p class="note">Överhoppad idag.</p><button class="btn" data-unskipw="${w}" style="margin-top:10px;width:100%">Ångra</button></div>`;
-  h+=`<div class="mod rows"><div class="sugg"><em>Förslag</em><b>${fmt(sg.inc,1)} % · ${fmt(sg.spd,1)} km/h · ${sg.min} min</b><small>${esc(sg.why)}</small></div>
+  h+=`<div class="mod rows">${done?"":howto(w==="pre"?["Starta <b>Inomhuspromenad</b> på klockan.",`Ställ in bandet på <b>${fmt(sg.inc,1)} % och ${fmt(sg.spd,1)} km/h</b> och gå i ${sg.min} min.`,"Avsluta promenaden på klockan.","Skriv in vad du faktiskt körde nedan och tryck <b>Klar med gången</b>."]:["Avsluta styrkepasset på klockan om du inte redan gjort det.","Starta <b>Inomhuspromenad</b> på klockan.",`Ställ in bandet på <b>${fmt(sg.inc,1)} % och ${fmt(sg.spd,1)} km/h</b> och gå i ${sg.min} min.`,"Avsluta promenaden på klockan, tryck <b>Klar med gången</b> och sedan <b>Avsluta pass</b>."])}<div class="sugg"><em>Förslag</em><b>${fmt(sg.inc,1)} % · ${fmt(sg.spd,1)} km/h · ${sg.min} min</b><small>${esc(sg.why)}</small></div>
     <div class="wgrid"><label class="field"><input id="wk-min" inputmode="numeric" value="${v.min}" aria-label="Minuter"><span>min</span></label><label class="field"><input id="wk-inc" inputmode="decimal" value="${String(v.inc).replace(".",",")}" aria-label="Lutning i procent"><span>% lut</span></label><label class="field"><input id="wk-spd" inputmode="decimal" value="${String(v.spd).replace(".",",")}" aria-label="Hastighet"><span>km/h</span></label></div>
     <button class="btn ${done?"":"solid"}" data-walk="${w}" style="min-height:50px">${done?"Uppdatera":"Klar med gången"}</button>
     ${done?`<p class="note">Sparad ${new Date(done.at).toLocaleTimeString("sv-SE",{hour:"2-digit",minute:"2-digit"})}${hr?` · snittpuls ${Math.round(hr.hr)}${hr.hrmax?` (max ${Math.round(hr.hrmax)})`:""}${hr.kcal?` · ${Math.round(hr.kcal)} kcal`:""}`:" · pulsen kopplas på när klockan har skickat passet"}</p>`:`<button class="add3" data-skipw="${w}">Hoppa över gången idag</button>`}</div>`;
   return h;
 }
+const howto=(items,title)=>`<div class="howto"><em>${title||"Gör så här"}</em><ol>${items.map(i=>`<li>${i}</li>`).join("")}</ol></div>`;
+function strengthWorkout(s){if(!s||!s.start||!health.workouts.length)return null;const a=s.start-30*6e4,b=(s.end||Date.now())+30*6e4;
+  const c=health.workouts.filter(w=>/styrk|strength|funktion/i.test(String(w.type||""))&&w.start>=a&&w.start<=b);return c.length?c.reduce((x,y)=>(y.min||0)>(x.min||0)?y:x):null}
 const SKIP_REASONS=["Upptagen maskin","Ont","Ont om tid","Orkade inte","Annat"];
 function renderExStep(S,day,s,ex){
   const mine=exSets(S,day,ex.id),lf=refFor(S,ex.id,day),prevBest=bestBefore(S,ex.id,day),sk=(s.skip||{})[ex.id],sg=suggest(S,ex.id,day);
@@ -1088,7 +1096,10 @@ function renderExStep(S,day,s,ex){
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px"><button class="btn ghost" data-exp="0">Inte idag</button><button class="btn solid" data-exp="1|${ex.id}|${xp.type}">Testa</button></div></div>`;
   else if(xp&&xp.ex===ex.id&&xp.acc)h+=`<div class="mod expc"><div class="lbl"><span>Experiment pågår</span><span>${EXP[xp.type].t}</span></div><p>${EXP[xp.type].d(sg||{kg:mine.length?mine[0].kg:0,r:mine.length?mine[0].r:0})}</p></div>`;
   const rows=Math.max(BASE_SETS,extra[day+"|"+ex.id]?MAX_SETS:0,...mine.map(x=>(x.n||0)+1));
-  h+=`<div class="mod rows">${sg&&!mine.length?`<div class="sugg"><em>Förslag idag</em><b>${fmt(sg.kg,2)} kg × ${sg.r}</b><small>${esc(sg.why)}</small></div>`:""}<div class="rh"><span>Set</span><span>Vikt</span><span>Reps</span><span></span></div>`;
+  const exl=sessExs(S,day,wo.prog),ei=exl.findIndex(e=>e.id===ex.id),firstEx=ei===0,lastEx=ei===exl.length-1;
+  let tip="";if(s.start&&!mine.length&&firstEx)tip=howto(["Starta <b>Traditionell styrketräning</b> på klockan nu.","Låt den gå under alla övningar. Den ger puls och kalorier för passet."],"Innan första setet");
+  if(s.start&&lastEx&&!stepDone(S,day,{k:"ex",e:ex}))tip+=howto(["Kör dina set och tryck ✓ efter varje.","Efter sista setet: <b>avsluta styrkepasset</b> på klockan.","Tryck <b>Nästa</b> för gången efter passet."],"Sista övningen");
+  h+=tip+`<div class="mod rows">${sg&&!mine.length?`<div class="sugg"><em>Förslag idag</em><b>${fmt(sg.kg,2)} kg × ${sg.r}</b><small>${esc(sg.why)}</small></div>`:""}<div class="rh"><span>Set</span><span>Vikt</span><span>Reps</span><span></span></div>`;
   for(let k=0;k<rows;k++){
     const sv=setAt(S,day,ex.id,k),dk=day+"|"+ex.id+"|"+k,dr=drafts[dk]||defaultDraft(day,ex.id,k);
     const changed=sv&&(num(dr.kg)!==sv.kg||parseInt(dr.r,10)!==sv.r);
@@ -1121,7 +1132,9 @@ function sessionCompare(S,day){
     const before=lf?Math.max(...lf.sets.map(x=>e1rm(x.kg,x.r))):null,pb=bestBefore(S,id,day);
     return{id,now,before,pr:pb>0&&now>pb}})};
 }
-function sessExtras(S,s){let h="";const w=s.walks||{};
+function sessExtras(S,s){let h="";const w=s.walks||{},sw=strengthWorkout(s);
+  if(sw)h+=`<div class="mod"><div class="lbl"><span>Styrkepass på klockan</span><span>${sw.min?Math.round(sw.min)+" min":""}</span></div><div class="det" style="margin-top:6px">${sw.hr?`<div><b>Snittpuls</b><span>${Math.round(sw.hr)}</span></div>`:""}${sw.hrmax?`<div><b>Maxpuls</b><span>${Math.round(sw.hrmax)}</span></div>`:""}${sw.kcal?`<div><b>Aktiva kalorier</b><span>${Math.round(sw.kcal)} kcal</span></div>`:""}</div></div>`;
+  else if(s.start&&store.mode==="supa")h+=`<p class="note">Pulsen från klockan dyker upp här någon minut efter att du avslutat passen på klockan.</p>`;
   if(w.pre||w.post)h+=`<div class="mod"><div class="lbl"><span>Gång på band</span><span>${(+((w.pre||{}).min||0))+(+((w.post||{}).min||0))} min</span></div><div class="det" style="margin-top:6px">${["pre","post"].filter(k=>w[k]).map(k=>{const x=w[k],hr=walkHR(x);return `<div><b>${k==="pre"?"Före":"Efter"}</b><span>${x.min} min · ${fmt(x.inc,1)} % · ${fmt(x.spd,1)} km/h${hr?` · puls ${Math.round(hr.hr)}`:""}</span></div>`}).join("")}</div></div>`;
   if(s.exp&&s.exp.acc)h+=`<div class="mod expc"><div class="lbl"><span>Experiment</span><span>${EXP[s.exp.type]?EXP[s.exp.type].t:""}</span></div><p>${esc(exName(S,s.exp.ex))}</p><small>Effekten syns under Statistik → Experiment efter nästa pass med övningen.</small></div>`;
   const sk=Object.keys(s.skip||{});if(sk.length)h+=`<div class="mod"><div class="lbl"><span>Överhoppat</span><span>${sk.length} st</span></div><div class="det" style="margin-top:6px">${sk.map(id=>`<div><b>${esc(exName(S,id))}</b><span>${esc(s.skip[id])}</span></div>`).join("")}</div></div>`;
