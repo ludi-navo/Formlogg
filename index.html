@@ -744,7 +744,8 @@ const clamp=v=>Math.max(0,Math.min(100,v));
 let health={daily:{},workouts:[],token:null,lastAt:null,loaded:false},healthT=0;
 const H_SLEEP=["sleep","deep","rem","core","awake"];
 function normH(d){const o={};for(const k in d){const raw=d[k];if(k==="w_start"||k==="w_end"||k==="w_type"){o[k]=raw;continue}
-  let v=num(raw);if(!isFinite(v))continue;
+  const txt=String(raw==null?"":raw).replace(/[\s\u00a0\u202f]/g,"");let v=num(txt);
+  const hm=txt.match(/^(\d+)h(?:(\d+)min)?/i);if(hm)v=+hm[1]+(+(hm[2]||0))/60;if(!isFinite(v))continue;
   if(H_SLEEP.includes(k))v=v>1440?v/3600:v>24?v/60:v;
   if(k==="spo2"&&v<=1)v*=100;
   if(k==="w_min"&&v>300)v/=60;
@@ -1389,7 +1390,7 @@ function renderBoard(){const t=today(),mk=t.slice(0,7),mName=MONTHS_LONG[parse(t
     <p class="foot" style="margin-top:10px">Pass 10 p · avbockad vana 2 p · var femte minut gång 1 p · dagens frågor 1 p. Vanan Tränat räknas inte, den ingår i passet. Listan nollställs den 1:a varje månad, totalen sparas.</p></div>`;
   return h}
 let guideOpen=false;
-const INGEST=()=>SUPA?SUPA.url+"/rest/v1/rpc/formlogg_ingest":"";
+const INGEST=()=>SUPA?SUPA.url+"/rest/v1/rpc/formlogg_push":"";
 function guideHtml(){const rows=[["sleep","Sömnanalys · Värde är inte I sängen och inte Vaken","Senaste 1 dagar","Summa av Varaktighet"],["deep","Sömnanalys · Värde är Djup","Senaste 1 dagar","Summa av Varaktighet"],["rem","Sömnanalys · Värde är REM","Senaste 1 dagar","Summa av Varaktighet"],
   ["rhr","Vilopuls","Senaste 1 dagar","Genomsnitt"],["hrv","Pulsvariabilitet","Senaste 1 dagar","Genomsnitt"],["resp","Andningsfrekvens","Senaste 1 dagar","Genomsnitt"],["spo2","Syremättnad","Senaste 1 dagar","Genomsnitt"],["temp","Handledstemperatur vid sömn","Senaste 1 dagar","Genomsnitt"],
   ["vo2","VO2 max","Senaste 30 dagar","Genomsnitt"],["steps","Steg","Idag","Summa"],["kcal","Aktiv energi","Idag","Summa"],["exmin","Träningsminuter","Idag","Summa"],["stand","Ståtid","Idag","Summa"]];
