@@ -294,6 +294,7 @@ a.btn{text-decoration:none}
 .wonav .btn{min-height:56px;border-radius:16px}
 .wonav .btn.solid{font-size:15px}
 .wofoot{display:flex;justify-content:space-between;gap:8px}
+.wofoot{flex-wrap:wrap}.wofoot #tmpOpen{color:var(--info)}
 .wofoot button{font-size:12px;font-weight:500;color:var(--muted);padding:10px 2px}
 .feel{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:12px}
 .feel button{border:1px solid var(--line2);border-radius:12px;background:rgba(255,255,255,.03);padding:10px 0;display:flex;flex-direction:column;align-items:center;gap:2px}
@@ -473,7 +474,7 @@ function migrate(R){let ch=false;
 let real=DEFAULT(), demo=null, demoOn=false, demoDismissed=false;
 let tab="day", sel=today(), statEx=null, statRange="all";
 let editHabits=false, manageEx=false, confirmDel=null, viewProg=null;
-let wo=null, summaryDay=null, detailDay=null, backupOpen=false, skipPick=null, musEdit=null;
+let wo=null, summaryDay=null, detailDay=null, backupOpen=false, skipPick=null, musEdit=null, tmpAdd=false;
 const drafts={}, extra={};
 const V=()=>demoOn?demo:real;
 const hasData=s=>Object.keys(s.days).length>0||Object.keys(s.sessions).length>0||Object.keys(s.body||{}).length>0||Object.keys(s.checkins||{}).length>0||Object.keys(s.measures||{}).length>0;
@@ -654,7 +655,8 @@ function prevSession(S,day){const ds=sessionDates(S).filter(d=>d<day);return ds.
 function firstOpen(S,day,exs){exs=exs||S.exercises;const i=exs.findIndex(e=>exSets(S,day,e.id).length<BASE_SETS);return i<0?Math.max(0,exs.length-1):i}
 const progOf=(S,id)=>(S.programs||[]).find(p=>p.id===id)||null;
 const progExs=(S,p)=>p?p.ex.map(id=>S.exercises.find(e=>e.id===id)).filter(Boolean):[];
-function sessExs(S,day,pid){const p=progOf(S,pid);if(p)return progExs(S,p);const ids=[...new Set(((S.sessions[day]||{}).sets||[]).map(x=>x.e))];
+function sessExs(S,day,pid){const base=sessExsBase(S,day,pid),ex=((S.sessions[day]||{}).extraEx||[]).map(id=>S.exercises.find(e=>e.id===id)).filter(e=>e&&!base.some(b=>b.id===e.id));return base.concat(ex)}
+function sessExsBase(S,day,pid){const p=progOf(S,pid);if(p)return progExs(S,p);const ids=[...new Set(((S.sessions[day]||{}).sets||[]).map(x=>x.e))];
   const l=ids.map(id=>S.exercises.find(e=>e.id===id)).filter(Boolean);return l.length?l:progExs(S,S.programs[0])}
 function nextProg(S){const sd=sessionDates(S);for(let i=sd.length-1;i>=0;i--){const k=S.programs.findIndex(p=>p.id===S.sessions[sd[i]].prog);if(k>-1)return S.programs[(k+1)%S.programs.length]}return S.programs[0]||null}
 const progSessions=(S,pid)=>sessionDates(S).filter(d=>S.sessions[d].prog===pid);
@@ -1070,9 +1072,17 @@ function renderWorkout(){
   const isLast=wo.idx===steps.length-1,ready_=stepDone(S,day,st);
   h+=`<div class="wonav"><button class="btn ghost" data-wonav="-1" ${wo.idx===0?"disabled":""} aria-label="Föregående">‹</button>
     ${isLast?`<button class="btn ${ready_?"solid":""}" id="endWo">Avsluta pass</button>`:`<button class="btn ${ready_?"solid":""}" data-wonav="1">Nästa: ${esc(stepName(steps[wo.idx+1]))} ›</button>`}</div>
-    <div class="wofoot"><button id="pauseWo">Minimera</button>${isLast?"":`<button id="endWo2">Avsluta pass nu</button>`}</div>`;
+    ${tmpAdd?`<div class="mod"><div class="lbl"><span>Övning bara för idag</span><button id="tmpCancel">Avbryt</button></div><p class="note" style="margin-top:8px">Läggs in före gången efter passet. Ditt vanliga pass ändras inte.</p>
+      <div class="addrow" style="margin-top:10px"><input id="tmpEx" list="tmpLib" placeholder="T.ex. Utfall" maxlength="40" aria-label="Övningens namn"><button class="btn solid" id="tmpAddGo">Lägg till</button></div>
+      <datalist id="tmpLib">${S.exercises.map(e=>`<option value="${esc(e.name)}"></option>`).join("")}</datalist></div>`:""}
+    <div class="wofoot"><button id="pauseWo">Minimera</button><button id="tmpOpen">+ Övning bara idag</button>${isLast?"":`<button id="endWo2">Avsluta pass nu</button>`}</div>`;
   $("#s-gym").innerHTML=h;
 }
+function addTmpEx(){const v=($("#tmpEx").value||"").trim().slice(0,40);if(!v){toast("Skriv vilken övning.");return}ensureReal();
+  let e=real.exercises.find(x=>x.name.toLowerCase()===v.toLowerCase());if(!e){e={id:uid("e"),name:v};real.exercises.push(e);saveConfig()}
+  const day=wo.day,s=clone(real.sessions[day]||{sets:[]});if(sessExs(real,day,wo.prog).some(x=>x.id===e.id)){toast(e.name+" finns redan i dagens pass.");return}
+  s.extraEx=(s.extraEx||[]).concat(e.id);real.sessions[day]=s;saveSession(day);tmpAdd=false;
+  wo.idx=woSteps(real,day,wo.prog).findIndex(x=>x.k==="ex"&&x.e.id===e.id);toast(e.name+" tillagd för idag.");render();window.scrollTo({top:0})}
 function renderWalkStep(S,day,s,w){
   const done=(s.walks||{})[w],sk=(s.skipWalk||{})[w],sg=walkSuggest(S,w,day),v=done||sg,hr=done?walkHR(done):null;
   let h=`<h1 class="woname">${w==="pre"?"Gång före":"Gång efter"}</h1><div class="woprev">Löpband i lutning. ${w==="pre"?"Värm upp lugnt":"Här jobbar du i zon 2"}: puls <b>${sg.lo}–${sg.hi}</b>.</div></div>`;
@@ -1090,7 +1100,8 @@ const SKIP_REASONS=["Upptagen maskin","Ont","Ont om tid","Orkade inte","Annat"];
 function renderExStep(S,day,s,ex){
   const mine=exSets(S,day,ex.id),lf=refFor(S,ex.id,day),prevBest=bestBefore(S,ex.id,day),sk=(s.skip||{})[ex.id],sg=suggest(S,ex.id,day);
   const pl=plateaus(S).some(p=>p.e.id===ex.id),goal=(S.goals||{})[ex.id];
-  let h=`<h1 class="woname">${esc(ex.name)}</h1>
+  const isTmp=(s.extraEx||[]).includes(ex.id)&&!sessExsBase(S,day,wo.prog).some(b=>b.id===ex.id);
+  let h=`${isTmp?`<div class="lbl"><span class="tag" style="color:var(--info);border-color:rgba(157,184,255,.35);background:var(--info-dim)">Bara idag</span>${mine.length?"":`<button data-tmprm="${ex.id}">Ta bort</button>`}</div>`:""}<h1 class="woname">${esc(ex.name)}</h1>
     <div class="woprev">${lf?`${lf.after?"Senare pass":"Förra gången"}${progOf(S,(S.sessions[lf.d]||{}).prog)?" i "+esc(progOf(S,S.sessions[lf.d].prog).name):""} (${shortDate(lf.d)}): <b>${lf.sets.map(x=>fmt(x.kg,2)+" × "+x.r+(x.rir!=null?` <i>(${x.rir===3?"3+":x.rir} kvar)</i>`:"")).join(" · ")}</b>`:"Första gången. Sätt en baslinje."}${prevBest?`<br>Rekord e1RM: <b>${fmt(prevBest,1)} kg</b>${goal?` · mål <b>${fmt(goal,1)} kg</b>`:""}`:""}${pl?`<br><span class="tag">Platå</span> Står still sedan några pass.`:""}</div></div>`;
   if(sk)return h+`<div class="mod"><p class="note">Överhoppad idag: ${esc(sk)}.</p><button class="btn" data-unskip="${ex.id}" style="margin-top:10px;width:100%">Ångra, jag kör den</button></div>`;
   const xp=expFor(S,day,sessExs(S,day,wo.prog));
@@ -1489,7 +1500,7 @@ document.addEventListener("click",e=>{
   if(b.id==="delProg"){delProg();return}
   if(D.wset){const[ex,k]=D.wset.split("|");woSet(ex,+k);return}
   if(D.woi!==undefined){wo.idx=+D.woi;skipPick=null;render();window.scrollTo({top:0});return}
-  if(D.wonav){wo.idx+=+D.wonav;skipPick=null;render();window.scrollTo({top:0});return}
+  if(D.wonav){wo.idx+=+D.wonav;skipPick=null;tmpAdd=false;render();window.scrollTo({top:0});return}
   if(D.x3){const k=wo.day+"|"+D.x3;extra[k]=!extra[k];render();return}
   if(b.id==="endWo"||b.id==="endWo2"){finishWorkout();return}
   if(b.id==="pauseWo"){const d=wo.day;wo=null;if(d!==today()){const s=real.sessions[d];if(s&&!s.sets.length){delete real.sessions[d];saveSession(d)}}render();return}
@@ -1515,6 +1526,10 @@ document.addEventListener("click",e=>{
   if(b.id==="goLogin"){authMode=true;authMsg="";render();window.scrollTo({top:0});return}
   if(b.id==="syncNow"){meta().dirty?push():pull();return}
   if(b.id==="logout"){(async()=>{try{if(meta().dirty)await push();await sb.auth.signOut()}catch(err){}sbUser=null;setMeta({skipLogin:false});authMode=true;authMsg="Du är utloggad.";render()})();return}
+  if(b.id==="tmpOpen"){tmpAdd=!tmpAdd;render();setTimeout(()=>{const i=$("#tmpEx");if(i){i.focus();i.scrollIntoView({block:"center"})}},50);return}
+  if(b.id==="tmpCancel"){tmpAdd=false;render();return}
+  if(b.id==="tmpAddGo"){addTmpEx();return}
+  if(D.tmprm){const s=clone(real.sessions[wo.day]);s.extraEx=(s.extraEx||[]).filter(x=>x!==D.tmprm);real.sessions[wo.day]=s;saveSession(wo.day);render();return}
   if(b.id==="gear"){tab=tab==="settings"?"day":"settings";confirmDel=null;render();window.scrollTo({top:0});return}
   if(D.goset){tab="settings";render();window.scrollTo({top:0});return}
   if(D.gostats){tab="stats";render();window.scrollTo({top:0});return}
@@ -1565,7 +1580,7 @@ document.addEventListener("click",e=>{
 document.addEventListener("input",e=>{const el=e.target;if(el.id==="ciPainWhere"){ciDraft.painWhere=el.value;return}if(el.dataset&&el.dataset.dk){const dk=el.dataset.dk;if(!drafts[dk]){const[d,ex,k]=dk.split("|");drafts[dk]=Object.assign({},defaultDraft(d,ex,+k))}drafts[dk][el.dataset.k]=el.value}});
 document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const el=e.target;
   if(el.id==="auPw"&&!authBusy){authDo("in");return}
-  if(el.id==="newHabit")addHabit();else if(el.id==="newEx")addEx();else if(el.id==="progName")renameProg();else if(el.id==="bwIn")saveBody();
+  if(el.id==="tmpEx"){addTmpEx();return}if(el.id==="newHabit")addHabit();else if(el.id==="newEx")addEx();else if(el.id==="progName")renameProg();else if(el.id==="bwIn")saveBody();
   else if(el.dataset&&el.dataset.dk){const[,ex,k]=el.dataset.dk.split("|");el.blur();woSet(ex,+k)}});
 document.addEventListener("focusin",e=>{const el=e.target;if(el.dataset&&el.dataset.dk&&el.select)setTimeout(()=>{try{el.select()}catch(x){}},0)});
 
