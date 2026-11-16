@@ -864,7 +864,78 @@ function delProg(){const p=curProg();if(!p)return;if(confirmDel!=="p"+p.id){conf
 /* ---------- profile, muscles, zones ---------- */
 const MUSCLES={chest:"Bröst",back:"Rygg",shoulders:"Axlar",biceps:"Biceps",triceps:"Triceps",quads:"Framsida lår",hams:"Baksida lår",glutes:"Säte",calves:"Vader",core:"Bål",lowback:"Ländrygg"};
 const DEF_MUSCLE={bench:["chest","triceps","shoulders"],incdb:["chest","shoulders","triceps"],dips:["chest","triceps"],pushdown:["triceps"],dead:["back","hams","glutes","lowback"],chins:["back","biceps"],row:["back","biceps"],facepull:["shoulders","back"],curl:["biceps"],squat:["quads","glutes"],rdl:["hams","glutes","lowback"],legpress:["quads","glutes"],legcurl:["hams"],calf:["calves"],ohp:["shoulders","triceps"],latraise:["shoulders"],revfly:["shoulders","back"],hlr:["core"],backext:["lowback","glutes"]};
-const musclesOf=(S,id)=>{const e=S.exercises.find(x=>x.id===id);return e&&Array.isArray(e.m)?e.m:(DEF_MUSCLE[id]||[])};
+/* Muskler efter övningens namn. Första träffen gäller, så ordningen är viktig: det specifika först.
+   Två värden = tvetydigt namn: [vanligt, i ett benpass]. Tomt = ingen muskelgrupp som passar. */
+const MRULES=[
+  [/handled|wrist|underarm|forearm|greppstyrka|grepptran|gripper|\bneck (curl|ext|flex|bridge)|\bnack(e|en)? ?(curl|strack|bojn|ovn|maskin|lyft)|^(nacke|neck)$/,""],
+  [/plank|crunch|sit ?ups?\b|situp|ab ?wheel|ab ?roll|maghjul|magrull|toes to bar|\bttb\b|dragon ?flag|hollow|(russian|rysk|kabel|cable|bal|torso|sittande|seated)[a-z ]*twist|oblique|balvridning|woodchop|vedhugg|pallof|dead ?bug|\bl sit|fallkniv|jack ?knife|\bv ups?\b|mountain ?climb|side ?bend|sidoboj|balrot|torso rot|rotary torso|captain|vindrutetork|windshield|flutter|benlyft|leg ?raise|knalyft|knee ?raise|knauppdrag|\b(abs?|mage|magen|bal|balen|core)\b|\bmag(maskin|ovn|tran|pass)|\bbal(ovn|tran)/,"core"],
+  [/\bvad|\bta ?hav|calf|calves/,"calves"],
+  [/\b(leg|ben|lar|ham|hamstring) ?curl|hamstring|baksida lar|baksidacurl|nordic|glute ?ham|\bghr\b|\b(liggande|lying|prone) curl/,"hams"],
+  [/rumansk|romanian|\brdl\b|raka mark|raka ben|\bstela? ?(mark|ben)|stelbent|enbens ?mark|(single|one) ?leg ?dead|stiff ?leg|straight ?leg|\bsldl\b/,"hams,glutes,lowback"],
+  [/good ?morning/,"hams,lowback,glutes"],
+  [/\b(leg|ben|lar|quad) ?(ext|strack)|benspark|quad|framsida lar|sissy|wall ?sit|jagarvila/,"quads"],
+  [/thruster|wall ?ball/,"quads,glutes,shoulders"],
+  [/squat|boj\b|kna ?boj|benboj|\bhack|pendulum|goblet|zercher/,"quads,glutes"],
+  [/\b(leg|ben) ?press/,"quads,glutes"],
+  [/lunge|utfall|bulgar|step ?ups?\b|uppsteg|pistol|\bslad|\bsled|prowler/,"quads,glutes"],
+  [/hip ?thrust|hoft ?lyft|hoftstot|backenlyft|glute ?bridge|hip ?bridge|\bbridge|hoftbrygg|pull ?through/,"glutes,hams"],
+  [/swing|\bsving/,"glutes,hams,lowback"],
+  [/glute|\bsate|\brump|abdu[ck]t|utatfor|hip ?ext|hoft ?strack|donkey ?kick|frog ?pump|\bclam|monster ?walk|fire ?hydrant/,"glutes"],
+  [/rygg ?res|rygglyft|back ?ext|hyper ?ext|ryggstrack|land ?rygg|lower ?back|superman|reverse ?hyper|bird ?dog/,"lowback,glutes"],
+  [/jefferson/,"lowback,hams"],
+  [/shrug|axelryck|axellyft/,"back"],
+  [/mark ?lyft|dead ?lift|\bmark\b|(rack|block) ?pull|\bdl\b|trap ?bar|hex ?bar/,"back,hams,glutes,lowback"],
+  [/frivand|\bcleans?\b|snatch|\bryck\b/,"glutes,quads,back"],
+  [/tricep/,"triceps"],
+  [/bicep/,"biceps"],
+  [/face ?pull/,"shoulders,back"],
+  [/rear ?delt|bakre (axel|axlar|delt)|baksida ax|pull ?apart|(omvand|reverse|rear|bakre)[a-z ]*(fl[yi]|pec)/,"shoulders,back"],
+  [/upright|stangdrag|drag till hak/,"shoulders,back"],
+  [/straight ?arm|stiff ?arm|raka arm/,"back"],
+  [/pull ?over/,"back,chest"],
+  [/pull ?down|neddrag|lat ?s? ?drag|lat ?pull|\bchin|pull ?ups?\b|rackhav|hakhav|muscle ?up/,"back,biceps"],
+  [/sido ?lyft|lateral ?(raise|lyft)|\blaterals\b|side ?raise|\blat ?raise|\b[ywt] ?raise|plate ?raise|scaption|hantellyft|front ?lyft|front ?raise|framatlyft|lyft (at|framat|ut)/,"shoulders"],
+  [/(bank|bench|stol|maskin|machine)[a-z ]*dips?\b|dips?[a-z ]*(maskin|machine)/,"triceps,chest"],
+  [/(smal|close|narrow)[a-z ]*(bank|bench|push ?up|armhav)|(bank|bench|push ?ups?|armhav[a-z]*)[a-z ]*(smal|close|narrow)|diamant|diamond/,"triceps,chest"],
+  [/skull|skallkross|pannpress|fransk ?press|french ?press|push ?down|press ?down|nedpress|\bjm ?press|tate ?press|(overhead|over huvud|ovanfor huvud)[a-z ]*(ext|strack)|(extens|strack)[a-z ]*(overhead|over huvud)/,"triceps"],
+  [/dips?\b/,"chest,triceps"],
+  [/hammer ?curl|hammarcurl|spider|preacher|scott|predikstol|koncentration|concentration|drag ?curl|bayesian|zottman|\b21s?\b|(barbell|dumbbell|cable|kabel|hant(el|lar)|stang|\bez|incline|lutande|reverse|omvand|standing|staende|\bdb|\bbb|\bbar|\brep|\blina|rope)[a-z ]*curl/,"biceps"],
+  [/rodd|\brows?\b|\browing|\bt ?bar|pendlay|bankdrag|bench ?pull/,"back,biceps"],
+  [/\btraps?\b|kappmuskel/,"back"],
+  [/(lutande|incline)[a-z ]*(brost|chest)|(brost|chest)[a-z ]*(lutande|incline)/,"chest,shoulders,triceps"],
+  [/(brost|chest)[a-z ]*press|press[a-z ]*(brost|chest)/,"chest,triceps,shoulders"],
+  [/(axel|axlar|shoulder|militar|military|overhead|arnold|push|landmine|viking|bradford)[a-z ]*press|(sittande|staende|seated|standing) press|press (bakom|bak) nack|behind the neck press|\bohp\b|press over huvud|pike|handstand|\bz ?press|(sittande|staende|seated|standing)[a-z ]*(hantel|dumbbell|\bdb)[a-z ]*press/,"shoulders,triceps"],
+  [/axel|axlar|shoulder|delt|rotator|rotation|cuban/,"shoulders"],
+  [/fl(y|ys|yes|ies)\b|pec ?dec|peck ?dec|butterfly|kabelkors|cable ?cross|cross ?over|korsdrag|svend/,"chest"],
+  [/(lutande|incline)[a-z ]*(press|bank|bench)|(press|bank|bench)[a-z ]*(lutande|incline)/,"chest,shoulders,triceps"],
+  [/bank ?press|bench|brost|chest|\bpecs?\b|armhav|push ?ups?\b|press ?ups?\b|hantelpress|(dumbbell|\bdb|maskin|machine|golv|floor|hammer|guillotine|spoto|larsen|pin|board)[a-z ]*press|\bbank\b/,"chest,triceps,shoulders"],
+  [/\blats?\b|\brygg|\bback\b/,"back"],
+  [/kick ?back/,"triceps","glutes"],
+  [/extens|\bext\b|strack/,"triceps","quads"],
+  [/curl/,"biceps","hams"],
+  [/\bpress(ar|en)?\b/,"","quads,glutes"]];
+const LEG_M={quads:1,hams:1,glutes:1,calves:1};
+const LEG_RE=/\b(ben|benen|benpass|bendag|legs?|leg ?day|underkropp|lower|lar|quads?|hamstrings?|glutes?|vader)\b|\bsate|\brump/;
+const UP_RE=/pull|push|drag|press|rygg|brost|\barm|axl|axel|overkropp|upper|bicep|tricep|\bback\b|chest|shoulder|\bbal\b|\bcore\b|\bmage/;
+const mnorm=s=>String(s||"").toLowerCase().replace(/ø/g,"o").replace(/æ/g,"a").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim();
+const mSplit=s=>s?s.split(","):[];
+const mCache=new Map();
+function nameMuscles(name){const n=mnorm(name);let r=mCache.get(n);if(r)return r;r={m:[]};
+  for(const[re,a,b]of MRULES)if(re.test(n)){r=b===undefined?{m:mSplit(a)}:{up:mSplit(a),leg:mSplit(b)};break}
+  mCache.set(n,r);return r}
+/* Tvetydigt namn ("Curls", "Extensions"): passet avgör. Passets namn väger tyngst, sedan de andra övningarna i passet. */
+function legCtx(S,id){let ps=(S.programs||[]).filter(p=>(p.ex||[]).includes(id));
+  if(!ps.length){const u={};Object.keys(S.sessions||{}).forEach(d=>{const s=S.sessions[d];if(s&&s.prog&&!(s.extraEx||[]).includes(id)&&(s.sets||[]).some(x=>x.e===id))u[s.prog]=1});ps=(S.programs||[]).filter(p=>u[p.id])}
+  let leg=0,up=0;
+  ps.forEach(p=>{const n=mnorm(p.name),l=LEG_RE.test(n),u=UP_RE.test(n);if(l&&!u)leg+=3;else if(u&&!l)up+=3;
+    (p.ex||[]).forEach(x=>{if(x===id)return;const e=S.exercises.find(y=>y.id===x),m=e&&Array.isArray(e.m)?e.m:(DEF_MUSCLE[x]||(e&&nameMuscles(e.name).m)||[]);if(m[0])LEG_M[m[0]]?leg++:up++})});
+  return leg>up}
+const autoMuscles=(S,e)=>{if(!e)return[];if(DEF_MUSCLE[e.id])return DEF_MUSCLE[e.id];const r=nameMuscles(e.name);return r.m||(legCtx(S,e.id)?r.leg:r.up)};
+const musclesOf=(S,id)=>{const e=S.exercises.find(x=>x.id===id);return e&&Array.isArray(e.m)?e.m:(e?autoMuscles(S,e):DEF_MUSCLE[id]||[])};
+/* Muskelraden under Pass → Ändra. Eget val (e.m) vinner alltid. "auto" = appens val efter namnet. */
+function muscPick(S,e){const ms=musclesOf(S,e.id),man=Array.isArray(e.m),open=musEdit===e.id,au=man?autoMuscles(S,e):[];
+  return `<div class="musc"><button data-musopen="${e.id}" style="border-style:dashed">${open?"Klar":"Muskler: "+(ms.map(m=>MUSCLES[m]).join(", ")+(ms.length&&!man?" · auto":"")||"välj")}</button>${open?Object.keys(MUSCLES).map(m=>`<button class="${ms.includes(m)?"on":""}" data-mus="${e.id}|${m}">${MUSCLES[m]}</button>`).join("")+(au.length&&au.join()!==ms.join()?`<button data-musauto="${e.id}" style="border-style:dashed">Återställ till auto</button>`:""):""}</div>`}
+const musLine=(S,id)=>{const m=musclesOf(S,id).map(k=>MUSCLES[k]).filter(Boolean);return m.length?"Tränar "+m[0].toLowerCase()+(m.length>1?". Hjälpmuskler: "+m.slice(1).join(", ").toLowerCase():"")+".":""};
 const prof=S=>Object.assign({name:"",sex:"m",height:"",birth:"",goal:"båda",walkGoal:"fett",board:true},S.profile||{});
 const REP_RANGE={styrka:[4,6],muskler:[8,12],"båda":[6,10]};
 const repRange=S=>REP_RANGE[prof(S).goal]||REP_RANGE["båda"];
@@ -1172,7 +1243,7 @@ function renderGym(){
       <div style="margin-top:8px">${progExs(S,vp).map((e,i,a)=>`<div class="mgrid"><span>${i+1}. ${esc(e.name)}</span>
       <button class="mv" data-mv="${e.id}|-1" ${i===0?"disabled":""} aria-label="Flytta upp">↑</button><button class="mv" data-mv="${e.id}|1" ${i===a.length-1?"disabled":""} aria-label="Flytta ner">↓</button>
       <button class="del ${confirmDel==="x"+e.id?"sure":""}" data-dele="${e.id}">${confirmDel==="x"+e.id?"Säker?":"Ta bort"}</button></div>
-      <div class="musc"><button data-musopen="${e.id}" style="border-style:dashed">${musEdit===e.id?"Klar":"Muskler: "+(musclesOf(S,e.id).map(m=>MUSCLES[m]).join(", ")||"välj")}</button>${musEdit===e.id?Object.keys(MUSCLES).map(m=>`<button class="${musclesOf(S,e.id).includes(m)?"on":""}" data-mus="${e.id}|${m}">${MUSCLES[m]}</button>`).join(""):""}</div>`).join("")||'<p class="empty">Inga övningar i passet än.</p>'}</div>
+      ${muscPick(S,e)}`).join("")||'<p class="empty">Inga övningar i passet än.</p>'}</div>
       <div class="addrow" style="margin-top:12px"><input id="newEx" list="exLib" placeholder="Lägg till övning, t.ex. Chins" maxlength="40"><button class="btn solid" id="addE">Lägg till</button></div>
       <datalist id="exLib">${S.exercises.map(e=>`<option value="${esc(e.name)}"></option>`).join("")}</datalist>
       <p class="note" style="margin-top:8px">Ordningen här är ordningen i passet. Samma övning i flera pass delar historik och statistik. Borttagna övningar finns kvar i historiken.</p>
@@ -1405,6 +1476,7 @@ function strip(sid,tiles,o){o=o||{};tiles=tiles.filter(Boolean);if(!tiles.length
 const barRow=(i,w,name,nums,small)=>`<div class="pg row1" style="--i:${i}"><i class="bg bf" style="width:${w}%"></i><b>${name}</b><span class="nums">${nums}</span><small>${small}</small></div>`;
 function exDetail(S,x){const t=today(),id=x.e.id,all=x.s;let ser=all;if(statRange!=="all")ser=ser.filter(p=>daysBetween(p.d,t)<+statRange);
   let h=`<div class="exd${statJust==="ex"?" opening":""}" data-exd="1"><div class="exdi"><div class="exdh"><span>${esc(x.e.name)} · ${all.length} pass</span><span class="seg3">${[["30","30 d"],["90","90 d"],["all","Allt"]].map(([k,l])=>`<button class="${statRange===k?"on":""}" data-range="${k}">${l}</button>`).join("")}</span></div>`;
+  const ml=musLine(S,id);if(ml)h+=`<p class="foot" style="margin-top:6px">${ml}</p>`;
   if(ser.length){const first=ser[0],last=ser[ser.length-1],dl=last.e1-first.e1,dp=first.e1?dl/first.e1*100:0;
     const tv=all.reduce((a,s)=>a+s.vol,0),sl=regress(ser.map(p=>({d:p.d,v:p.e1}))),bw=latestBody(S);
     const goal=Math.ceil((last.e1+.5)/10)*10,eta=sl&&sl>.01?Math.round((goal-last.e1)/sl):null;
@@ -1499,7 +1571,7 @@ function renderStats(){
     if(act.length)mus+=act.map((m,i)=>{const v=cur[m];return `<div class="ms row1" style="--i:${i}"><span>${MUSCLES[m]}</span><div class="msbar"><i class="bf" style="width:${Math.min(100,v/20*100)}%;background:${v>=10&&v<=20?"var(--good)":v>20?"var(--warn)":"var(--soft)"}"></i></div><b>${fmt(v,1)}</b><em>${fmt(prv[m],1)}</em></div>`}).join("")+
       `<p class="foot" style="margin-top:8px">${zero.length?"Inga set på två veckor: "+zero.map(m=>MUSCLES[m].toLowerCase()).join(", ")+". ":""}Grönt är 10–20 set, gult över 20. Liten siffra är förra veckan. Huvudmuskel räknas som 1 set, hjälpmuskel som ett halvt.</p>`;
     else mus+=`<p class="foot" style="margin:0">Inga set kopplade till muskler den här eller förra veckan.</p>`;
-    if(unm.length)mus+=`<p class="foot" style="margin-top:6px">${unm.length===1?"En övning":unm.length+" övningar"} saknar muskler och räknas inte, t.ex. ${esc(unm[0].name)}. Välj muskler under Pass → Dina pass → Ändra.</p>`;
+    if(unm.length)mus+=`<p class="foot" style="margin-top:6px">${unm.length===1?"En övning känns inte igen":unm.length+" övningar känns inte igen"} och räknas inte, t.ex. ${esc(unm[0].name)}. Välj muskler under Pass → Dina pass → Ändra.</p>`;
     mus+=`</div>`;
     h+=area("volym","Vikt × reps",fmt(v30/1000,1)+" ton på 30 d",strip("volym",tiles)+mus+insOf("volym"),"jämföra pass och veckor med varandra och visa vilka muskler som får för lite.")}
 
@@ -1846,6 +1918,7 @@ document.addEventListener("click",e=>{
   if(D.goal){const v=num($("#goalIn").value);ensureReal();if(!$("#goalIn").value.trim()){delete real.goals[D.goal];saveConfig();render();return}
     if(!(v>0&&v<1000)){toast("Skriv målet i kg, t.ex. 100.");return}real.goals[D.goal]=Math.round(v*10)/10;saveConfig();toast("Målet är sparat.");render();return}
   if(D.musopen){musEdit=musEdit===D.musopen?null:D.musopen;render();return}
+  if(D.musauto){ensureReal();const e=real.exercises.find(x=>x.id===D.musauto);if(!e||!Array.isArray(e.m))return;delete e.m;saveConfig();render();return}
   if(D.mus){const[id,m]=D.mus.split("|");ensureReal();const e=real.exercises.find(x=>x.id===id);if(!e)return;const cur=musclesOf(real,id).slice(),i=cur.indexOf(m);i>-1?cur.splice(i,1):cur.push(m);e.m=cur;saveConfig();render();return}
   if(b.id==="bkToggle"){backupOpen=!backupOpen;confirmDel=null;render();return}
   if(b.id==="bkCopy"){const ta=$("#bkOut");const fb=()=>{ta.focus();ta.select();toast("Markerat. Kopiera med kopiera-menyn.")};
