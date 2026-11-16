@@ -546,6 +546,21 @@ html.sheetopen,html.sheetopen body{overflow:hidden}
 .iseg{display:flex;margin-top:8px}.iseg button{flex:1;font-family:var(--f-body);font-size:15px;font-weight:600;padding:12px 6px}
 .howlink{color:var(--info);font-size:15px;font-weight:600;padding:6px 0;margin:2px 0 4px;display:block}
 .mgrid .mname{text-align:left;min-width:0;overflow-wrap:anywhere;font-size:15px;padding:6px 0}
+/* enkelt läge: vanlig text i stället för små versaler, större etiketter */
+.lbl,.lbl button{font-family:var(--f-body);font-size:13px;letter-spacing:0;text-transform:none;font-weight:600}
+.lbl button{font-size:14px;padding:8px 14px;min-height:36px}
+.facts span,.week span,.pc-top em,.sugg em,.howto em,.board b small,.cmp em,.grid4 span,.rh,.ring .num small,.strhead .cap,th,.heatlegend{font-family:var(--f-body);font-size:12px;letter-spacing:0;text-transform:none}
+.tag{font-family:var(--f-body);font-size:11px;letter-spacing:0;text-transform:none}
+.week span{text-transform:capitalize}
+.howto em,.sugg em{font-size:13px;font-weight:600}
+.rh{font-size:13px}
+.pitem small,.pitem .n{font-family:var(--f-body);font-size:13px}
+.note{font-size:14px}
+.form label{font-size:14px}
+.form .two>label{min-width:0}.form .inp,.form input{width:100%;min-width:0}
+.exhd{font-family:var(--f-body);font-size:11px;letter-spacing:0;text-transform:none}
+.tl>span{font-family:var(--f-body);font-size:11px;letter-spacing:0;text-transform:none}
+@media (max-width:350px){.tl>span{font-size:10px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -1465,7 +1480,7 @@ function renderExStep(S,day,s,ex){
   const pl=plateaus(S).some(p=>p.e.id===ex.id),goal=(S.goals||{})[ex.id];
   const isTmp=(s.extraEx||[]).includes(ex.id)&&!sessExsBase(S,day,wo.prog).some(b=>b.id===ex.id);
   let h=`${isTmp?`<div class="lbl"><span class="tag" style="color:var(--info);border-color:rgba(157,184,255,.35);background:var(--info-dim)">Bara idag</span>${mine.length?"":`<button data-tmprm="${ex.id}">Ta bort</button>`}</div>`:""}<h1 class="woname">${esc(ex.name)}</h1><button class="howlink" data-exinfo="${ex.id}">Så gör du · muskler ›</button>
-    <div class="woprev">${isUni(ex)?`<b>En ${sideWord(S,ex)} i taget.</b> Skriv vikt och reps för en ${sideWord(S,ex)}.<br>`:""}${lf?`${lf.after?"Senare pass":"Förra gången"}${progOf(S,(S.sessions[lf.d]||{}).prog)?" i "+esc(progOf(S,S.sessions[lf.d].prog).name):""} (${shortDate(lf.d)}): <b>${lf.sets.map(x=>fmt(x.kg,2)+" × "+x.r+(x.rir!=null?` <i>(${x.rir===3?"3+":x.rir} kvar)</i>`:"")).join(" · ")}</b>`:"Första gången. Sätt en baslinje."}${prevBest?`<br>Rekord e1RM: <b>${fmt(prevBest,1)} kg</b>${goal?` · mål <b>${fmt(goal,1)} kg</b>`:""}`:""}${pl?`<br><span class="tag">Platå</span> Står still sedan några pass.`:""}</div></div>`;
+    <div class="woprev">${isUni(ex)?`<b>En ${sideWord(S,ex)} i taget.</b> Skriv vikt och reps för en ${sideWord(S,ex)}.<br>`:""}${lf?`${lf.after?"Senare pass":"Förra gången"}${progOf(S,(S.sessions[lf.d]||{}).prog)?" i "+esc(progOf(S,S.sessions[lf.d].prog).name):""} (${shortDate(lf.d)}): <b>${lf.sets.map(x=>fmt(x.kg,2)+" × "+x.r+(x.rir!=null?` <i>(${x.rir===3?"3+":x.rir} kvar)</i>`:"")).join(" · ")}</b>`:"Första gången. Sätt en baslinje."}${prevBest?`<br>Rekord, uppskattat max: <b>${fmt(prevBest,1)} kg</b>${goal?` · mål <b>${fmt(goal,1)} kg</b>`:""}`:""}${pl?`<br><span class="tag">Platå</span> Står still sedan några pass.`:""}</div></div>`;
   if(sk)return h+`<div class="mod"><p class="note">Överhoppad idag: ${esc(sk)}.</p><button class="btn" data-unskip="${ex.id}" style="margin-top:10px;width:100%">Ångra, jag kör den</button></div>`;
   const xp=expFor(S,day,sessExs(S,day,wo.prog));
   if(xp&&xp.ex===ex.id&&!xp.acc&&sg)h+=`<div class="mod expc"><div class="lbl"><span>Experiment</span><span>${EXP[xp.type].t}</span></div><p>${EXP[xp.type].d(sg)}</p><small>Appen jämför resultatet med dina vanliga pass och visar under Statistik vad som funkar för dig.</small>
@@ -1524,7 +1539,7 @@ function renderSummary(day){
     ${pv!=null?`<p class="note">Volym mot förra passet (${shortDate(c.pd)}): <span class="${dcls(vol-pv)}">${sgn((vol-pv)/pv*100,1)} %</span></p>`:""}</div>
   <div class="mod"><div class="lbl"><span>Hur kändes passet?</span><span>${s.feel?s.feel+"/5":""}</span></div>
     <div class="feel">${[["1","Tungt"],["2","Segt"],["3","Okej"],["4","Bra"],["5","Toppen"]].map(([v,l])=>`<button class="${s.feel==v?"on":""}" data-feel="${day}|${v}"><b>${v}</b><span>${l}</span></button>`).join("")}</div></div>
-  <div class="mod"><div class="lbl"><span>Per övning</span><span>e1RM idag · mot förra</span></div><div class="cmp">
+  <div class="mod"><div class="lbl"><span>Per övning</span><span>Max idag · mot förra</span></div><div class="cmp">
     ${c.rows.map(r=>`<div><b>${esc(exName(S,r.id))}${r.pr?"<em>PR</em>":""}</b><span>${fmt(r.now,1)} kg</span><span class="${r.before!=null?dcls(r.now-r.before):"flat"}">${r.before!=null?sgn(r.now-r.before,1):"ny"}</span></div>`).join("")}</div></div>
   ${sessExtras(S,s)}
   <button class="btn solid" id="doneSum" style="min-height:52px">Klar</button>`;
@@ -1538,7 +1553,7 @@ function renderDetail(day){
     <div class="facts"><div><b>${fmtDur(dur(s))}</b><span>Tid</span></div><div><b>${s.sets.length}</b><span>Set</span></div><div><b>${fmt(sessVol(s))}</b><span>Volym kg</span></div></div></div>`;
   c.rows.forEach(r=>{const sets=exSets(S,day,r.id).sort((a,b)=>(a.n||0)-(b.n||0));
     h+=`<div class="mod"><div class="lbl"><span>${esc(exName(S,r.id))}${r.pr?" · PR":""}</span><span class="${r.before!=null?dcls(r.now-r.before):"flat"}">${r.before!=null?sgn(r.now-r.before,1)+" kg e1RM":""}</span></div>
-      <div class="det" style="margin-top:6px">${sets.map(x=>`<div><b>Set ${(x.n||0)+1}</b><span>${fmt(x.kg,2)} kg × ${x.r} · e1RM ${fmt(e1rm(x.kg,x.r),1)}</span></div>`).join("")}</div></div>`});
+      <div class="det" style="margin-top:6px">${sets.map(x=>`<div><b>Set ${(x.n||0)+1}</b><span>${fmt(x.kg,2)} kg × ${x.r} · uppskattat max ${fmt(e1rm(x.kg,x.r),1)}</span></div>`).join("")}</div></div>`});
   h+=sessExtras(S,s);
   if(!demoOn)h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn" data-editday="${day}">Ändra pass</button><button class="btn warn ${confirmDel==="s"+day?"sure":""}" data-delsess="${day}">${confirmDel==="s"+day?"Säker? Tryck igen":"Ta bort pass"}</button></div>`;
   $("#s-gym").innerHTML=h;
@@ -1549,11 +1564,11 @@ function insights(S){
   const out=[],t=today(),sd=sessionDates(S);
   // progression
   let bestProg=null;S.exercises.forEach(e=>{const s=exSeries(S,e.id);if(s.length<3)return;const p=(s[s.length-1].e1-s[0].e1)/s[0].e1*100;if(!bestProg||p>bestProg.p)bestProg={e,p,s}});
-  if(bestProg&&bestProg.p>0)out.push(["STYRKA",`<b>${esc(bestProg.e.name)}</b> har ökat mest: ${sgn(bestProg.p,1)} % i e1RM sedan ${shortDate(bestProg.s[0].d)}.`]);
+  if(bestProg&&bestProg.p>0)out.push(["STYRKA",`<b>${esc(bestProg.e.name)}</b> har ökat mest: ${sgn(bestProg.p,1)} % i uppskattat max sedan ${shortDate(bestProg.s[0].d)}.`]);
   // projection
   let proj=null;S.exercises.forEach(e=>{const s=exSeries(S,e.id).filter(p=>daysBetween(p.d,t)<=70);if(s.length<4)return;const sl=regress(s.map(p=>({d:p.d,v:p.e1})));if(!sl||sl<=.01)return;
     const cur=s[s.length-1].e1,goal=Math.ceil((cur+.5)/10)*10,days=(goal-cur)/sl;if(days>0&&days<240&&(!proj||days<proj.days))proj={e,goal,days,sl}});
-  if(proj)out.push(["PROGNOS",`I nuvarande takt (${sgn(proj.sl*7,2)} kg/vecka) når du <b>${proj.goal} kg e1RM i ${esc(proj.e.name.toLowerCase())}</b> runt ${shortDate(addDays(t,Math.round(proj.days)))}.`]);
+  if(proj)out.push(["PROGNOS",`I nuvarande takt (${sgn(proj.sl*7,2)} kg/vecka) når du <b>${proj.goal} kg uppskattat max i ${esc(proj.e.name.toLowerCase())}</b> runt ${shortDate(addDays(t,Math.round(proj.days)))}.`]);
   // PRs
   const pr=prEvents(S),pr30=pr.filter(p=>daysBetween(p.d,t)<30).length;if(pr.length)out.push(["REKORD",`<b>${pr30} personbästa</b> senaste 30 dagarna, ${pr.length} totalt.`]);
   {const pl=plateaus(S);if(pl.length===1)out.push(["PLATÅ",`<b>${esc(pl[0].e.name)}</b> har stått still sedan ${shortDate(pl[0].since)}. Appen föreslår experiment för den under passen.`]);
@@ -1630,8 +1645,8 @@ function exDetail(S,x){const t=today(),id=x.e.id,all=x.s;let ser=all;if(statRang
     const goal=Math.ceil((last.e1+.5)/10)*10,eta=sl&&sl>.01?Math.round((goal-last.e1)/sl):null;
     const rr={};all.forEach(p=>p.sets.forEach(s=>{rr[s.r]=Math.max(rr[s.r]||0,s.kg)}));
     h+=`<div class="strhead"><div><div class="v">${fmt(last.e1,1)}<small>kg</small></div><div class="cap">Uppskattat 1RM, senaste passet</div></div><span class="delta ${dcls(dl)}">${sgn(dl,1)} kg · ${sgn(dp,1)} %</span></div>
-      <div class="exch">${lineChart(ser,[{k:"e1",color:"var(--pri)",area:true,f:v=>"e1RM "+fmt(v,1)},{k:"top",color:"var(--info)",dots:true,f:v=>"tyngst "+fmt(v,2)}],{title:"Utveckling",empty:"Logga minst två pass med övningen för att se kurvan."})}</div>
-      ${ser.length>1?`<div class="legend"><span><i style="background:var(--pri)"></i>e1RM</span><span><i style="background:var(--info)"></i>Tyngsta set</span></div>`:""}
+      <div class="exch">${lineChart(ser,[{k:"e1",color:"var(--pri)",area:true,f:v=>"Max "+fmt(v,1)},{k:"top",color:"var(--info)",dots:true,f:v=>"tyngst "+fmt(v,2)}],{title:"Utveckling",empty:"Logga minst två pass med övningen för att se kurvan."})}</div>
+      ${ser.length>1?`<div class="legend"><span><i style="background:var(--pri)"></i>Uppskattat max</span><span><i style="background:var(--info)"></i>Tyngsta set</span></div>`:""}
       <div class="grid4"><div><b>${fmt(x.bk.top,2)} kg</b><span>Tyngsta vikt · ${shortDate(x.bk.d)}</span></div><div><b>${fmt(x.be.e1,1)} kg</b><span>Bästa e1RM · ${shortDate(x.be.d)}</span></div>
       <div><b>${sl!=null?sgn(sl*7,2)+" kg":"–"}</b><span>Trend per vecka</span></div><div><b>${eta!=null&&eta<365?shortDate(addDays(t,eta)):"–"}</b><span>Prognos ${goal} kg</span></div>
       <div><b>${fmt(tv/1000,2)} ton</b><span>Total volym</span></div><div><b>${bw?fmt(last.e1/bw,2)+" ×":"–"}</b><span>Mot kroppsvikt</span></div></div>
@@ -1689,7 +1704,7 @@ function renderStats(){
     const gl=Object.keys(S.goals||{}).map(id=>{const g=S.goals[id],sx=exSeries(S,id);return g&&sx.length?{id,p:sx[sx.length-1].e1/g*100}:null}).filter(Boolean).sort((a,b)=>b.p-a.p);
     const tiles=[];
     if(si.length){const f=si[0],l=si[si.length-1];tiles.push({l:"Styrkeindex",v:cu(l.v)+"<small>kg</small>",s:si.length>1?sgn(l.v-f.v,0)+" sedan start":l.n+" övningar",sc:si.length>1?dcls(l.v-f.v):"",sp:spark(si.map(p=>p.v)),k:si.length>1?"si":null,
-      p:()=>lineChart(si,[{k:"v",color:"var(--pri)",area:true,f:v=>fmt(v,0)+" kg"}],{title:"Styrkeindex"})+`<p class="dpn">Summan av ditt e1RM i alla ${l.n} övningar. Stiger kurvan blir du starkare totalt.</p>`})}
+      p:()=>lineChart(si,[{k:"v",color:"var(--pri)",area:true,f:v=>fmt(v,0)+" kg"}],{title:"Styrkeindex"})+`<p class="dpn">Summan av ditt uppskattade max i alla ${l.n} övningar. Stiger kurvan blir du starkare totalt.</p>`})}
     else tiles.push({l:"Styrkeindex",v:"–",s:"inga pass än"});
     tiles.push({l:"Rekord",v:cu(prs.length),s:pr30+" senaste 30 d"});
     tiles.push(prEx.length?{l:"Bästa e1RM",v:cu(prEx[0].be.e1,1)+"<small>kg</small>",s:esc(prEx[0].e.name)}:{l:"Bästa e1RM",v:"–"});
@@ -1697,7 +1712,7 @@ function renderStats(){
     tiles.push({l:"Mål",v:gl.length?cu(Math.min(100,Math.round(gl[0].p)))+"<small>%</small>":"–",s:gl.length?esc(exName(S,gl[0].id))+(gl.length>1?" +"+(gl.length-1):""):"sätts under en övning"});
     let list;
     if(prEx.length){const mx=prEx[0].be.e1||1;
-      list=`<div ${rvA("styrka.ex","exl")}><div class="exhd"><span>Övning</span><span>Tyngst</span><span>e1RM</span><span>Pass</span><span></span></div>`+prEx.map((x,i)=>{const on=statEx===x.e.id;
+      list=`<div ${rvA("styrka.ex","exl")}><div class="exhd"><span>Övning</span><span>Tyngst</span><span>Max</span><span>Pass</span><span></span></div>`+prEx.map((x,i)=>{const on=statEx===x.e.id;
         return `<button class="exr row1${on?" open":""}" data-sx="${x.e.id}" aria-expanded="${on}" style="--i:${i}"><i class="bg bf" style="width:${(x.be.e1/mx*100).toFixed(1)}%"></i><span class="nm">${esc(x.e.name)}</span><span class="mo">${fmt(x.bk.top,2)}</span><span class="mo e1">${fmt(x.be.e1,1)}</span><span class="mo">${x.s.length}</span><span class="cv"></span></button>${on?exDetail(S,x):""}`}).join("")+`</div>`}
     else list=hint("Inga set loggade än. Efter första passet listas dina övningar här med tyngsta vikt och uppskattat maxlyft.");
     h+=area("styrka",prEx.length+" övningar",si.length?fmt(si[si.length-1].v,0)+" kg · "+prs.length+" rekord":"inga pass än",strip("styrka",tiles)+list+insOf("styrka"),"viktförslag, rekord, platå-varningar och prognoser. Tryck på en övning för mer.")}
@@ -1951,7 +1966,7 @@ function renderSettings(){const S=real,p=prof(S),[lo,hi]=z2(S),seg=(k,opts)=>`<d
     <label>Träningsmål${seg("goal",[["styrka","Styrka"],["muskler","Muskelmassa"],["båda","Båda"]])}</label>
     <label>Gången är främst för${seg("walkGoal",[["fett","Fettförbränning"],["kondition","Kondition"],["uppvärmning","Uppvärmning"]])}</label>
     <label class="tog"><span>Visa mig i topplistan</span><button class="switch ${p.board?"on":""}" data-pf="board|${p.board?"0":"1"}" aria-pressed="${p.board}" aria-label="Visa mig i topplistan"><i></i></button></label></div>
-    <button class="btn solid" id="pfSave" style="width:100%;margin-top:14px">Spara profil</button>
+    <button class="btn solid" id="pfSave" style="width:100%;margin-top:14px">Spara profil</button><p class="note" style="margin-top:8px">Namnet sparas också direkt när du skrivit klart.</p>
     <p class="note" style="margin-top:10px">Förslagen siktar på ${repRange(S).join("–")} reps. Maxpuls cirka ${maxHR(S)}, zon 2 är ${lo}–${hi} slag per minut.</p></div>`;
   return renderAccount()+h+renderWatchSettings()+renderBackup()}
 function render(){
@@ -2045,6 +2060,12 @@ function pkAdd(key){const e=exForKey(key);if(!e)return;
   const p=curProg();if(!p)return;if(p.ex.includes(e.id)){toast(e.name+" finns redan i passet.");return}
   p.ex.push(e.id);p.draft=false;saveConfig();info=null;toast(e.name+" tillagd i "+p.name+".");render()}
 
+/* Profilfälten sparas när man lämnar dem, och innan ett reglage ritar om sidan. */
+function keepProf(){const n=$("#pfName");if(!n)return false;const P=prof(real),o=JSON.stringify(P),hv=$("#pfHeight").value,bv=$("#pfBirth").value,hgt=parseInt(hv,10),br=parseInt(bv,10);
+  const nx=Object.assign({},P,{name:n.value.trim().slice(0,30)});if(!hv)nx.height="";else if(hgt>=120&&hgt<=230)nx.height=hgt;if(!bv)nx.birth="";else if(br>=1920&&br<=new Date().getFullYear()-10)nx.birth=br;
+  if(JSON.stringify(nx)===o)return false;real.profile=nx;saveConfig();return true}
+document.addEventListener("change",e=>{const id=e.target&&e.target.id;if(id==="pfName"||id==="pfHeight"||id==="pfBirth"){ensureReal();if(keepProf()){boardSync();toast(id==="pfName"?"Namnet är sparat.":"Sparat.")}}});
+
 /* ---------- events ---------- */
 const resetDrafts=()=>{for(const k in drafts)delete drafts[k]};
 document.addEventListener("click",e=>{
@@ -2121,8 +2142,8 @@ document.addEventListener("click",e=>{
   if(b.id==="gear"){tab=tab==="settings"?"day":"settings";confirmDel=null;render();window.scrollTo({top:0});return}
   if(D.goset){tab="settings";render();window.scrollTo({top:0});return}
   if(D.gostats){tab="stats";statJump="veckan";render();window.scrollTo({top:0});return}
-  if(D.pf){const[k,v]=D.pf.split("|");ensureReal();real.profile=Object.assign(prof(real),{[k]:k==="board"?v==="1":v});saveConfig();if(k==="board")boardSync();render();return}
-  if(b.id==="pfSave"){ensureReal();const hgt=parseInt($("#pfHeight").value,10),br=parseInt($("#pfBirth").value,10);
+  if(D.pf){const[k,v]=D.pf.split("|");ensureReal();keepProf();real.profile=Object.assign(prof(real),{[k]:k==="board"?v==="1":v});saveConfig();if(k==="board")boardSync();render();return}
+  if(b.id==="pfSave"){ensureReal();keepProf();const hgt=parseInt($("#pfHeight").value,10),br=parseInt($("#pfBirth").value,10);
     if($("#pfHeight").value&&!(hgt>=120&&hgt<=230)){toast("Skriv längden i cm, t.ex. 182.");return}
     if($("#pfBirth").value&&!(br>=1920&&br<=new Date().getFullYear()-10)){toast("Skriv födelseåret med fyra siffror, t.ex. 1998.");return}
     real.profile=Object.assign(prof(real),{name:$("#pfName").value.trim().slice(0,30),height:hgt||"",birth:br||""});saveConfig();boardSync();toast("Profilen är sparad.");render();return}
