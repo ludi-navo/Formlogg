@@ -512,6 +512,40 @@ nav button.on{background:linear-gradient(180deg,#fff 0%,#ececef 100%);color:var(
 nav button .live{position:absolute;top:6px;right:calc(50% - 18px);width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 8px var(--good)}
 .toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:rgba(29,29,34,.95);border:1px solid var(--line2);border-radius:14px;box-shadow:0 18px 40px -16px rgba(0,0,0,.9);color:var(--fg);padding:11px 15px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:all .3s var(--ease);z-index:40;max-width:calc(100vw - 32px);text-align:center}
 .toast.show{opacity:1;transform:translate(-50%,0)}
+/* välj övning */
+html.sheetopen,html.sheetopen body{overflow:hidden}
+#sheet{position:fixed;inset:0;z-index:100;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:0 max(16px,env(safe-area-inset-right,0px)) calc(28px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+#sheet[hidden]{display:none}
+.pkhead{position:sticky;top:0;z-index:2;background:var(--bg);padding:calc(12px + env(safe-area-inset-top,0px)) 0 8px;border-bottom:1px solid var(--line)}
+.pktop{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:48px}
+.pktop b{display:block;font-family:var(--f-display);font-size:24px;font-weight:600;letter-spacing:-.04em;line-height:1.1}
+.pktop small{display:block;color:var(--muted);font-size:14px;margin-top:2px}
+.pktop .btn{min-height:48px;font-size:16px;padding:0 20px}
+.pkq{display:block;width:100%;margin-top:10px;min-height:54px;font-size:18px!important;border-radius:14px!important}
+.pkf{display:flex;gap:6px;overflow-x:auto;margin:8px -16px 0;padding:0 16px;scrollbar-width:none}.pkf::-webkit-scrollbar{display:none}
+.pkf .chip{flex:none;min-height:40px;font-size:14px}
+.pkh{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:22px 2px 6px}
+.pkr{display:flex;gap:8px;align-items:stretch;border-bottom:1px solid var(--line)}
+.pka{flex:1;min-width:0;display:grid;grid-template-columns:1fr 44px;grid-template-rows:auto auto;column-gap:10px;align-items:center;text-align:left;padding:13px 2px;min-height:68px}
+.pka b{font-size:18px;font-weight:600;line-height:1.25;overflow-wrap:anywhere}
+.pka small{grid-row:2;font-size:14px;color:var(--muted);line-height:1.35}
+.pkp{grid-row:1/3;grid-column:2;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:24px;font-weight:500;background:linear-gradient(180deg,#fff,#ececef);color:var(--ink)}
+.pkr.on .pkp{background:var(--good-dim);color:var(--good);font-size:20px}
+.pkr.on b{color:var(--soft)}
+.pka:disabled{opacity:1}
+.pki{flex:none;align-self:center;min-width:56px;min-height:44px;border:1px solid var(--line2);border-radius:12px;font-size:14px;font-weight:600;color:var(--soft)}
+.pknew{width:100%;min-height:56px;font-size:16px;justify-content:flex-start;text-align:left}
+.pkbig{width:100%;min-height:56px;font-size:17px}
+.info{padding-top:14px}.info .woname{font-size:32px;margin-bottom:6px}.info .howto{margin-top:14px}.info .howto ol{font-size:17px;gap:8px}
+.ifacts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.ifacts div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:11px 12px;min-width:0}
+.ifacts span{display:block;font-size:12px;color:var(--muted)}
+.ifacts b{display:block;font-size:17px;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+.ifacts small{display:block;font-size:13px;color:var(--muted);line-height:1.35}
+.info .pkbig{margin-top:20px}
+.iseg{display:flex;margin-top:8px}.iseg button{flex:1;font-family:var(--f-body);font-size:15px;font-weight:600;padding:12px 6px}
+.howlink{color:var(--info);font-size:15px;font-weight:600;padding:6px 0;margin:2px 0 4px;display:block}
+.mgrid .mname{text-align:left;min-width:0;overflow-wrap:anywhere;font-size:15px;padding:6px 0}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -772,11 +806,11 @@ function resumeActive(){const s=real.sessions[today()];if(!wo&&s&&s.start&&!s.en
 const sessionDates=S=>Object.keys(S.sessions).filter(d=>(S.sessions[d].sets||[]).length).sort();
 const exSets=(S,day,ex)=>((S.sessions[day]||{}).sets||[]).filter(x=>x.e===ex);
 const setAt=(S,day,ex,k)=>exSets(S,day,ex).find(x=>(x.n||0)===k);
-const sessVol=s=>s.sets.reduce((a,x)=>a+x.kg*x.r,0);
+const sessVol=s=>s.sets.reduce((a,x)=>a+x.kg*x.r*sideF(x.e),0);
 const dur=s=>s&&s.start&&s.end?(s.end-s.start)/6e4:null;
 function bestBefore(S,ex,day){let b=0;for(const d in S.sessions){if(d>=day)continue;(S.sessions[d].sets||[]).forEach(x=>{if(x.e===ex)b=Math.max(b,e1rm(x.kg,x.r))})}return b}
 function exSeries(S,ex){return sessionDates(S).map(d=>{const sets=exSets(S,d,ex);if(!sets.length)return null;
-  return{d,top:Math.max(...sets.map(x=>x.kg)),e1:Math.max(...sets.map(x=>e1rm(x.kg,x.r))),vol:sets.reduce((a,x)=>a+x.kg*x.r,0),reps:sets.reduce((a,x)=>a+x.r,0),sets}}).filter(Boolean)}
+  return{d,top:Math.max(...sets.map(x=>x.kg)),e1:Math.max(...sets.map(x=>e1rm(x.kg,x.r))),vol:sets.reduce((a,x)=>a+x.kg*x.r*sideF(x.e),0),reps:sets.reduce((a,x)=>a+x.r,0),sets}}).filter(Boolean)}
 function lastFor(S,ex,day){const ds=sessionDates(S).filter(d=>d<day).reverse();for(const d of ds){const sets=exSets(S,d,ex);if(sets.length)return{d,sets:sets.slice().sort((a,b)=>(a.n||0)-(b.n||0))}}return null}
 function refFor(S,ex,day){const lf=lastFor(S,ex,day);if(lf)return lf;const ds=sessionDates(S).filter(d=>d>day&&d!==day);for(const d of ds){const sets=exSets(S,d,ex);if(sets.length)return{d,sets:sets.slice().sort((a,b)=>(a.n||0)-(b.n||0)),after:true}}return null}
 function prevSession(S,day){const ds=sessionDates(S).filter(d=>d<day);return ds.length?ds[ds.length-1]:null}
@@ -930,12 +964,127 @@ function legCtx(S,id){let ps=(S.programs||[]).filter(p=>(p.ex||[]).includes(id))
   ps.forEach(p=>{const n=mnorm(p.name),l=LEG_RE.test(n),u=UP_RE.test(n);if(l&&!u)leg+=3;else if(u&&!l)up+=3;
     (p.ex||[]).forEach(x=>{if(x===id)return;const e=S.exercises.find(y=>y.id===x),m=e&&Array.isArray(e.m)?e.m:(DEF_MUSCLE[x]||(e&&nameMuscles(e.name).m)||[]);if(m[0])LEG_M[m[0]]?leg++:up++})});
   return leg>up}
-const autoMuscles=(S,e)=>{if(!e)return[];if(DEF_MUSCLE[e.id])return DEF_MUSCLE[e.id];const r=nameMuscles(e.name);return r.m||(legCtx(S,e.id)?r.leg:r.up)};
+const autoMuscles=(S,e)=>{if(!e)return[];if(DEF_MUSCLE[e.id])return DEF_MUSCLE[e.id];const L=libOf(e);if(L)return L.m;const r=nameMuscles(e.name);return r.m||(legCtx(S,e.id)?r.leg:r.up)};
 const musclesOf=(S,id)=>{const e=S.exercises.find(x=>x.id===id);return e&&Array.isArray(e.m)?e.m:(e?autoMuscles(S,e):DEF_MUSCLE[id]||[])};
 /* Muskelraden under Pass → Ändra. Eget val (e.m) vinner alltid. "auto" = appens val efter namnet. */
 function muscPick(S,e){const ms=musclesOf(S,e.id),man=Array.isArray(e.m),open=musEdit===e.id,au=man?autoMuscles(S,e):[];
   return `<div class="musc"><button data-musopen="${e.id}" style="border-style:dashed">${open?"Klar":"Muskler: "+(ms.map(m=>MUSCLES[m]).join(", ")+(ms.length&&!man?" · auto":"")||"välj")}</button>${open?Object.keys(MUSCLES).map(m=>`<button class="${ms.includes(m)?"on":""}" data-mus="${e.id}|${m}">${MUSCLES[m]}</button>`).join("")+(au.length&&au.join()!==ms.join()?`<button data-musauto="${e.id}" style="border-style:dashed">Återställ till auto</button>`:""):""}</div>`}
 const musLine=(S,id)=>{const m=musclesOf(S,id).map(k=>MUSCLES[k]).filter(Boolean);return m.length?"Tränar "+m[0].toLowerCase()+(m.length>1?". Hjälpmuskler: "+m.slice(1).join(", ").toLowerCase():"")+".":""};
+/* ---------- övningsbibliotek ----------
+   id|namn|utrustning|muskler (första = huvudmuskel)|u = en sida i taget|steg;steg;steg|andra namn */
+const EQ={bar:"Skivstång",db:"Hantlar",cable:"Kabel",mach:"Maskin",bw:"Kroppsvikt",kb:"Kettlebell",other:"Övrigt"};
+const LIB=`bench|Bänkpress|bar|chest,triceps,shoulders||Ligg på bänken med fötterna i golvet.;Sänk stången lugnt till nedre delen av bröstet.;Pressa upp tills armarna är raka.|bench press,bankpress skivstang
+incbench|Lutande bänkpress|bar|chest,shoulders,triceps||Ställ ryggstödet på 30–45 grader.;Sänk stången till övre delen av bröstet.;Pressa rakt upp.|incline bench press,lutande bankpress skivstang
+dbbench|Hantelpress|db|chest,triceps,shoulders||Ligg på bänken med en hantel i varje hand.;Sänk hantlarna till bröstets sidor.;Pressa upp tills armarna är raka.|dumbbell press,dumbbell bench press,hantelpress bank
+incdb|Lutande hantelpress|db|chest,shoulders,triceps||Ställ ryggstödet på 30–45 grader.;Sänk hantlarna till övre bröstet.;Pressa upp och för ihop dem lite.|incline dumbbell press,lutande hantelpress bank
+machpress|Bröstpress i maskin|mach|chest,triceps,shoulders||Ställ sitsen så handtagen är i brösthöjd.;Pressa fram tills armarna är nästan raka.;För tillbaka lugnt.|chest press,brostpress,maskinpress,hammer strength chest press
+incmach|Lutande bröstpress i maskin|mach|chest,shoulders,triceps||Ställ sitsen så handtagen är vid övre bröstet.;Pressa snett uppåt.;För tillbaka lugnt.|incline chest press,lutande brostpress
+smithbench|Bänkpress i smithmaskin|other|chest,triceps,shoulders||Lägg bänken så stången landar på nedre bröstet.;Vrid loss stången och sänk lugnt.;Pressa upp.|smith bench,smith bankpress
+dbfly|Hantelflyes|db|chest||Ligg på bänken med armarna lite böjda.;Sänk hantlarna ut åt sidorna i en båge.;Kläm ihop dem ovanför bröstet.|dumbbell fly,flyes,hantelflyes
+cablefly|Kabelflyes|cable|chest||Stå mitt emellan kablarna med ett steg framåt.;För ihop handtagen framför bröstet i en båge.;Släpp tillbaka lugnt.|cable fly,kabelkors,cable crossover,crossover
+pecdeck|Pec deck|mach|chest||Sitt med ryggen mot stödet.;För ihop handtagen framför bröstet.;Släpp tillbaka lugnt.|butterfly,pec fly,peck deck,flyes maskin
+pushup|Armhävningar|bw|chest,triceps,shoulders||Händerna lite bredare än axlarna.;Sänk kroppen rak som en planka.;Pressa upp. Knästående går bra.|push ups,pushups,armhavning
+dips|Dips|bw|chest,triceps||Håll dig upp med raka armar.;Sänk dig tills överarmarna är vågräta.;Pressa upp. Extravikt skriver du som vikt.|dip,ringdips
+pushdown|Triceps pushdown|cable|triceps||Stå nära kabeln, armbågarna mot sidorna.;Pressa ner tills armarna är raka.;Låt den gå upp lugnt. Armbågarna står still.|tricep pushdown,triceps push down,pushdown,pressdown,triceps nedpress
+ropepush|Pushdown med rep|cable|triceps||Håll repet med armbågarna mot sidorna.;Pressa ner och dra isär repet i botten.;Låt det gå upp lugnt.|rope pushdown,triceps rep,rep pushdown
+ohext|Triceps över huvudet|cable|triceps||Vänd ryggen mot kabeln, händerna bakom huvudet.;Sträck armarna rakt upp och fram.;Böj tillbaka lugnt.|overhead extension,overhead triceps extension,triceps extension over huvudet
+skull|Skull crushers|bar|triceps||Ligg på bänken med stången över bröstet.;Böj armbågarna och sänk mot pannan.;Sträck upp igen. Armbågarna pekar uppåt.|skullcrusher,fransk press,pannpress,lying triceps extension
+cgbench|Smal bänkpress|bar|triceps,chest||Greppa stången axelbrett.;Sänk till nedre bröstet med armbågarna nära kroppen.;Pressa upp.|close grip bench press,smal bankpress
+dbkick|Triceps kickback|db|triceps|u|Luta dig fram med ena handen på bänken.;Håll överarmen still längs sidan.;Sträck armen bakåt tills den är rak.|kickback,triceps kickbacks,kickbacks
+benchdips|Bänkdips|bw|triceps,chest||Händerna på bänken bakom dig.;Sänk dig genom att böja armarna.;Pressa upp.|bench dips,triceps dips
+tricmach|Tricepsmaskin|mach|triceps||Ställ sitsen så armbågarna ligger på dynan.;Pressa ner tills armarna är raka.;För tillbaka lugnt.|triceps maskin,triceps machine,dips maskin
+dead|Marklyft|bar|back,hams,glutes,lowback||Stå med stången över mitten av foten.;Rak rygg, greppa stången och spänn magen.;Res dig upp genom att trycka ifrån med benen.|deadlift,marklyft konventionell,mark
+trapdead|Marklyft med trap bar|other|back,hams,glutes,lowback||Stå mitt i stången och greppa handtagen.;Rak rygg och spänd mage.;Res dig upp genom att trycka ifrån med benen.|trap bar deadlift,hex bar deadlift,trap bar
+chins|Chins|bw|back,biceps||Häng med handflatorna mot dig.;Dra dig upp tills hakan är över stången.;Sänk dig lugnt hela vägen.|chin ups,chinups,hakhav
+pullup|Pull-ups|bw|back,biceps||Häng med handflatorna bort från dig.;Dra dig upp tills hakan är över stången.;Sänk dig lugnt.|pull ups,pullups,rackhav
+assistpull|Assisterade chins|mach|back,biceps||Välj hur mycket maskinen ska hjälpa till.;Dra dig upp tills hakan är över stången.;Sänk lugnt. Mer hjälp = lättare.|assisted pull up,assisted chins,gravitron,chins maskin
+latpull|Latsdrag|cable|back,biceps||Sitt med låren under dynan.;Dra stången ner till övre bröstet.;Släpp upp lugnt med raka armar.|lat pulldown,pulldown,pull down,lats drag,latdrag,neddrag
+cgpull|Latsdrag smalt grepp|cable|back,biceps||Sitt med låren under dynan och smalt handtag.;Dra ner till bröstet.;Släpp upp lugnt.|close grip pulldown,latsdrag smalt,v grepp latsdrag
+sapull|Enarms latsdrag|cable|back,biceps|u|Sitt eller knäst bredvid kabeln.;Dra handtaget ner mot axeln.;Släpp upp lugnt. Byt arm.|single arm lat pulldown,enarms pulldown,en arm latsdrag
+row|Skivstångsrodd|bar|back,biceps||Luta överkroppen framåt med rak rygg.;Dra stången mot naveln.;Sänk lugnt.|barbell row,bent over row,rodd skivstang
+cablerow|Sittande kabelrodd|cable|back,biceps||Sitt med fötterna mot stödet och raka armar.;Dra handtaget mot magen och pressa ihop skulderbladen.;Släpp fram lugnt.|low row,seated row,seated cable row,kabelrodd,sittande rodd
+sacrow|Enarms kabelrodd|cable|back,biceps|u|Sitt eller stå med ett handtag.;Dra handtaget mot höften.;Släpp fram lugnt. Byt arm.|low row en arm,low row en arms,low row enarm,low row enarms,single arm cable row,enarms rodd kabel,enarms low row
+dbrow|Hantelrodd|db|back,biceps|u|Ena knät och handen på bänken.;Dra hanteln mot höften.;Sänk lugnt. Byt arm.|dumbbell row,one arm row,enarms hantelrodd,single arm row
+tbar|T-bar rodd|other|back,biceps||Stå över stången och luta dig framåt.;Dra handtaget mot bröstet.;Sänk lugnt.|t bar row,tbar,t bar
+machrow|Rodd i maskin|mach|back,biceps||Bröstet mot dynan.;Dra handtagen bakåt och pressa ihop skulderbladen.;Släpp fram lugnt.|machine row,maskinrodd,hammer strength row,high row,iso lateral row
+chestrow|Bröststödd rodd|db|back,biceps||Ligg med bröstet mot en lutande bänk.;Dra hantlarna mot höfterna.;Sänk lugnt.|chest supported row,seal row,incline bench row
+straightpull|Neddrag med raka armar|cable|back||Stå framför kabeln med nästan raka armar.;Dra stången ner till låren.;Släpp upp lugnt.|straight arm pulldown,raka armar neddrag,straight arm
+pullover|Pullover|db|back,chest||Ligg på bänken med en hantel över bröstet.;Sänk den bakåt bakom huvudet.;Dra tillbaka över bröstet.|dumbbell pullover,pullover maskin
+shrug|Shrugs|db|back||Stå med en hantel i varje hand.;Lyft axlarna rakt upp mot öronen.;Sänk lugnt.|shrugs,axelryck,dumbbell shrug
+backext|Ryggresningar|bw|lowback,glutes||Höfterna mot dynan, fötterna fast.;Sänk överkroppen med rak rygg.;Res dig tills kroppen är rak.|back extension,back extensions,hyperextension,rygglyft
+goodmorn|Good mornings|bar|hams,lowback,glutes||Stången på axlarna, lätt böjda knän.;Fäll framåt i höften med rak rygg.;Res dig upp.|good morning
+ohp|Axelpress|bar|shoulders,triceps||Stå med stången vid nyckelbenen.;Pressa rakt upp över huvudet.;Sänk lugnt till nyckelbenen.|overhead press,militarpress,military press,ohp,axelpress staende
+dbohp|Axelpress med hantlar|db|shoulders,triceps||Sitt med hantlarna vid axlarna.;Pressa upp över huvudet.;Sänk lugnt.|dumbbell shoulder press,sittande hantelpress,hantelpress axlar,axelpress hantlar
+machohp|Axelpress i maskin|mach|shoulders,triceps||Ställ sitsen så handtagen är vid axlarna.;Pressa upp.;Sänk lugnt.|machine shoulder press,shoulder press,axelpress maskin
+arnold|Arnoldpress|db|shoulders,triceps||Starta med handflatorna mot dig.;Vrid händerna utåt medan du pressar upp.;Vrid tillbaka på vägen ner.|arnold press
+latraise|Sidolyft|db|shoulders||Stå med en hantel i varje hand.;Lyft armarna ut åt sidan till axelhöjd.;Sänk lugnt.|lateral raise,lateral raises,side raise,sido lyft
+cablelat|Sidolyft i kabel|cable|shoulders|u|Stå med sidan mot kabeln.;Lyft armen ut åt sidan till axelhöjd.;Sänk lugnt. Byt arm.|cable lateral raise,kabel sidolyft
+machlat|Sidolyft i maskin|mach|shoulders||Sitt med armarna mot dynorna.;Lyft ut åt sidan till axelhöjd.;Sänk lugnt.|lateral raise machine,sidolyft maskin
+frontraise|Frontlyft|db|shoulders||Stå med en hantel i varje hand.;Lyft rakt fram till axelhöjd.;Sänk lugnt.|front raise,front raises,framatlyft
+revfly|Omvända flyes|db|shoulders,back||Luta dig framåt med rak rygg.;Lyft hantlarna ut åt sidan.;Sänk lugnt.|reverse fly,rear delt fly,omvanda flyes
+revpec|Omvänd pec deck|mach|shoulders,back||Sitt med bröstet mot dynan.;För handtagen bakåt ut åt sidan.;Släpp tillbaka lugnt.|reverse pec deck,rear delt machine,bakre axlar maskin
+facepull|Face pulls|cable|shoulders,back||Repet i ansiktshöjd.;Dra repet mot ansiktet och isär.;Släpp tillbaka lugnt.|face pull,facepull
+upright|Stångdrag till hakan|bar|shoulders,back||Stå med stången framför låren.;Dra den rakt upp till bröstet.;Sänk lugnt.|upright row,stangdrag
+curl|Bicepscurl|db|biceps||Stå med en hantel i varje hand.;Böj armarna och lyft mot axlarna.;Sänk lugnt. Armbågarna står still.|biceps curl,biceps curls,bicep curl,bicep curls,hantelcurl,dumbbell curl
+bbcurl|Skivstångscurl|bar|biceps||Stå med stången framför låren.;Böj armarna och lyft mot axlarna.;Sänk lugnt.|barbell curl,ez curl,stangcurl,skivstangscurl
+hammer|Hammercurl|db|biceps||Håll hantlarna med tummarna uppåt.;Böj armarna och lyft mot axlarna.;Sänk lugnt.|hammer curl,hammer curls,hammercurls,hammarcurl
+spider|Spider curls|db|biceps||Ligg med bröstet mot en lutande bänk.;Låt armarna hänga och curla upp.;Sänk lugnt.|spider curl,spidercurl
+preacher|Scottcurl|other|biceps||Överarmarna på dynan.;Curla upp mot axlarna.;Sänk lugnt nästan hela vägen.|preacher curl,predikstol,scott curl
+cablecurl|Kabelcurl|cable|biceps||Stå framför kabeln med stången nere.;Curla upp mot axlarna.;Sänk lugnt.|cable curl,kabel curl
+inccurl|Lutande hantelcurl|db|biceps||Sitt lutad bakåt med armarna hängande.;Curla upp.;Sänk lugnt hela vägen.|incline curl,incline dumbbell curl,lutande curl
+conc|Koncentrationscurl|db|biceps|u|Sitt med armbågen mot insidan av låret.;Curla upp mot axeln.;Sänk lugnt. Byt arm.|concentration curl,koncentrationscurls
+machcurl|Bicepsmaskin|mach|biceps||Överarmarna på dynan.;Curla upp.;Sänk lugnt.|biceps maskin,biceps machine,curl maskin,bicepsmaskin
+squat|Knäböj|bar|quads,glutes||Stången på axlarna, fötterna axelbrett.;Böj knän och höfter tills låren är vågräta.;Res dig upp.|squat,back squat,knaboj skivstang
+front|Frontböj|bar|quads,glutes||Stången vilar framtill på axlarna.;Böj ner med rak överkropp.;Res dig upp.|front squat
+hack|Hack squat|mach|quads,glutes||Ryggen mot dynan, fötterna mitt på plattan.;Böj knäna och gå ner.;Pressa upp.|hack squat,hackboj,hack
+pendulum|Pendulum squat|mach|quads,glutes||Ryggen mot dynan, axlarna under stöden.;Böj knäna och gå ner djupt.;Pressa upp.|pendulum squat,pendulum
+smithsq|Knäböj i smithmaskin|other|quads,glutes||Stången på axlarna, fötterna lite framför.;Böj ner tills låren är vågräta.;Res dig upp.|smith squat,smithboj,smith machine squat
+goblet|Gobletböj|db|quads,glutes||Håll en hantel mot bröstet.;Böj ner mellan knäna.;Res dig upp.|goblet squat,gobletboj
+legpress|Benpress|mach|quads,glutes||Fötterna axelbrett mitt på plattan.;Böj knäna mot bröstet.;Pressa ut utan att låsa knäna.|leg press,benpress
+slpress|Enbens benpress|mach|quads,glutes|u|Ena foten mitt på plattan.;Böj knät mot bröstet.;Pressa ut. Byt ben.|single leg press,enbens benpress
+legext|Benspark|mach|quads||Sitt med dynan framför fotlederna.;Sträck benen tills de är raka.;Sänk lugnt.|leg extension,leg extensions,benstrack,larstrack,quad extension
+bulgar|Bulgarisk utfallsböj|db|quads,glutes|u|Bakre foten på en bänk.;Böj ner tills främre låret är vågrätt.;Res dig upp. Byt ben.|bulgarian split squat,bulgarian,bulgariska utfall
+lunge|Utfall|db|quads,glutes|u|Ta ett långt steg framåt.;Sänk bakre knät mot golvet.;Tryck dig tillbaka. Reps per ben.|lunges,utfallssteg,walking lunges,reverse lunge
+stepup|Uppsteg|db|quads,glutes|u|Ena foten på en låda eller bänk.;Kliv upp tills benet är rakt.;Gå ner lugnt. Byt ben.|step ups,step up,uppsteg pa lada
+rdl|Rumänsk marklyft|bar|hams,glutes,lowback||Stå med stången framför låren.;Fäll framåt i höften med rak rygg och lätt böjda knän.;Res dig upp när det sträcker i baksida lår.|romanian deadlift,rdl,raka marklyft,stiff leg deadlift
+dbrdl|Rumänsk marklyft med hantlar|db|hams,glutes,lowback||Stå med hantlarna framför låren.;Fäll framåt i höften med rak rygg.;Res dig upp.|dumbbell rdl,rumansk marklyft hantlar
+slrdl|Enbens marklyft|db|hams,glutes,lowback|u|Stå på ett ben med en hantel.;Fäll framåt och låt andra benet gå bakåt.;Res dig upp. Byt ben.|single leg rdl,single leg deadlift,enbens rdl
+legcurl|Bencurl|mach|hams||Ligg på mage med dynan bakom fotlederna.;Böj benen mot rumpan.;Sänk lugnt.|leg curl,larcurl,liggande bencurl,lying leg curl,hamstring curl
+seatcurl|Sittande bencurl|mach|hams||Sitt med dynan bakom fotlederna.;Böj benen bakåt under stolen.;Släpp tillbaka lugnt.|seated leg curl,sittande larcurl
+nordic|Nordic curls|bw|hams||Knäst med fötterna fastlåsta.;Fäll framåt så långsamt du kan.;Ta emot med händerna och tryck upp.|nordic,nordic hamstring curl
+hipthrust|Hip thrust|bar|glutes,hams||Övre ryggen mot bänken, stången över höften.;Tryck upp höften tills kroppen är rak.;Sänk lugnt.|hip thrust,hoftlyft skivstang
+glutebridge|Höftlyft|bw|glutes,hams||Ligg på rygg med böjda knän.;Tryck upp höften.;Sänk lugnt.|glute bridge,hoftlyft
+cablekick|Kickback för säte|cable|glutes|u|Fästet runt fotleden, stå mot kabeln.;Sparka benet rakt bakåt.;För tillbaka lugnt. Byt ben.|glute kickback,cable kickback,rumpspark
+abduct|Abduktion i maskin|mach|glutes||Sitt med dynorna mot utsidan av knäna.;Pressa isär benen.;Släpp tillbaka lugnt.|abduktion,abductor,hip abduction,utatforing
+adduct|Adduktion i maskin|mach|||Sitt med dynorna mot insidan av knäna.;Pressa ihop benen.;Släpp tillbaka lugnt.|adduktion,adductor,hip adduction,inatforing
+calf|Vadpress|mach|calves||Stå med fotbollarna på kanten.;Gå upp på tå så högt du kan.;Sänk hälarna lugnt under kanten.|calf raise,standing calf raise,tahavningar,vadpress staende
+seatcalf|Sittande vadpress|mach|calves||Sitt med dynan på låren och fotbollarna på kanten.;Gå upp på tå.;Sänk lugnt.|seated calf raise,sittande vad
+lpcalf|Vadpress i benpress|mach|calves||Fotbollarna på nedre kanten av plattan.;Tryck med tårna.;Släpp tillbaka lugnt.|leg press calf raise,tahavningar i benpress
+kbswing|Kettlebellsving|kb|glutes,hams,lowback||Stå brett med klockan framför dig.;Svinga den bakåt mellan benen.;Tryck fram höften så den svingar upp till bröstet.|kettlebell swing,kb swing,swing
+hlr|Hängande benlyft|bw|core||Häng i en stång.;Lyft benen framåt och upp.;Sänk lugnt utan att gunga.|hanging leg raise,hangande benlyft
+kneeraise|Knälyft|bw|core||Underarmarna på stöden, ryggen mot dynan.;Lyft knäna mot bröstet.;Sänk lugnt.|knee raise,knalyft,captains chair,hangande knalyft
+cablecrunch|Kabelcrunch|cable|core||Knäst framför kabeln med repet vid huvudet.;Rulla ihop överkroppen mot knäna.;Res dig lugnt.|cable crunch,kabel crunch
+crunch|Crunches|bw|core||Ligg på rygg med böjda knän.;Lyft axlarna från golvet.;Sänk lugnt.|crunch,sit ups,situps
+abmach|Magmaskin|mach|core||Sitt med bröstet mot dynan.;Böj framåt.;Res dig lugnt.|ab machine,crunch maskin,ab crunch machine,mage maskin
+plank|Plankan|bw|core||Underarmarna i golvet, kroppen rak.;Håll stilla.;Skriv sekunder som reps.|plank,planka
+abwheel|Maghjul|other|core||Knäst med hjulet framför dig.;Rulla fram så långt du kan med rak rygg.;Rulla tillbaka.|ab wheel,ab roller,magrulle
+russian|Russian twist|bw|core||Sitt med fötterna lyfta och luta dig bakåt.;Vrid överkroppen från sida till sida.;Varje sida är en rep.|russian twist,rysk twist
+pallof|Pallof press|cable|core||Stå med sidan mot kabeln, handtaget vid bröstet.;Pressa rakt fram och håll emot vridningen.;För tillbaka. Byt sida.|pallof
+legraise|Liggande benlyft|bw|core||Ligg på rygg med raka ben.;Lyft benen till lodrätt.;Sänk lugnt utan att röra golvet.|leg raise,leg raises,liggande benlyft
+farmer|Farmers walk|db|||Ta en tung hantel i varje hand.;Gå med rak rygg.;Skriv meter eller sekunder som reps.|farmers walk,farmers carry,farmer walk`.split("\n").map(l=>{const[id,name,eq,m,f,st,al]=l.split("|");
+  return{id,name,eq,m:m?m.split(","):[],u:f==="u",st:st?st.split(";"):[],al:al?al.split(","):[]}});
+const LIB_BY=Object.fromEntries(LIB.map(L=>[L.id,L]));
+/* namn → nyckel som tål plural och skiljetecken: "Hammer curls" = "hammercurl" = "Hammer curl" */
+const lkey=s=>mnorm(s).split(" ").map(w=>w.length>3&&w.endsWith("s")?w.slice(0,-1):w).join("");
+const LIB_KEY=new Map();LIB.forEach(L=>[L.name].concat(L.al).forEach(n=>{const k=lkey(n);if(k&&!LIB_KEY.has(k))LIB_KEY.set(k,L)}));
+/* Vilken biblioteksövning en sparad övning är: eget val (e.lib), samma id, annars namnet. Inget sparas. */
+const libOf=e=>!e?null:e.lib===""?null:(e.lib&&LIB_BY[e.lib])||LIB_BY[e.id]||LIB_KEY.get(lkey(e.name))||null;
+const UNI_RE=/\b(en ?arm|enarms?|ett ben|enbens?|single ?(arm|leg)|one ?(arm|leg)|unilateral)\b/;
+const isUni=e=>{if(!e)return false;if(typeof e.uni==="boolean")return e.uni;const L=libOf(e);return L?L.u:UNI_RE.test(mnorm(e.name))};
+const sideWord=(S,e)=>LEG_M[(musclesOf(S,e.id)||[])[0]]?"ben":"arm";
+let UNI=new Set();
+const setUni=S=>{UNI=new Set((S.exercises||[]).filter(isUni).map(e=>e.id))};
+const sideF=id=>UNI.has(id)?2:1;
 const prof=S=>Object.assign({name:"",sex:"m",height:"",birth:"",goal:"båda",walkGoal:"fett",board:true},S.profile||{});
 const REP_RANGE={styrka:[4,6],muskler:[8,12],"båda":[6,10]};
 const repRange=S=>REP_RANGE[prof(S).goal]||REP_RANGE["båda"];
@@ -1240,13 +1389,12 @@ function renderGym(){
   if(vp&&vp.draft)h+=`<div class="flag">Förslag på övningar. Tryck Ändra och byt till dina egna, så är passet ditt.</div>`;
   if(vp&&manageEx){
     h+=`<div class="addrow" style="margin-top:12px"><input id="progName" value="${esc(vp.name)}" maxlength="30" aria-label="Passets namn"><button class="btn" id="renProg">Byt namn</button></div>
-      <div style="margin-top:8px">${progExs(S,vp).map((e,i,a)=>`<div class="mgrid"><span>${i+1}. ${esc(e.name)}</span>
+      <div style="margin-top:8px">${progExs(S,vp).map((e,i,a)=>`<div class="mgrid"><button class="mname" data-exinfo="${e.id}">${i+1}. ${esc(e.name)}</button>
       <button class="mv" data-mv="${e.id}|-1" ${i===0?"disabled":""} aria-label="Flytta upp">↑</button><button class="mv" data-mv="${e.id}|1" ${i===a.length-1?"disabled":""} aria-label="Flytta ner">↓</button>
       <button class="del ${confirmDel==="x"+e.id?"sure":""}" data-dele="${e.id}">${confirmDel==="x"+e.id?"Säker?":"Ta bort"}</button></div>
       ${muscPick(S,e)}`).join("")||'<p class="empty">Inga övningar i passet än.</p>'}</div>
-      <div class="addrow" style="margin-top:12px"><input id="newEx" list="exLib" placeholder="Lägg till övning, t.ex. Chins" maxlength="40"><button class="btn solid" id="addE">Lägg till</button></div>
-      <datalist id="exLib">${S.exercises.map(e=>`<option value="${esc(e.name)}"></option>`).join("")}</datalist>
-      <p class="note" style="margin-top:8px">Ordningen här är ordningen i passet. Samma övning i flera pass delar historik och statistik. Borttagna övningar finns kvar i historiken.</p>
+      <button class="btn solid pkbig" id="pickOpen" style="margin-top:12px">+ Lägg till övning</button>
+      <p class="note" style="margin-top:8px">Tryck på en övning för att se hur den görs. Ordningen här är ordningen i passet. Samma övning i flera pass delar historik och statistik. Borttagna övningar finns kvar i historiken.</p>
       <button class="btn warn ${confirmDel==="p"+vp.id?"sure":""}" id="delProg" style="margin-top:12px;width:100%">${confirmDel==="p"+vp.id?"Säker? Historiken finns kvar":"Ta bort passet "+esc(vp.name)}</button>`;
   }else if(vp){
     const vps=progSessions(S,vp.id),lps=vps.length?vps[vps.length-1]:null,lpx=lps?S.sessions[lps]:null;
@@ -1316,8 +1464,8 @@ function renderExStep(S,day,s,ex){
   const mine=exSets(S,day,ex.id),lf=refFor(S,ex.id,day),prevBest=bestBefore(S,ex.id,day),sk=(s.skip||{})[ex.id],sg=suggest(S,ex.id,day);
   const pl=plateaus(S).some(p=>p.e.id===ex.id),goal=(S.goals||{})[ex.id];
   const isTmp=(s.extraEx||[]).includes(ex.id)&&!sessExsBase(S,day,wo.prog).some(b=>b.id===ex.id);
-  let h=`${isTmp?`<div class="lbl"><span class="tag" style="color:var(--info);border-color:rgba(157,184,255,.35);background:var(--info-dim)">Bara idag</span>${mine.length?"":`<button data-tmprm="${ex.id}">Ta bort</button>`}</div>`:""}<h1 class="woname">${esc(ex.name)}</h1>
-    <div class="woprev">${lf?`${lf.after?"Senare pass":"Förra gången"}${progOf(S,(S.sessions[lf.d]||{}).prog)?" i "+esc(progOf(S,S.sessions[lf.d].prog).name):""} (${shortDate(lf.d)}): <b>${lf.sets.map(x=>fmt(x.kg,2)+" × "+x.r+(x.rir!=null?` <i>(${x.rir===3?"3+":x.rir} kvar)</i>`:"")).join(" · ")}</b>`:"Första gången. Sätt en baslinje."}${prevBest?`<br>Rekord e1RM: <b>${fmt(prevBest,1)} kg</b>${goal?` · mål <b>${fmt(goal,1)} kg</b>`:""}`:""}${pl?`<br><span class="tag">Platå</span> Står still sedan några pass.`:""}</div></div>`;
+  let h=`${isTmp?`<div class="lbl"><span class="tag" style="color:var(--info);border-color:rgba(157,184,255,.35);background:var(--info-dim)">Bara idag</span>${mine.length?"":`<button data-tmprm="${ex.id}">Ta bort</button>`}</div>`:""}<h1 class="woname">${esc(ex.name)}</h1><button class="howlink" data-exinfo="${ex.id}">Så gör du · muskler ›</button>
+    <div class="woprev">${isUni(ex)?`<b>En ${sideWord(S,ex)} i taget.</b> Skriv vikt och reps för en ${sideWord(S,ex)}.<br>`:""}${lf?`${lf.after?"Senare pass":"Förra gången"}${progOf(S,(S.sessions[lf.d]||{}).prog)?" i "+esc(progOf(S,S.sessions[lf.d].prog).name):""} (${shortDate(lf.d)}): <b>${lf.sets.map(x=>fmt(x.kg,2)+" × "+x.r+(x.rir!=null?` <i>(${x.rir===3?"3+":x.rir} kvar)</i>`:"")).join(" · ")}</b>`:"Första gången. Sätt en baslinje."}${prevBest?`<br>Rekord e1RM: <b>${fmt(prevBest,1)} kg</b>${goal?` · mål <b>${fmt(goal,1)} kg</b>`:""}`:""}${pl?`<br><span class="tag">Platå</span> Står still sedan några pass.`:""}</div></div>`;
   if(sk)return h+`<div class="mod"><p class="note">Överhoppad idag: ${esc(sk)}.</p><button class="btn" data-unskip="${ex.id}" style="margin-top:10px;width:100%">Ångra, jag kör den</button></div>`;
   const xp=expFor(S,day,sessExs(S,day,wo.prog));
   if(xp&&xp.ex===ex.id&&!xp.acc&&sg)h+=`<div class="mod expc"><div class="lbl"><span>Experiment</span><span>${EXP[xp.type].t}</span></div><p>${EXP[xp.type].d(sg)}</p><small>Appen jämför resultatet med dina vanliga pass och visar under Statistik vad som funkar för dig.</small>
@@ -1327,7 +1475,7 @@ function renderExStep(S,day,s,ex){
   const exl=sessExs(S,day,wo.prog),ei=exl.findIndex(e=>e.id===ex.id),firstEx=ei===0,lastEx=ei===exl.length-1;
   let tip="";if(s.start&&!mine.length&&firstEx)tip=howto(["Starta <b>Traditionell styrketräning</b> på klockan nu.","Låt den gå under alla övningar. Den ger puls och kalorier för passet."],"Innan första setet");
   if(s.start&&lastEx&&!stepDone(S,day,{k:"ex",e:ex}))tip+=howto(["Kör dina set och tryck ✓ efter varje.","Efter sista setet: <b>avsluta styrkepasset</b> på klockan.","Tryck <b>Nästa</b> för gången efter passet."],"Sista övningen");
-  h+=tip+`<div class="mod rows">${sg&&!mine.length?`<div class="sugg"><em>Förslag idag</em><b>${fmt(sg.kg,2)} kg × ${sg.r}</b><small>${esc(sg.why)}</small></div>`:""}<div class="rh"><span>Set</span><span>Vikt</span><span>Reps</span><span></span></div>`;
+  h+=tip+`<div class="mod rows">${sg&&!mine.length?`<div class="sugg"><em>Förslag idag</em><b>${fmt(sg.kg,2)} kg × ${sg.r}</b><small>${esc(sg.why)}</small></div>`:""}<div class="rh"><span>Set</span><span>Vikt${isUni(ex)?" / "+sideWord(S,ex):""}</span><span>Reps${isUni(ex)?" / "+sideWord(S,ex):""}</span><span></span></div>`;
   for(let k=0;k<rows;k++){
     const sv=setAt(S,day,ex.id,k),dk=day+"|"+ex.id+"|"+k,dr=drafts[dk]||defaultDraft(day,ex.id,k);
     const changed=sv&&(num(dr.kg)!==sv.kg||parseInt(dr.r,10)!==sv.r);
@@ -1476,7 +1624,7 @@ function strip(sid,tiles,o){o=o||{};tiles=tiles.filter(Boolean);if(!tiles.length
 const barRow=(i,w,name,nums,small)=>`<div class="pg row1" style="--i:${i}"><i class="bg bf" style="width:${w}%"></i><b>${name}</b><span class="nums">${nums}</span><small>${small}</small></div>`;
 function exDetail(S,x){const t=today(),id=x.e.id,all=x.s;let ser=all;if(statRange!=="all")ser=ser.filter(p=>daysBetween(p.d,t)<+statRange);
   let h=`<div class="exd${statJust==="ex"?" opening":""}" data-exd="1"><div class="exdi"><div class="exdh"><span>${esc(x.e.name)} · ${all.length} pass</span><span class="seg3">${[["30","30 d"],["90","90 d"],["all","Allt"]].map(([k,l])=>`<button class="${statRange===k?"on":""}" data-range="${k}">${l}</button>`).join("")}</span></div>`;
-  const ml=musLine(S,id);if(ml)h+=`<p class="foot" style="margin-top:6px">${ml}</p>`;
+  const ml=musLine(S,id),xe=S.exercises.find(y=>y.id===id);if(ml)h+=`<p class="foot" style="margin-top:6px">${ml}${isUni(xe)?` En ${sideWord(S,xe)} i taget: vikt och reps är per ${sideWord(S,xe)}, volymen räknar båda.`:""}</p>`;h+=`<button class="howlink" data-exinfo="${id}">Så gör du ›</button>`;
   if(ser.length){const first=ser[0],last=ser[ser.length-1],dl=last.e1-first.e1,dp=first.e1?dl/first.e1*100:0;
     const tv=all.reduce((a,s)=>a+s.vol,0),sl=regress(ser.map(p=>({d:p.d,v:p.e1}))),bw=latestBody(S);
     const goal=Math.ceil((last.e1+.5)/10)*10,eta=sl&&sl>.01?Math.round((goal-last.e1)/sl):null;
@@ -1811,11 +1959,91 @@ function render(){
     document.querySelectorAll(".sec").forEach(s=>s.classList.toggle("on",s.id==="s-day"));$("#s-day").innerHTML=renderAuth();return}
   document.querySelector("nav").hidden=false;
   if(tab!==lastTab){if(tab==="stats"){statSeen.clear();statArea="idag";statFresh=true}lastTab=tab}
-  renderHeader();$("#gear").classList.toggle("on",tab==="settings");
+  setUni(V());renderHeader();$("#gear").classList.toggle("on",tab==="settings");
   document.querySelectorAll(".sec").forEach(s=>s.classList.toggle("on",s.id==="s-"+tab));
   document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
   if(tab==="day")renderDay();else if(tab==="gym")renderGym();else if(tab==="settings")$("#s-settings").innerHTML=renderSettings();else if(tab==="board")$("#s-board").innerHTML=renderBoard();else renderStats();
+  renderSheet();
 }
+
+/* ---------- välj övning + om övningen (helskärm) ---------- */
+let pick=null,info=null;
+const MORDER=Object.keys(MUSCLES);
+function exStats(S,id){const ser=exSeries(S,id);if(!ser.length)return null;const last=ser[ser.length-1];
+  let bestSet=null;ser.forEach(p=>p.sets.forEach(x=>{if(!bestSet||e1rm(x.kg,x.r)>e1rm(bestSet.kg,bestSet.r))bestSet=Object.assign({d:p.d},x)}));
+  const bv=ser.reduce((a,p)=>p.vol>a.vol?p:a,ser[0]);
+  return{n:ser.length,last,top:Math.max(...ser.map(p=>p.top)),e1:Math.max(...ser.map(p=>p.e1)),bestSet,bv,reps:ser.reduce((a,p)=>a+p.reps,0),sets:ser.reduce((a,p)=>a+p.sets.length,0)}}
+/* Dina övningar, en rad per biblioteksövning (den med mest historik) + egna */
+function myExs(S){const used=usedEx(S),seen=new Map(),out=[];
+  const lastD={};sessionDates(S).forEach(d=>S.sessions[d].sets.forEach(x=>{lastD[x.e]=d}));
+  const cnt=id=>sessionDates(S).reduce((a,d)=>a+exSets(S,d,id).length,0);
+  used.forEach(e=>{const L=libOf(e),k=L?L.id:"#"+e.id;const p=seen.get(k);if(!p||cnt(e.id)>cnt(p.e.id)){if(p)out.splice(out.indexOf(p),1);const r={e,L,d:lastD[e.id]||""};seen.set(k,r);out.push(r)}});
+  return out.sort((a,b)=>b.d.localeCompare(a.d)||a.e.name.localeCompare(b.e.name,"sv"))}
+const pkHay=(name,L,ms)=>mnorm([name].concat(L?L.al:[],ms.map(m=>MUSCLES[m]),L?[EQ[L.eq]]:[]).join(" "));
+function pkMatch(q,name,L,ms){if(pick.mus&&ms[0]!==pick.mus)return false;if(pick.eq&&(!L||L.eq!==pick.eq))return false;
+  if(!q)return true;const h=pkHay(name,L,ms),hk=lkey(h);return mnorm(q).split(" ").every(w=>h.includes(w)||hk.includes(lkey(w)))}
+function inTarget(S,id){if(pick.mode==="tmp")return wo&&sessExs(S,wo.day,wo.prog).some(x=>x.id===id);const p=curProg();return!!p&&p.ex.includes(id)}
+const libInTarget=(S,L)=>S.exercises.some(e=>libOf(e)===L&&inTarget(S,e.id));
+function pkRow(S,name,sub,key,on){return `<div class="pkr${on?" on":""}"><button class="pka" data-pkadd="${key}" ${on?"disabled":""}><b>${esc(name)}</b><small>${sub}</small><span class="pkp">${on?"✓":"+"}</span></button><button class="pki" data-pkinfo="${key}" aria-label="Om ${esc(name)}">Info</button></div>`}
+const subOf=(S,ms,L,u,extra)=>[ms.length?MUSCLES[ms[0]]:"Ingen muskelgrupp",L?EQ[L.eq]:"Egen övning",u?"en sida i taget":"",extra||""].filter(Boolean).join(" · ");
+function pkList(S){const q=(pick.q||"").trim();let h="",n=0;
+  const mine=myExs(S).filter(r=>pkMatch(q,r.e.name,r.L,musclesOf(S,r.e.id))),mineL=new Set(mine.map(r=>r.L).filter(Boolean));
+  if(mine.length){h+=`<div class="pkh">Dina övningar</div>`;mine.forEach(r=>{n++;const on=r.L?libInTarget(S,r.L):inTarget(S,r.e.id);
+    h+=pkRow(S,r.e.name,subOf(S,musclesOf(S,r.e.id),r.L,isUni(r.e),r.d?"senast "+shortDate(r.d):""),r.L?"l:"+r.L.id:"e:"+r.e.id,on)})}
+  const rest=LIB.filter(L=>!mineL.has(L)&&pkMatch(q,L.name,L,L.m));
+  if(rest.length){const grp=q?[["",rest]]:MORDER.map(m=>[MUSCLES[m],rest.filter(L=>L.m[0]===m)]).concat([["Övrigt",rest.filter(L=>!L.m.length)]]);
+    if(q)h+=`<div class="pkh">Alla övningar</div>`;
+    grp.forEach(([t,ls])=>{if(!ls.length)return;if(t)h+=`<div class="pkh">${t}</div>`;ls.forEach(L=>{n++;h+=pkRow(S,L.name,subOf(S,L.m,L,L.u),"l:"+L.id,libInTarget(S,L))})})}
+  if(q&&!S.exercises.some(e=>mnorm(e.name)===mnorm(q))&&!LIB.some(L=>mnorm(L.name)===mnorm(q)))
+    h+=`<div class="pkh">${n?"Hittar du inte rätt?":"Ingen övning heter så"}</div><button class="btn pknew" data-pknew="1">+ Skapa egen övning: ”${esc(q.slice(0,40))}”</button>`;
+  else if(!n)h+=`<p class="empty" style="padding:18px 4px">Inga övningar med de valen. Tryck Alla för att se allt.</p>`;
+  return h}
+function renderPick(S){const tmp=pick.mode==="tmp",p=curProg();
+  const chip=(k,v,l)=>`<button class="chip ${pick[k]===v?"on":""}" data-pkf="${k}|${v}">${l}</button>`;
+  return `<div class="pkhead"><div class="pktop"><div><b>${tmp?"Lägg till för idag":"Lägg till övning"}</b><small>${tmp?"Ditt vanliga pass ändras inte":p?"I passet "+esc(p.name):""}</small></div><button class="btn solid" id="pkClose">Klar</button></div>
+    <input id="pkQ" class="inp pkq" type="search" placeholder="Sök, t.ex. rodd eller biceps" value="${esc(pick.q||"")}" autocomplete="off" enterkeyhint="search" aria-label="Sök övning">
+    <div class="pkf">${chip("mus","","Alla")}${MORDER.map(m=>chip("mus",m,MUSCLES[m])).join("")}</div>
+    <div class="pkf">${chip("eq","","All utrustning")}${Object.keys(EQ).map(k=>chip("eq",k,EQ[k])).join("")}</div></div>
+    <div id="pkList">${pkList(S)}</div>`}
+function renderInfo(S){const key=info.key,isL=key.startsWith("l:"),L=isL?LIB_BY[key.slice(2)]:null;
+  let e=isL?null:S.exercises.find(x=>x.id===key.slice(2));
+  if(isL){const c=S.exercises.filter(x=>libOf(x)===L);if(c.length)e=c.map(x=>[x,(exStats(S,x.id)||{sets:0}).sets]).sort((a,b)=>b[1]-a[1])[0][0]}
+  const L2=L||libOf(e),name=e?e.name:L.name,ms=e?musclesOf(S,e.id):L.m,u=e?isUni(e):L.u,sw=LEG_M[ms[0]]?"ben":"arm",st=e?exStats(S,e.id):null;
+  const fromPick=!!pick,on=fromPick&&(L2?libInTarget(S,L2):e&&inTarget(S,e.id));
+  let h=`<div class="pkhead"><div class="pktop"><button class="btn ghost" id="infoBack">‹ ${fromPick?"Tillbaka":"Stäng"}</button></div></div><div class="info">
+    <h1 class="woname">${esc(name)}</h1>${L2&&e&&mnorm(L2.name)!==mnorm(e.name)?`<p class="note">Samma övning som ${esc(L2.name)} i biblioteket.</p>`:""}
+    <div class="ifacts"><div><span>Tränar</span><b>${ms.length?MUSCLES[ms[0]]:"Ingen grupp"}</b></div><div><span>Hjälper till</span><b>${ms.length>1?ms.slice(1).map(m=>MUSCLES[m]).join(", "):"–"}</b></div>
+      <div><span>Utrustning</span><b>${L2?EQ[L2.eq]:"Egen övning"}</b></div><div><span>Sida</span><b>${u?"En "+sw+" i taget":"Båda samtidigt"}</b></div></div>`;
+  if(L2&&L2.st.length)h+=howto(L2.st.map(esc),"Så gör du");
+  else h+=`<p class="note" style="margin:12px 0">Egen övning. Musklerna ändrar du under Pass → Dina pass → Ändra.</p>`;
+  if(u)h+=`<p class="note" style="margin:10px 0 0">Skriv vikten för en ${sw} och reps för en ${sw}. Volymen räknas för båda.</p>`;
+  if(e&&!demoOn)h+=`<div class="lbl" style="margin-top:16px"><span>Körs den en sida i taget?</span></div><div class="seg3 iseg"><button class="${!u?"on":""}" data-uni="${e.id}|0">Nej, båda</button><button class="${u?"on":""}" data-uni="${e.id}|1">Ja, en ${sw} i taget</button></div>`;
+  h+=`<div class="lbl" style="margin-top:18px"><span>Dina siffror</span><span>${st?st.n+" pass":""}</span></div>`;
+  if(st){const per=u?"/"+sw:"";h+=`<div class="ifacts">
+    <div><span>Senast</span><b>${shortDate(st.last.d)}</b><small>${st.last.sets.slice().sort((a,b)=>(a.n||0)-(b.n||0)).map(x=>fmt(x.kg,2)+"×"+x.r).join(" · ")}</small></div>
+    <div><span>Bästa set</span><b>${fmt(st.bestSet.kg,2)} kg × ${st.bestSet.r}</b><small>${shortDate(st.bestSet.d)}${per?" · per "+sw:""}</small></div>
+    <div><span>Tyngsta vikt</span><b>${fmt(st.top,2)} kg${per}</b></div><div><span>Uppskattat max (1RM)</span><b>${fmt(st.e1,1)} kg${per}</b></div>
+    <div><span>Största pass</span><b>${fmt(st.bv.vol)} kg</b><small>${shortDate(st.bv.d)}${u?" · båda sidor":""}</small></div><div><span>Totalt</span><b>${st.sets} set</b><small>${st.reps} reps${u?" per "+sw:""}</small></div></div>
+    <p class="note" style="margin-top:8px">Kurvan och mål hittar du under Statistik → Styrka.</p>`}
+  else h+=`<p class="note">Inget loggat än. Efter första passet ser du dina siffror här.</p>`;
+  if(fromPick)h+=`<button class="btn solid pkbig" data-pkadd="${key}" ${on?"disabled":""}>${on?"✓ Finns redan i "+(pick.mode==="tmp"?"dagens pass":"passet"):pick.mode==="tmp"?"Lägg till för idag":"Lägg till i passet"}</button>`;
+  return h+`</div>`}
+function renderSheet(){let el=$("#sheet");if(!el){el=document.createElement("div");el.id="sheet";el.setAttribute("role","dialog");document.body.appendChild(el)}
+  const open=!!(pick||info);el.hidden=!open;document.documentElement.classList.toggle("sheetopen",open);if(!open){el.innerHTML="";return}
+  const S=V(),y=info?0:el.scrollTop;el.innerHTML=info?renderInfo(S):renderPick(S);el.scrollTop=y}
+function pkRefresh(){const l=$("#pkList");if(l)l.innerHTML=pkList(V())}
+/* Lägg till: biblioteksövning → din befintliga (mest historik) eller ny; e: → befintlig; n: → egen med namn */
+function exForKey(key){ensureReal();if(key.startsWith("e:"))return real.exercises.find(x=>x.id===key.slice(2))||null;
+  if(key.startsWith("l:")){const L=LIB_BY[key.slice(2)];if(!L)return null;const c=real.exercises.filter(x=>libOf(x)===L);
+    if(c.length)return c.map(x=>[x,sessionDates(real).reduce((a,d)=>a+exSets(real,d,x.id).length,0)]).sort((a,b)=>b[1]-a[1])[0][0];
+    const e={id:real.exercises.some(x=>x.id===L.id)?uid("e"):L.id,name:L.name,lib:L.id};real.exercises.push(e);return e}
+  const v=key.slice(2).trim().slice(0,40);if(!v)return null;let e=real.exercises.find(x=>x.name.toLowerCase()===v.toLowerCase());if(!e){e={id:uid("e"),name:v};real.exercises.push(e)}return e}
+function pkAdd(key){const e=exForKey(key);if(!e)return;
+  if(pick.mode==="tmp"){const day=wo.day;if(sessExs(real,day,wo.prog).some(x=>x.id===e.id)){toast(e.name+" finns redan i dagens pass.");return}
+    saveConfig();const s=clone(real.sessions[day]||{sets:[]});s.extraEx=(s.extraEx||[]).concat(e.id);real.sessions[day]=s;saveSession(day);
+    pick=null;info=null;wo.idx=woSteps(real,day,wo.prog).findIndex(x=>x.k==="ex"&&x.e.id===e.id);toast(e.name+" tillagd för idag.");render();window.scrollTo({top:0});return}
+  const p=curProg();if(!p)return;if(p.ex.includes(e.id)){toast(e.name+" finns redan i passet.");return}
+  p.ex.push(e.id);p.draft=false;saveConfig();info=null;toast(e.name+" tillagd i "+p.name+".");render()}
 
 /* ---------- events ---------- */
 const resetDrafts=()=>{for(const k in drafts)delete drafts[k]};
@@ -1855,6 +2083,16 @@ document.addEventListener("click",e=>{
     wo={day:v,prog:pid,idx:firstOpenStep(real,v,pid)};render();window.scrollTo({top:0});return}
   if(b.id==="manEx"){manageEx=!manageEx;confirmDel=null;render();return}
   if(b.id==="addE"){addEx();return}
+  if(b.id==="pickOpen"){pick={mode:"prog",q:"",mus:"",eq:""};info=null;render();return}
+  if(b.id==="pkClose"){pick=null;info=null;render();return}
+  if(b.id==="infoBack"){info=null;render();return}
+  if(D.pkf){const[k,v]=D.pkf.split("|");pick[k]=pick[k]===v&&v?"":v;renderSheet();return}
+  if(D.pkadd){pkAdd(D.pkadd);return}
+  if(D.pkinfo){info={key:D.pkinfo};renderSheet();$("#sheet").scrollTop=0;return}
+  if(D.pknew){pkAdd("n:"+(pick.q||""));return}
+  if(D.exinfo){info={key:"e:"+D.exinfo};renderSheet();$("#sheet").scrollTop=0;return}
+  if(D.uni){const[id,v]=D.uni.split("|");ensureReal();const x=real.exercises.find(y=>y.id===id);if(!x)return;const L=libOf(x),def=L?L.u:UNI_RE.test(mnorm(x.name));
+    if((v==="1")===def)delete x.uni;else x.uni=v==="1";saveConfig();render();return}
   if(D.dele){delEx(D.dele);return}
   if(D.mv){const[id,d]=D.mv.split("|");moveEx(id,+d);return}
   if(D.area){statsGo(D.area);return}
@@ -1876,7 +2114,7 @@ document.addEventListener("click",e=>{
   if(b.id==="goLogin"){authMode=true;authMsg="";render();window.scrollTo({top:0});return}
   if(b.id==="syncNow"){meta().dirty?push():pull();return}
   if(b.id==="logout"){(async()=>{try{if(meta().dirty)await push();await sb.auth.signOut()}catch(err){}sbUser=null;setMeta({skipLogin:false});authMode=true;authMsg="Du är utloggad.";render()})();return}
-  if(b.id==="tmpOpen"){tmpAdd=!tmpAdd;render();setTimeout(()=>{const i=$("#tmpEx");if(i){i.focus();i.scrollIntoView({block:"center"})}},50);return}
+  if(b.id==="tmpOpen"){pick={mode:"tmp",q:"",mus:"",eq:""};info=null;render();return}
   if(b.id==="tmpCancel"){tmpAdd=false;render();return}
   if(b.id==="tmpAddGo"){addTmpEx();return}
   if(D.tmprm){const s=clone(real.sessions[wo.day]);s.extraEx=(s.extraEx||[]).filter(x=>x!==D.tmprm);real.sessions[wo.day]=s;saveSession(wo.day);render();return}
@@ -1928,8 +2166,9 @@ document.addEventListener("click",e=>{
     if(confirmDel!=="import"){confirmDel="import";render();return}
     const old=Object.keys(real.sessions);demoOn=false;demoDismissed=true;real=Object.assign(DEFAULT(),o);migrate(real);confirmDel=null;backupOpen=false;saveAll(old);toast("Din logg är inläst.");render();return}
 });
-document.addEventListener("input",e=>{const el=e.target;if(el.id==="ciPainWhere"){ciDraft.painWhere=el.value;return}if(el.dataset&&el.dataset.dk){const dk=el.dataset.dk;if(!drafts[dk]){const[d,ex,k]=dk.split("|");drafts[dk]=Object.assign({},defaultDraft(d,ex,+k))}drafts[dk][el.dataset.k]=el.value}});
+document.addEventListener("input",e=>{const el=e.target;if(el.id==="pkQ"&&pick){pick.q=el.value;pkRefresh();return}if(el.id==="ciPainWhere"){ciDraft.painWhere=el.value;return}if(el.dataset&&el.dataset.dk){const dk=el.dataset.dk;if(!drafts[dk]){const[d,ex,k]=dk.split("|");drafts[dk]=Object.assign({},defaultDraft(d,ex,+k))}drafts[dk][el.dataset.k]=el.value}});
 document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const el=e.target;
+  if(el.id==="pkQ"){el.blur();return}
   if(el.id==="auPw"&&!authBusy){authDo("in");return}
   if(el.id==="tmpEx"){addTmpEx();return}if(el.id==="newHabit")addHabit();else if(el.id==="newEx")addEx();else if(el.id==="progName")renameProg();else if(el.id==="bwIn")saveBody();
   else if(el.dataset&&el.dataset.dk){const[,ex,k]=el.dataset.dk.split("|");el.blur();woSet(ex,+k)}});
