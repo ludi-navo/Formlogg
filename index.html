@@ -737,7 +737,7 @@ nav button{position:relative;z-index:1;border-radius:999px;color:var(--fg);font-
 nav button svg{width:24px;height:24px;transition:transform .35s var(--bounce)}
 nav button:active svg{transform:scale(.84)}
 nav button.on{color:var(--tint)}
-.tabind{position:absolute;z-index:0;top:4px;bottom:4px;left:0;width:0;border-radius:999px;background:rgba(255,255,255,.1);box-shadow:inset 0 .5px 0 rgba(255,255,255,.2);pointer-events:none;transition:transform .55s var(--bounce),width .55s var(--bounce),opacity .2s}
+.tabind{position:absolute;z-index:0;top:4px;bottom:4px;left:0;width:0;border-radius:999px;background:rgba(255,255,255,.1);box-shadow:inset 0 .5px 0 rgba(255,255,255,.2);pointer-events:none}
 
 /* meddelanden */
 .toast{background:rgba(44,44,46,.8);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);border:.5px solid var(--glass-hi);border-radius:999px;font-size:15px;padding:12px 18px;transition:opacity .3s ease,transform .5s var(--bounce)}
@@ -897,6 +897,30 @@ body{font-size:17px}
 nav button svg{width:26px;height:26px}
 .strip.p4 .tl>span,.strip.p5 .tl>span{font-size:11px}
 @media (max-width:350px){.tl>span,.strip.p4 .tl>span,.strip.p5 .tl>span{font-size:9.5px}}
+
+/* ===== Liquid Glass: lins i flikfältet, flytande segment och reglage ===== */
+nav .in{background:rgba(44,44,48,.4);border:0;-webkit-backdrop-filter:blur(28px) saturate(200%) brightness(1.1);backdrop-filter:blur(28px) saturate(200%) brightness(1.1);box-shadow:inset 0 .5px 0 rgba(255,255,255,.34),inset 0 -.5px 0 rgba(255,255,255,.12),inset .5px 0 0 rgba(255,255,255,.1),inset -.5px 0 0 rgba(255,255,255,.1),0 14px 36px rgba(0,0,0,.5)}
+nav .in::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,0) 42%,rgba(255,255,255,.03))}
+.tabind{background:rgba(255,255,255,.13);box-shadow:inset 0 .5px 0 rgba(255,255,255,.38),inset 0 -.5px 0 rgba(255,255,255,.1),inset 0 0 10px rgba(255,255,255,.05);will-change:transform,width;transition:top .4s var(--bounce),bottom .4s var(--bounce),background-color .3s,box-shadow .3s,opacity .2s}
+nav.lens .tabind{top:-7px;bottom:-7px;background:rgba(255,255,255,.2);-webkit-backdrop-filter:blur(2px) saturate(180%) brightness(1.25);backdrop-filter:blur(2px) saturate(180%) brightness(1.25);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -1px 0 rgba(255,255,255,.2),inset 0 0 16px rgba(255,255,255,.12),0 10px 28px rgba(0,0,0,.45)}
+nav.lens button,nav.lens button.on{color:var(--fg)}
+nav.lens button.hov{color:var(--tint)}
+nav button.hov svg{transform:scale(1.16)}
+nav .in,nav button{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:pan-x}
+/* glasknappar växer och lyser när man trycker */
+.gear,.datenav button.arr,.pc-go,.mgrid button.mv{box-shadow:inset 0 .5px 0 rgba(255,255,255,.26),inset 0 -.5px 0 rgba(255,255,255,.08)}
+.gear:active,.datenav button.arr:active,.mgrid button.mv:active{transform:scale(1.14);background:rgba(255,255,255,.3)}
+.toast{box-shadow:inset 0 .5px 0 rgba(255,255,255,.3),0 12px 32px rgba(0,0,0,.5)}
+/* segment: markeringen är en egen glasbit som flyter mellan valen */
+.sc,.seg3{position:relative}
+.sc>button,.seg3>button{position:relative;z-index:1}
+.segind{position:absolute;z-index:0;border-radius:8px;background:#636366;box-shadow:inset 0 .5px 0 rgba(255,255,255,.24),0 3px 8px rgba(0,0,0,.12),0 3px 1px rgba(0,0,0,.04);pointer-events:none;will-change:left,width}
+.hasind>button.on{background:none!important;box-shadow:none!important}
+/* reglage: knoppen sträcks ut när man håller i den */
+.switch i{transition:transform .4s var(--bounce),width .3s var(--spring)}
+.switch:active i{width:34px}
+.switch.on:active i{transform:translateX(13px)}
+@media (prefers-reduced-motion:reduce){.tabind,.switch i{transition:none!important}}
 </style>
 
 <div class="glow"></div>
@@ -2387,7 +2411,7 @@ function renderInfo(S){const key=info.key,isL=key.startsWith("l:"),L=isL?LIB_BY[
 function renderSheet(){let el=$("#sheet");if(!el){el=document.createElement("div");el.id="sheet";el.setAttribute("role","dialog");document.body.appendChild(el)}
   const open=!!(pick||info);if(!open){if(sheetOn)sheetHide(el);else{el.hidden=true;el.innerHTML=""}return}
   if(!sheetOn)sheetShow(el);
-  const S=V(),y=info?0:el.scrollTop;el.innerHTML=info?renderInfo(S):renderPick(S);el.scrollTop=y}
+  const S=V(),y=info?0:el.scrollTop;el.innerHTML=info?renderInfo(S):renderPick(S);el.scrollTop=y;segInds()}
 function pkRefresh(){const l=$("#pkList");if(l)l.innerHTML=pkList(V())}
 /* Lägg till: biblioteksövning → din befintliga (mest historik) eller ny; e: → befintlig; n: → egen med namn */
 function exForKey(key){ensureReal();if(key.startsWith("e:"))return real.exercises.find(x=>x.id===key.slice(2))||null;
@@ -2420,17 +2444,54 @@ function chromeInit(){if($("#ltitle"))return;
   document.body.insertAdjacentHTML("beforeend",'<div id="scrim"></div>');
   $("#scrim").addEventListener("click",()=>{pick=null;info=null;render()});
   window.addEventListener("scroll",chromeScroll,{passive:true});
-  window.addEventListener("resize",()=>tabInd(false));
-  sheetDrag()}
+  window.addEventListener("resize",()=>{tabInd(false);segInds()});
+  sheetDrag();tabDrag()}
 function chromeScroll(){const hd=document.querySelector("header");if(!hd)return;const y=window.scrollY;hd.classList.toggle("scrolled",y>2);
   const big=tab==="day"?$("#datenav"):$("#ltitle");let t;
   if(big&&!big.hidden){t=big.getBoundingClientRect().bottom<hd.getBoundingClientRect().bottom+2}else t=y>2;
   hd.classList.toggle("titled",t)}
+/* Glaslinsen i flikfältet: sträcks ut mot målet och drar ihop sig igen, som en droppe */
+let indX=null,indW=0;
+function indSet(ind,x,w){ind.style.width=w+"px";ind.style.transform="translateX("+x+"px)";indX=x;indW=w}
+function morphKeys(x0,w0,x,w){const l=Math.min(x0,x),r=Math.max(x0+w0,x+w),sp=r-l,fw=x>x0;
+  return{l,sp,fw,far:Math.abs(x-x0)>Math.min(w,w0)*.5}}
+function indTo(b,anim){const ind=$("#tabind");if(!ind||!b)return;const x=b.offsetLeft,w=b.offsetWidth,x0=indX,w0=indW;ind.style.opacity="1";indSet(ind,x,w);
+  if(!anim||x0===null||!ind.animate||RM()||(x0===x&&w0===w))return;const k=morphKeys(x0,w0,x,w),T=v=>"translateX("+v+"px)";
+  ind.animate(k.far?[{transform:T(x0),width:w0+"px"},{transform:T(k.l+(k.fw?k.sp*.12:0))+" scaleY(.86)",width:k.sp*.88+"px",offset:.42},{transform:T(x+(k.fw?3:-3))+" scaleY(1.05)",width:w+"px",offset:.8},{transform:T(x),width:w+"px"}]
+    :[{transform:T(x0),width:w0+"px"},{transform:T(x),width:w+"px"}],{duration:k.far?540:300,easing:"cubic-bezier(.3,.7,.3,1)"})}
 function tabInd(anim){const ind=$("#tabind"),b=document.querySelector("nav button.on");if(!ind)return;
-  if(!b){ind.style.opacity="0";return}
-  if(!anim)ind.style.transition="none";
-  ind.style.opacity="1";ind.style.width=b.offsetWidth+"px";ind.style.transform="translateX("+b.offsetLeft+"px)";
-  if(!anim){void ind.offsetWidth;ind.style.transition=""}}
+  if(!b){ind.style.opacity="0";indX=null;return}indTo(b,anim)}
+/* Håll på flikfältet: linsen lyfter och följer fingret. Släpp över en flik för att byta. */
+function tabDrag(){const bar=document.querySelector("nav .in"),nav=document.querySelector("nav");let x0=null,drag=false,hov=null;
+  const at=cx=>{let best=null,bd=1e9;bar.querySelectorAll("button").forEach(b=>{const r=b.getBoundingClientRect(),d=Math.abs(cx-(r.left+r.width/2));if(d<bd){bd=d;best=b}});return best};
+  const setHov=b=>{if(hov===b)return;if(hov)hov.classList.remove("hov");hov=b;if(b)b.classList.add("hov")};
+  bar.addEventListener("touchstart",e=>{if(e.touches.length>1)return;x0=e.touches[0].clientX;drag=false;const b=at(x0);setHov(b);nav.classList.add("lens");indTo(b,indX!==null)},{passive:true});
+  bar.addEventListener("touchmove",e=>{if(x0===null)return;const cx=e.touches[0].clientX;if(!drag&&Math.abs(cx-x0)<8)return;drag=true;if(e.cancelable)e.preventDefault();
+    const ind=$("#tabind"),r=bar.getBoundingClientRect(),w=indW||(hov?hov.offsetWidth:60);if(ind.getAnimations)ind.getAnimations().forEach(a=>a.cancel());
+    indSet(ind,Math.max(4,Math.min(r.width-w-4,cx-r.left-w/2)),w);setHov(at(cx))},{passive:false});
+  const end=()=>{if(x0===null)return;x0=null;nav.classList.remove("lens");const b=hov,was=drag;setHov(null);drag=false;
+    if(was&&b&&b.dataset.tab!==tab){b.click();return}setTimeout(()=>tabInd(true),was?0:120)};
+  bar.addEventListener("touchend",end);bar.addEventListener("touchcancel",end)}
+/* Segment och reglage ritas om vid varje tryck. Här minns vi var markeringen stod och låter den flyta till nya platsen. */
+let segClick=null,swClick=null;
+const segList=()=>[...document.querySelectorAll(".sec.on .sc,.sec.on .seg3,#sheet .seg3")];
+const segKey=(c,i)=>i+":"+c.querySelectorAll("button").length+":"+((c.querySelector("button")||{}).textContent||"");
+document.addEventListener("click",e=>{const t=e.target&&e.target.closest?e.target:null;if(!t)return;
+  const c=t.closest(".sc,.seg3");if(c){const bs=[...c.querySelectorAll("button")],on=c.querySelector("button.on");segClick={k:segKey(c,segList().indexOf(c)),i:on?bs.indexOf(on):-1};setTimeout(()=>{segClick=null},0)}
+  const sw=t.closest(".switch");if(sw){swClick={i:[...document.querySelectorAll(".sec.on .switch")].indexOf(sw),on:sw.classList.contains("on")};setTimeout(()=>{swClick=null},0)}},true);
+function segInds(){try{const rm=RM();segList().forEach((c,ci)=>{const on=c.querySelector("button.on");let ind=c.querySelector(".segind");
+    if(!on||!on.offsetWidth){if(ind)ind.remove();c.classList.remove("hasind");return}
+    if(!ind){ind=document.createElement("i");ind.className="segind";c.appendChild(ind)}c.classList.add("hasind");
+    const x=on.offsetLeft,w=on.offsetWidth;ind.style.cssText="left:"+x+"px;top:"+on.offsetTop+"px;width:"+w+"px;height:"+on.offsetHeight+"px;border-radius:"+getComputedStyle(on).borderRadius;
+    if(rm||!segClick||!ind.animate||segClick.k!==segKey(c,ci))return;const bs=[...c.querySelectorAll("button")],o=bs[segClick.i];
+    if(!o){ind.animate([{opacity:0,transform:"scale(.7)"},{opacity:1,transform:"none"}],{duration:300,easing:"cubic-bezier(.34,1.32,.64,1)"});return}
+    if(o===on||o.offsetTop!==on.offsetTop)return;const x0=o.offsetLeft,w0=o.offsetWidth,k=morphKeys(x0,w0,x,w);
+    ind.animate([{left:x0+"px",width:w0+"px"},{left:k.l+(k.fw?k.sp*.14:0)+"px",width:k.sp*.86+"px",transform:"scaleY(.9)",offset:.45},{left:x+"px",width:w+"px",transform:"scaleY(1.04)",offset:.82},{left:x+"px",width:w+"px",transform:"none"}],{duration:460,easing:"cubic-bezier(.3,.7,.3,1)"})});
+  if(swClick&&!rm){const sw=document.querySelectorAll(".sec.on .switch")[swClick.i],th=sw&&sw.querySelector("i"),on=sw&&sw.classList.contains("on");
+    if(th&&th.animate&&on!==swClick.on){const a="translateX("+(swClick.on?20:0)+"px)",b="translateX("+(on?20:0)+"px)";
+      th.animate([{transform:a,width:"27px"},{transform:"translateX("+(on?6:8)+"px)",width:"35px",offset:.45},{transform:b,width:"27px"}],{duration:420,easing:"cubic-bezier(.3,.7,.3,1)"});
+      sw.animate([{backgroundColor:swClick.on?"#30D158":"rgba(120,120,128,.32)"},{backgroundColor:on?"#30D158":"rgba(120,120,128,.32)"}],{duration:300,easing:"ease"})}}
+  }catch(err){}}
 function iosLists(){document.querySelectorAll(".sec.on .mod").forEach(m=>{if(m.classList.contains("wohead")||m.classList.contains("expc"))return;
   const l=m.firstElementChild;if(l&&l.classList.contains("lbl")&&m.childElementCount>1){l.classList.add("shead");m.parentNode.insertBefore(l,m);m.classList.add("hoisted")}
   let n;while((n=m.lastElementChild)&&n.tagName==="P"&&n.classList.contains("note")&&m.childElementCount>1){n.classList.add("sfoot");m.parentNode.insertBefore(n,m.nextSibling)}})}
@@ -2442,7 +2503,7 @@ function chromeAfter(){chromeInit();iosLists();
   const cls=chromeTab!==null&&changed?"enter":secAnim;secAnim=null;
   const sec=$("#s-"+tab);
   if(cls&&sec&&!RM()){[sec,lt].forEach(el=>{el.classList.remove("enter","push-l","push-r")});void sec.offsetWidth;sec.classList.add(cls);if(cls==="enter"&&!lt.hidden)lt.classList.add("enter")}
-  chromeTab=tab;chromeScroll()}
+  chromeTab=tab;chromeScroll();segInds()}
 function sheetShow(el){sheetOn=true;clearTimeout(sheetT);
   const wrap=document.querySelector(".wrap");if(wrap)wrap.style.transformOrigin="50% "+Math.round(window.scrollY+window.innerHeight/2)+"px";
   el.hidden=false;if(!RM()){el.style.transition="none";el.style.transform="translateY(102%)";void el.offsetWidth;el.style.transition="";el.style.transform=""}
