@@ -768,6 +768,135 @@ html.sheetopen nav{transform:translateY(130%);opacity:0}
 @keyframes pushL{from{opacity:0;transform:translateX(32px)}}
 @keyframes pushR{from{opacity:0;transform:translateX(-32px)}}
 @media (prefers-reduced-motion:reduce){.wrap,nav,#sheet,#scrim,.tabind{transition:none!important}}
+
+/* ===== iOS-struktur: rubriker utanför korten, listor med rader, segmentkontroller, Inställningar som i iPhone ===== */
+body{font-size:17px}
+.sync[data-s="Synkad"]{display:none}
+.hright{justify-content:flex-end;gap:12px}
+.gear{width:40px;height:40px}
+.gear svg{width:21px;height:21px}
+/* Idag: datum litet ovanför stor rubrik, föregående/nästa dag i en kapsel */
+.datenav{align-items:flex-end;gap:0;margin-top:0}
+.dlabel{display:flex;flex-direction:column-reverse;margin-right:12px}
+.dlabel span{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase!important}
+.datenav button.arr{width:46px;height:40px;margin-bottom:3px}
+#prevDay{border-radius:999px 0 0 999px}
+#nextDay{border-radius:0 999px 999px 0;box-shadow:inset .5px 0 0 var(--line)}
+/* sektionsrubrik och fotnot utanför kortet */
+.shead,.start>.lbl{font-size:22px;font-weight:700;color:var(--fg);align-items:baseline;margin:12px 4px -4px}
+.shead>:not(:first-child),.start>.lbl>:not(:first-child){font-size:15px;font-weight:400;color:var(--muted);text-align:right}
+.shead button{font-size:17px;color:var(--tint);padding:0}
+.shead .up{color:var(--good)}
+.sfoot{font-size:13px;line-height:1.4;color:var(--muted);margin:-6px 16px 0}
+.mod.hoisted>:first-child{margin-top:0!important}
+.sec{gap:12px}
+.start{gap:10px}
+/* listor med rader och indragna avdelare */
+.habits{gap:0}
+.hrow2{position:relative}
+.hrow2+.hrow2::before,.pitem+.pitem::before{content:"";position:absolute;left:42px;right:0;top:0;border-top:.5px solid var(--line)}
+.habit,.habit.done{background:none;border-radius:0;padding:11px 0;gap:14px}
+.habit .t b{font-size:17px;font-weight:400}
+.habit .t span{font-size:13px}
+.habit .st{font-size:20px;color:var(--muted)}
+.habit .st small{font-family:var(--f-body);font-size:11px}
+.box{width:26px;height:26px;border-width:1.5px}
+.pitem{position:relative;border-bottom:0;grid-template-columns:28px 1fr auto;padding:11px 0}
+.pitem+.pitem::before{left:38px}
+.pitem b,.list b{font-size:17px;font-weight:400}
+.pitem .n{font-size:15px;color:var(--dim)}
+.pitem small,.list span{font-size:13px}
+.pitem .tr,.list .r{font-size:15px;color:var(--muted)}
+.list button{padding:11px 0;align-items:center}
+.list .r::after{content:"";display:inline-block;width:7px;height:7px;margin-left:8px;border-right:2px solid var(--dim);border-top:2px solid var(--dim);transform:rotate(45deg) translateY(-1px)}
+.prog{margin-top:4px}
+/* rad med åtgärd */
+.cta b{font-family:var(--f-body);font-size:17px;font-weight:600}
+.cta span{font-size:15px;line-height:1.3}
+.cta .btn{flex:none}
+.dayinfo .big{font-family:var(--f-display);font-weight:700}
+.dayinfo p{font-size:15px}
+.week span{font-size:13px;font-weight:500}
+/* segmentkontroll för 1–5 och Ja/Nej */
+.q{gap:8px;padding:12px 0}
+.q>span{font-size:17px;font-weight:400}
+.q small{font-size:12px;color:var(--muted)}
+.sc{gap:0;background:var(--fill);border-radius:10px;padding:2px}
+.sc button,.sc button:active{background:none;border-radius:8px;min-height:34px;font-size:15px;font-weight:500;color:var(--fg);transform:none;transition:background-color .25s var(--spring),box-shadow .25s}
+.sc button.on{background:#636366;color:#fff;font-weight:600;box-shadow:0 3px 8px rgba(0,0,0,.12),0 3px 1px rgba(0,0,0,.04)}
+.sorer em{font-size:15px;color:var(--fg)}
+.seg3{border-radius:10px}
+.seg3 button{border-radius:8px}
+.seg3.big button{font-size:14px;padding:8px 2px}
+/* Pass */
+.pcard{padding:16px;border-radius:var(--r)}
+.pcard.next{background:var(--card)}
+.pc-top em{background:none;color:var(--tint);font-size:13px;font-weight:600;padding:0}
+.pc-meta{font-size:13px}
+.pc-go{width:40px;height:40px}
+.flag,.howto,.sugg{background:var(--fill3);border-radius:14px}
+.flag{font-size:15px;color:var(--soft)}
+.howto ol{font-size:15px}
+.sugg b{font-family:var(--f-round);font-size:22px;font-weight:700}
+.sugg small{font-size:13px}
+.chips{margin-top:0}
+.addrow.past{margin-top:6px}
+.lbl{font-size:17px}
+.note{font-size:15px;line-height:1.35}
+.woprev{font-size:15px}
+.rh{font-size:13px;color:var(--muted)}
+.rowmeta{font-size:13px}
+.wofoot button{font-size:15px;color:var(--tint)}
+.rest{font-size:15px}
+/* Inställningar: rader som i iPhone */
+.form{gap:0;margin-top:0}
+.form>label,.form .two>label{font-size:17px;color:var(--fg);padding:11px 0;border-bottom:.5px solid var(--line)}
+.form .two{display:block}
+.form>label:last-child{border-bottom:0;padding-bottom:0}
+.form label:has(>input){flex-direction:row;align-items:center;justify-content:space-between;gap:16px;white-space:nowrap}
+.form label:has(>input) input{flex:1;min-width:0;width:auto;background:none!important;box-shadow:none!important;border-radius:0;padding:0;text-align:right;font-size:17px;color:var(--soft)}
+.form label:has(>input) input:focus{color:var(--fg)}
+.form label:has(>.seg3){gap:8px}
+.tog span{font-size:17px}
+.copyrow{grid-template-columns:64px 1fr auto;padding:9px 0}
+.copyrow span{font-size:15px;color:var(--fg)}
+.copyrow code{font-size:13px;color:var(--muted)}
+.copyrow .btn{background:none;color:var(--tint);font-size:15px;padding:0 0 0 8px}
+.mod>div>.btn{flex:1}
+#pfSave{margin-top:14px!important}
+/* Topplista */
+.board b{font-size:17px}
+.board .tot{font-size:13px}
+.det div,.cmp div{font-size:17px}
+.det span,.cmp span{font-size:15px}
+/* Statistik */
+.ah{font-size:22px;font-weight:700}
+.ah em{display:none}
+.ah .r{font-size:15px;color:var(--muted)}
+.area.fold .ah{font-size:17px}
+.tl>span{color:var(--ac);font-weight:600;font-size:12px}
+.tip{font-size:13px;color:var(--muted)}
+.use{background:none;border-top:.5px solid var(--line);font-size:13px}
+.hint,.dpn{font-size:13px}
+.exr .nm{font-size:16px;font-weight:400}
+.exr{min-height:44px}
+.exr .mo{font-size:14px}
+.pg>b{font-size:16px;font-weight:400}
+/* sheet */
+.pkq{min-height:44px!important;font-size:17px!important;border-radius:999px!important;padding-left:40px!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a0a0a8' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L20 20'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:13px 50%!important;background-size:19px!important}
+.pktop b{font-size:22px;font-weight:700}
+.pka b{font-size:17px;font-weight:400}
+.pka small{font-size:13px}
+.pkp{width:30px;height:30px;font-size:20px;justify-self:end}
+.pki{background:none;color:var(--tint);font-size:15px;font-weight:400;min-width:44px}
+.pkh{font-family:var(--f-body);font-size:20px;font-weight:700;color:var(--fg);margin:22px 0 4px}
+.pkf .chip{min-height:34px;font-size:15px;padding:6px 14px}
+.info .woname{font-size:30px}
+.ifacts span{font-size:13px}
+.pkbig,.bigbtn{min-height:50px}
+nav button svg{width:26px;height:26px}
+.strip.p4 .tl>span,.strip.p5 .tl>span{font-size:11px}
+@media (max-width:350px){.tl>span,.strip.p4 .tl>span,.strip.p5 .tl>span{font-size:9.5px}}
 </style>
 
 <div class="glow"></div>
@@ -793,10 +922,10 @@ html.sheetopen nav{transform:translateY(130%);opacity:0}
 
 <nav>
   <div class="in">
-    <button class="on" data-tab="day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3.5" y="3.5" width="17" height="17"/><path d="M8 12.5l3 3 5-6"/></svg>Idag</button>
-    <button data-tab="gym"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2.5 12h19M5.5 8v8M8.5 6v12M15.5 6v12M18.5 8v8"/></svg>Pass<i class="live" id="liveDot" hidden></i></button>
-    <button data-tab="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"/></svg>Topplista</button>
-    <button data-tab="stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3.5 20.5h17M6 16l4-5 3.5 3L19 6.5"/><circle cx="19" cy="6.5" r="1.4" fill="currentColor"/></svg>Statistik</button>
+    <button class="on" data-tab="day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.4l2.8 2.8 5.4-5.6"/></svg>Idag</button>
+    <button data-tab="gym"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 7v10M17.5 7v10M3.5 9.8v4.4M20.5 9.8v4.4M6.5 12h11"/></svg>Pass<i class="live" id="liveDot" hidden></i></button>
+    <button data-tab="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 20.5h7M12 16.5v4M7 4h10v5.5a5 5 0 0 1-10 0V4z"/><path d="M7 6H4.2v1.2A2.8 2.8 0 0 0 7 10M17 6h2.8v1.2A2.8 2.8 0 0 1 17 10"/></svg>Topplista</button>
+    <button data-tab="stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 19.5V13M12 19.5V5M18 19.5v-9" stroke-width="3.2"/></svg>Statistik</button>
   </div>
 </nav>
 <div class="toast" id="toast"></div>
@@ -983,7 +1112,7 @@ function saveAll(oldSess){saveConfig();const months=new Set([...Object.keys(real
   months.forEach(m=>saveMonth(m+"-01"));Object.keys(real.sessions).forEach(saveSession);
   (oldSess||[]).forEach(d=>{if(!real.sessions[d])saveSession(d)})}
 
-function setSync(t,on){const el=$("#sync");el.textContent=t;el.classList.toggle("on",!!on)}
+function setSync(t,on){const el=$("#sync");el.textContent=t;el.dataset.s=t;el.classList.toggle("on",!!on)}
 function finish(){ready=true;demoOn=false;resumeActive();render()}
 
 async function initStore(){
@@ -2302,7 +2431,10 @@ function tabInd(anim){const ind=$("#tabind"),b=document.querySelector("nav butto
   if(!anim)ind.style.transition="none";
   ind.style.opacity="1";ind.style.width=b.offsetWidth+"px";ind.style.transform="translateX("+b.offsetLeft+"px)";
   if(!anim){void ind.offsetWidth;ind.style.transition=""}}
-function chromeAfter(){chromeInit();
+function iosLists(){document.querySelectorAll(".sec.on .mod").forEach(m=>{if(m.classList.contains("wohead")||m.classList.contains("expc"))return;
+  const l=m.firstElementChild;if(l&&l.classList.contains("lbl")&&m.childElementCount>1){l.classList.add("shead");m.parentNode.insertBefore(l,m);m.classList.add("hoisted")}
+  let n;while((n=m.lastElementChild)&&n.tagName==="P"&&n.classList.contains("note")&&m.childElementCount>1){n.classList.add("sfoot");m.parentNode.insertBefore(n,m.nextSibling)}})}
+function chromeAfter(){chromeInit();iosLists();
   const lt=$("#ltitle"),changed=chromeTab!==tab,inWo=tab==="gym"&&!!wo;
   lt.textContent=TAB_T[tab]||"";lt.hidden=tab==="day"||inWo;
   $("#htitle").textContent=tab==="day"?$("#dTitle").textContent:inWo?"Pass pågår":(TAB_T[tab]||"");
