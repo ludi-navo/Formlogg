@@ -911,12 +911,13 @@ function delProg(){const p=curProg();if(!p)return;if(confirmDel!=="p"+p.id){conf
   ensureReal();real.programs=real.programs.filter(x=>x.id!==p.id);viewProg=real.programs[0]?real.programs[0].id:null;confirmDel=null;manageEx=false;saveConfig();render()}
 
 /* ---------- profile, muscles, zones ---------- */
-const MUSCLES={chest:"Bröst",back:"Rygg",shoulders:"Axlar",biceps:"Biceps",triceps:"Triceps",quads:"Framsida lår",hams:"Baksida lår",glutes:"Säte",calves:"Vader",core:"Bål",lowback:"Ländrygg"};
+const MUSCLES={chest:"Bröst",back:"Rygg",shoulders:"Axlar",biceps:"Biceps",triceps:"Triceps",forearms:"Underarmar",quads:"Framsida lår",hams:"Baksida lår",glutes:"Säte",calves:"Vader",core:"Bål",lowback:"Ländrygg"};
 const DEF_MUSCLE={bench:["chest","triceps","shoulders"],incdb:["chest","shoulders","triceps"],dips:["chest","triceps"],pushdown:["triceps"],dead:["back","hams","glutes","lowback"],chins:["back","biceps"],row:["back","biceps"],facepull:["shoulders","back"],curl:["biceps"],squat:["quads","glutes"],rdl:["hams","glutes","lowback"],legpress:["quads","glutes"],legcurl:["hams"],calf:["calves"],ohp:["shoulders","triceps"],latraise:["shoulders"],revfly:["shoulders","back"],hlr:["core"],backext:["lowback","glutes"]};
 /* Muskler efter övningens namn. Första träffen gäller, så ordningen är viktig: det specifika först.
    Två värden = tvetydigt namn: [vanligt, i ett benpass]. Tomt = ingen muskelgrupp som passar. */
 const MRULES=[
-  [/handled|wrist|underarm|forearm|greppstyrka|grepptran|gripper|\bneck (curl|ext|flex|bridge)|\bnack(e|en)? ?(curl|strack|bojn|ovn|maskin|lyft)|^(nacke|neck)$/,""],
+  [/handled|wrist|underarm|forearm|greppstyrka|grepptran|gripper|dead ?hang|\bhang\b|farmers?|\bcarry/,"forearms"],
+  [/\bneck (curl|ext|flex|bridge)|\bnack(e|en)? ?(curl|strack|bojn|ovn|maskin|lyft)|^(nacke|neck)$/,""],
   [/plank|crunch|sit ?ups?\b|situp|ab ?wheel|ab ?roll|maghjul|magrull|toes to bar|\bttb\b|dragon ?flag|hollow|(russian|rysk|kabel|cable|bal|torso|sittande|seated)[a-z ]*twist|oblique|balvridning|woodchop|vedhugg|pallof|dead ?bug|\bl sit|fallkniv|jack ?knife|\bv ups?\b|mountain ?climb|side ?bend|sidoboj|balrot|torso rot|rotary torso|captain|vindrutetork|windshield|flutter|benlyft|leg ?raise|knalyft|knee ?raise|knauppdrag|\b(abs?|mage|magen|bal|balen|core)\b|\bmag(maskin|ovn|tran|pass)|\bbal(ovn|tran)/,"core"],
   [/\bvad|\bta ?hav|calf|calves/,"calves"],
   [/\b(leg|ben|lar|ham|hamstring) ?curl|hamstring|baksida lar|baksidacurl|nordic|glute ?ham|\bghr\b|\b(liggande|lying|prone) curl/,"hams"],
@@ -1076,6 +1077,10 @@ calf|Vadpress|mach|calves||Stå med fotbollarna på kanten.;Gå upp på tå så 
 seatcalf|Sittande vadpress|mach|calves||Sitt med dynan på låren och fotbollarna på kanten.;Gå upp på tå.;Sänk lugnt.|seated calf raise,sittande vad
 lpcalf|Vadpress i benpress|mach|calves||Fotbollarna på nedre kanten av plattan.;Tryck med tårna.;Släpp tillbaka lugnt.|leg press calf raise,tahavningar i benpress
 kbswing|Kettlebellsving|kb|glutes,hams,lowback||Stå brett med klockan framför dig.;Svinga den bakåt mellan benen.;Tryck fram höften så den svingar upp till bröstet.|kettlebell swing,kb swing,swing
+wristcurl|Handledscurl|db|forearms||Sitt med underarmarna på låren, handflatorna uppåt.;Låt hanteln rulla ner mot fingrarna.;Böj handleden uppåt så långt det går.|wrist curl,handledscurl hantel,underarmscurl
+revwrist|Omvänd handledscurl|db|forearms||Sitt med underarmarna på låren, handflatorna nedåt.;Sänk handen lugnt.;Lyft handryggen uppåt.|reverse wrist curl,omvand handledscurl
+revcurl|Omvänd curl|bar|forearms,biceps||Greppa stången med handflatorna nedåt.;Curla upp mot axlarna med raka handleder.;Sänk lugnt.|reverse curl,omvand curl,reverse barbell curl
+deadhang|Dead hang|bw|forearms,back||Häng i en stång med raka armar.;Håll så länge du orkar.;Skriv sekunder som reps.|dead hang,hang
 hlr|Hängande benlyft|bw|core||Häng i en stång.;Lyft benen framåt och upp.;Sänk lugnt utan att gunga.|hanging leg raise,hangande benlyft
 kneeraise|Knälyft|bw|core||Underarmarna på stöden, ryggen mot dynan.;Lyft knäna mot bröstet.;Sänk lugnt.|knee raise,knalyft,captains chair,hangande knalyft
 cablecrunch|Kabelcrunch|cable|core||Knäst framför kabeln med repet vid huvudet.;Rulla ihop överkroppen mot knäna.;Res dig lugnt.|cable crunch,kabel crunch
@@ -1086,7 +1091,7 @@ abwheel|Maghjul|other|core||Knäst med hjulet framför dig.;Rulla fram så lång
 russian|Russian twist|bw|core||Sitt med fötterna lyfta och luta dig bakåt.;Vrid överkroppen från sida till sida.;Varje sida är en rep.|russian twist,rysk twist
 pallof|Pallof press|cable|core||Stå med sidan mot kabeln, handtaget vid bröstet.;Pressa rakt fram och håll emot vridningen.;För tillbaka. Byt sida.|pallof
 legraise|Liggande benlyft|bw|core||Ligg på rygg med raka ben.;Lyft benen till lodrätt.;Sänk lugnt utan att röra golvet.|leg raise,leg raises,liggande benlyft
-farmer|Farmers walk|db|||Ta en tung hantel i varje hand.;Gå med rak rygg.;Skriv meter eller sekunder som reps.|farmers walk,farmers carry,farmer walk`.split("\n").map(l=>{const[id,name,eq,m,f,st,al]=l.split("|");
+farmer|Farmers walk|db|forearms,back||Ta en tung hantel i varje hand.;Gå med rak rygg.;Skriv meter eller sekunder som reps.|farmers walk,farmers carry,farmer walk`.split("\n").map(l=>{const[id,name,eq,m,f,st,al]=l.split("|");
   return{id,name,eq,m:m?m.split(","):[],u:f==="u",st:st?st.split(";"):[],al:al?al.split(","):[]}});
 const LIB_BY=Object.fromEntries(LIB.map(L=>[L.id,L]));
 /* namn → nyckel som tål plural och skiljetecken: "Hammer curls" = "hammercurl" = "Hammer curl" */
@@ -1212,7 +1217,7 @@ function walkSuggest(S,w,day){const all=walksOf(S,w).filter(x=>x.d<day),last=all
   return{min:+last.min||20,inc,spd,why,lo,hi}}
 
 /* ---------- body measurements ---------- */
-const MEAS=[["waist","Midja"],["hip","Höft"],["chest","Bröst"],["shoulders","Axlar"],["neck","Hals"],["arm","Överarm"],["forearm","Underarm"],["thigh","Lår"],["calf","Vad"]];
+const MEAS=[["waist","Midja"],["hip","Höft"],["chest","Bröst"],["shoulders","Axlar"],["neck","Hals"],["arm","Överarm"],["bicep","Biceps spänd"],["forearm","Underarm"],["thigh","Lår"],["calf","Vad"]];
 const lastMeasureDay=S=>{const k=Object.keys(S.measures||{}).sort();return k.length?k[k.length-1]:null};
 const measureDue=S=>{const l=lastMeasureDay(S);return!l||daysBetween(l,today())>=3};
 function bodyFat(S,m){const p=prof(S),hg=+p.height;if(!m||!hg||!m.waist||!m.neck)return null;const L=Math.log10;let v;
@@ -1363,7 +1368,7 @@ function renderCheckin(S){const t=today();if((S.checkins||{})[t]||meta().ciSkip=
 function renderMeasure(S){const due=measureDue(S),l=lastMeasureDay(S);if(!due&&!measureOpen)return"";
   if(!measureOpen)return `<div class="mod cta"><div><b>Dags att mäta</b><span>${l?"Senast "+shortDate(l)+" · var tredje dag":"Första mätningen · ta fram måttbandet"}</span></div><button class="btn solid" id="measOpen">Mät nu</button></div>`;
   const prev=l?S.measures[l]:{},cur=(S.measures||{})[today()]||{};
-  return `<div class="mod"><div class="lbl"><span>Mått i cm</span><button id="measClose">Stäng</button></div><p class="note" style="margin-top:8px">Mät på morgonen, på samma ställe varje gång. Lämna tomt det du inte mäter. Hals och midja (och höft för kvinnor) ger fettprocent.</p>
+  return `<div class="mod"><div class="lbl"><span>Mått i cm</span><button id="measClose">Stäng</button></div><p class="note" style="margin-top:8px">Mät på morgonen, på samma ställe varje gång. Lämna tomt det du inte mäter. Hals och midja (och höft för kvinnor) ger fettprocent. Överarm mäts avslappnad, biceps spänd.</p>
     <div class="mgrid2">${MEAS.map(([k,n])=>`<label class="field"><input id="ms-${k}" inputmode="decimal" placeholder="${prev&&prev[k]?String(prev[k]).replace(".",","):"0"}" value="${cur[k]!=null?String(cur[k]).replace(".",","):""}" aria-label="${n}"><span>${n}</span></label>`).join("")}</div>
     <button class="btn solid" id="measSave" style="margin-top:12px;width:100%">Spara mått</button></div>`}
 const SHORTCUT_URL="shortcuts://run-shortcut?name=Formlogg";
