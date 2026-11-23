@@ -997,7 +997,7 @@ const DEF_PROGS=()=>[{id:"push",name:"Push",draft:true,ex:["bench","incdb","dips
 const DEFAULT=()=>({
   habits:[{id:"eat",name:"Ätit bra"},{id:"train",name:"Tränat",auto:true}],
   exercises:DEF_EX.map(([id,name])=>({id,name})), programs:DEF_PROGS(),
-  days:{}, body:{}, sessions:{}, profile:{}, checkins:{}, measures:{}, goals:{}, deloadUntil:null, lastDeload:null
+  days:{}, body:{}, sessions:{}, acts:{}, profile:{}, checkins:{}, measures:{}, goals:{}, deloadUntil:null, lastDeload:null
 });
 function migrate(R){let ch=false;
   if(!Array.isArray(R.exercises))R.exercises=[];
@@ -1005,7 +1005,7 @@ function migrate(R){let ch=false;
   const have=new Set(R.exercises.map(e=>e.id));
   R.programs.forEach(p=>{if(!Array.isArray(p.ex))p.ex=[];p.ex.forEach(id=>{if(!have.has(id)){const d=DEF_EX.find(x=>x[0]===id);R.exercises.push({id,name:d?d[1]:id});have.add(id);ch=true}})});
   if("programSet" in R){delete R.programSet;ch=true}
-  ["profile","checkins","measures","goals"].forEach(k=>{if(!R[k]||typeof R[k]!=="object"){R[k]={}}});
+  ["profile","checkins","measures","goals","acts"].forEach(k=>{if(!R[k]||typeof R[k]!=="object"){R[k]={}}});
   return ch}
 let real=DEFAULT(), demo=null, demoOn=false, demoDismissed=false;
 let tab="day", sel=today(), statEx=null, statRange="all";
@@ -1125,14 +1125,14 @@ const chains={};
 function queue(k,fn){chains[k]=(chains[k]||Promise.resolve()).then(fn).catch(()=>toast("Kunde inte spara. Kolla anslutningen och försök igen."))}
 function saveConfig(){persistLocal();cfgMissing=false;if(store.mode!=="db")return;
   const body={habits:clone(real.habits),exercises:clone(real.exercises),programs:clone(real.programs),profile:clone(real.profile||{}),goals:clone(real.goals||{}),deloadUntil:real.deloadUntil||null,lastDeload:real.lastDeload||null};queue("cfg",()=>store.cfg.set(body))}
-function saveMonth(day){persistLocal();if(store.mode!=="db")return;const m=day.slice(0,7),o={days:{},body:{},checkins:{},measures:{}};
-  ["days","body","checkins","measures"].forEach(f=>{for(const k in (real[f]||{}))if(k.slice(0,7)===m)o[f][k]=real[f][k]});
+function saveMonth(day){persistLocal();if(store.mode!=="db")return;const m=day.slice(0,7),o={days:{},body:{},checkins:{},measures:{},acts:{}};
+  ["days","body","checkins","measures","acts"].forEach(f=>{for(const k in (real[f]||{}))if(k.slice(0,7)===m)o[f][k]=real[f][k]});
   const ref=store.months.doc("m"+m),any=Object.values(o).some(x=>Object.keys(x).length);
   queue("m"+m,()=>any?ref.set(clone(o)):ref.delete())}
 function saveSession(day){persistLocal();if(store.mode!=="db")return;const s=real.sessions[day];
   const body=s&&(s.sets.length||s.start||s.walks)?clone(s):null;const ref=store.sess.doc(day);
   queue("s"+day,()=>body?ref.set(body):ref.delete())}
-function saveAll(oldSess){saveConfig();const months=new Set([...Object.keys(real.days),...Object.keys(real.body),...Object.keys(real.checkins||{}),...Object.keys(real.measures||{})].map(d=>d.slice(0,7)));
+function saveAll(oldSess){saveConfig();const months=new Set([...Object.keys(real.days),...Object.keys(real.body),...Object.keys(real.checkins||{}),...Object.keys(real.measures||{}),...Object.keys(real.acts||{})].map(d=>d.slice(0,7)));
   months.forEach(m=>saveMonth(m+"-01"));Object.keys(real.sessions).forEach(saveSession);
   (oldSess||[]).forEach(d=>{if(!real.sessions[d])saveSession(d)})}
 
@@ -1166,7 +1166,7 @@ async function initStore(){
     const check=()=>{if(got.c&&got.m&&got.s){clearTimeout(timer);setSync("Synkad",true);if(!ready)finish();else render()}};
     const err=()=>{setSync("Sparas ej");toast("Din logg går inte att nå just nu.")};
     cfg.onSnapshot(s=>{if(s.exists){const d=s.data();real.habits=clone(d.habits||[]);real.exercises=clone(d.exercises||[]);real.programs=clone(d.programs||[]);real.programSet=d.programSet;real.profile=clone(d.profile||{});real.goals=clone(d.goals||{});real.deloadUntil=d.deloadUntil||null;real.lastDeload=d.lastDeload||null;cfgMissing=migrate(real)}got.c=1;check()},err);
-    store.months.onSnapshot(q=>{const o={days:{},body:{},checkins:{},measures:{}};q.docs.forEach(d=>{const x=d.data();for(const f in o)Object.assign(o[f],clone(x[f]||{}))});Object.assign(real,o);got.m=1;check()},err);
+    store.months.onSnapshot(q=>{const o={days:{},body:{},checkins:{},measures:{},acts:{}};q.docs.forEach(d=>{const x=d.data();for(const f in o)Object.assign(o[f],clone(x[f]||{}))});Object.assign(real,o);got.m=1;check()},err);
     store.sess.onSnapshot(q=>{const ss={};q.docs.forEach(d=>{ss[d.id]=clone(d.data())});real.sessions=ss;got.s=1;check()},err);
   }catch(e){store={mode:"local"};setSync("På enheten");finish()}
 }
@@ -1347,7 +1347,7 @@ function muscPick(S,e){const ms=musclesOf(S,e.id),man=Array.isArray(e.m),open=mu
 const musLine=(S,id)=>{const m=musclesOf(S,id).map(k=>MUSCLES[k]).filter(Boolean);return m.length?"Tränar "+m[0].toLowerCase()+(m.length>1?". Hjälpmuskler: "+m.slice(1).join(", ").toLowerCase():"")+".":""};
 /* ---------- övningsbibliotek ----------
    id|namn|utrustning|muskler (första = huvudmuskel)|u = en sida i taget|steg;steg;steg|andra namn */
-const EQ={bar:"Skivstång",db:"Hantlar",cable:"Kabel",mach:"Maskin",bw:"Kroppsvikt",kb:"Kettlebell",other:"Övrigt"};
+const EQ={bar:"Skivstång",db:"Hantlar",cable:"Kabel",mach:"Maskin",bw:"Kroppsvikt",kb:"Kettlebell",card:"Kondition",other:"Övrigt"};
 const LIB=`bench|Bänkpress|bar|chest,triceps,shoulders||Ligg på bänken med fötterna i golvet.;Sänk stången lugnt till nedre delen av bröstet.;Pressa upp tills armarna är raka.|bench press,bankpress skivstang
 incbench|Lutande bänkpress|bar|chest,shoulders,triceps||Ställ ryggstödet på 30–45 grader.;Sänk stången till övre delen av bröstet.;Pressa rakt upp.|incline bench press,lutande bankpress skivstang
 dbbench|Hantelpress|db|chest,triceps,shoulders||Ligg på bänken med en hantel i varje hand.;Sänk hantlarna till bröstets sidor.;Pressa upp tills armarna är raka.|dumbbell press,dumbbell bench press,hantelpress bank
@@ -1450,7 +1450,60 @@ abwheel|Maghjul|other|core||Knäst med hjulet framför dig.;Rulla fram så lång
 russian|Russian twist|bw|core||Sitt med fötterna lyfta och luta dig bakåt.;Vrid överkroppen från sida till sida.;Varje sida är en rep.|russian twist,rysk twist
 pallof|Pallof press|cable|core||Stå med sidan mot kabeln, handtaget vid bröstet.;Pressa rakt fram och håll emot vridningen.;För tillbaka. Byt sida.|pallof
 legraise|Liggande benlyft|bw|core||Ligg på rygg med raka ben.;Lyft benen till lodrätt.;Sänk lugnt utan att röra golvet.|leg raise,leg raises,liggande benlyft
-farmer|Farmers walk|db|forearms,back||Ta en tung hantel i varje hand.;Gå med rak rygg.;Skriv meter eller sekunder som reps.|farmers walk,farmers carry,farmer walk`.split("\n").map(l=>{const[id,name,eq,m,f,st,al]=l.split("|");
+farmer|Farmers walk|db|forearms,back||Ta en tung hantel i varje hand.;Gå med rak rygg.;Skriv meter eller sekunder som reps.|farmers walk,farmers carry,farmer walk
+thruster|Thrusters|bar|quads,shoulders,glutes,triceps||Stången framtill på axlarna.;Gå ner i en frontböj.;Res dig explosivt och pressa stången rakt upp i samma rörelse.|thruster,crossfit
+dbthruster|Thrusters med hantlar|db|quads,shoulders,glutes||Hantlarna vid axlarna.;Gå ner i en böj.;Res dig och pressa upp hantlarna i samma rörelse.|dumbbell thruster,hantel thruster,crossfit
+wallball|Wall balls|other|quads,shoulders,glutes||Stå en armlängd från väggen med bollen vid bröstet.;Gå ner i en böj.;Res dig och kasta bollen mot målet. Ta emot och gå direkt ner igen.|wall ball,wallball,medicinboll kast,crossfit
+burpee|Burpees|bw|chest,quads,core||Gå ner och sätt händerna i golvet.;Hoppa bakåt så bröstet når golvet.;Hoppa fram och upp med ett klapp över huvudet.|burpee,crossfit
+burpeebox|Burpee över låda|bw|quads,chest,core||Gör en burpee framför lådan.;Hoppa upp på eller över lådan.;Vänd och upprepa.|burpee box jump over,bbjo,crossfit
+boxjump|Box jumps|bw|quads,glutes,calves||Stå framför lådan.;Hoppa upp och landa mjukt med hela foten.;Res dig helt upp och kliv ner.|box jump,boxhopp,ladhopp,crossfit
+airsquat|Knäböj utan vikt|bw|quads,glutes||Fötterna axelbrett, armarna framåt.;Gå ner tills höften är under knäna.;Res dig upp helt.|air squat,luftboj,crossfit
+jumpsq|Hoppande knäböj|bw|quads,glutes,calves||Gå ner i en böj.;Hoppa explosivt rakt upp.;Landa mjukt och gå direkt ner igen.|jump squat,upphopp,crossfit
+pistol|Pistol squat|bw|quads,glutes|u|Stå på ett ben med andra benet rakt fram.;Gå ner så djupt du kan.;Res dig upp. Byt ben.|pistol,enbensboj,crossfit
+ohs|Knäböj med stång över huvudet|bar|quads,shoulders,core,glutes||Håll stången med brett grepp rakt ovanför huvudet.;Gå ner i en böj med raka armar.;Res dig upp.|overhead squat,ohs,crossfit
+pclean|Power clean|bar|glutes,hams,back,quads||Stå som i marklyft.;Dra stången explosivt upp längs kroppen.;Fäll under och ta emot den på axlarna med lätt böjda knän.|power clean,frivandning,crossfit
+hclean|Hang clean|bar|glutes,hams,back||Starta med stången vid låren.;Hoppa explosivt och dra stången upp.;Ta emot den på axlarna.|hang clean,hang power clean,crossfit
+sqclean|Squat clean|bar|quads,glutes,back,hams||Dra stången som i en clean.;Fäll ner i en hel frontböj under stången.;Res dig upp.|squat clean,clean,crossfit
+cnj|Clean and jerk|bar|quads,shoulders,glutes,back||Gör en clean upp till axlarna.;Dippa lätt i benen.;Stöt upp stången och ta emot med raka armar.|clean and jerk,stot,crossfit
+psnatch|Power snatch|bar|glutes,hams,shoulders,back||Brett grepp, stå som i marklyft.;Dra explosivt.;Ta emot stången med raka armar över huvudet.|power snatch,ryck,snatch,crossfit
+hsnatch|Hang snatch|bar|glutes,shoulders,back||Starta med stången vid låren, brett grepp.;Hoppa explosivt och dra upp.;Ta emot över huvudet med raka armar.|hang snatch,crossfit
+dbsnatch|Hantelryck|db|glutes,shoulders,hams|u|Hanteln mellan fötterna.;Dra den explosivt upp i en rörelse.;Ta emot ovanför huvudet med rak arm. Byt arm.|dumbbell snatch,db snatch,crossfit
+pushpress|Push press|bar|shoulders,triceps,quads||Stången vid nyckelbenen.;Dippa lätt i knäna.;Driv upp med benen och pressa ut stången.|push press,crossfit
+pushjerk|Push jerk|bar|shoulders,triceps,quads||Stången vid nyckelbenen.;Dippa och driv upp.;Fäll under och ta emot med raka armar och böjda knän.|push jerk,jerk,crossfit
+sdhp|Sumo marklyft med högdrag|bar|back,shoulders,glutes,hams||Brett fotavstånd, smalt grepp.;Lyft som i marklyft.;Fortsätt dra stången upp till hakan.|sumo deadlift high pull,sdhp,crossfit
+devil|Devil press|db|shoulders,glutes,chest,hams||Gör en burpee med händerna på hantlarna.;Res dig och svinga upp hantlarna mellan benen.;Ta emot dem ovanför huvudet.|devil press,crossfit
+manmaker|Man makers|db|chest,shoulders,back,quads||Burpee med händerna på hantlarna.;Ro med varje arm i plankan.;Res dig och gör en thruster.|man maker,crossfit
+ttb|Tår till stång|bw|core,forearms||Häng i stången.;Lyft fötterna hela vägen upp till stången.;Sänk kontrollerat.|toes to bar,t2b,ttb,crossfit
+k2e|Knän till armbågar|bw|core||Häng i stången.;Dra knäna upp till armbågarna.;Sänk kontrollerat.|knees to elbows,k2e,crossfit
+c2b|Bröst till stång|bw|back,biceps||Häng i stången.;Dra dig upp tills bröstet nuddar stången.;Sänk dig.|chest to bar,c2b,crossfit
+mubar|Muscle-up på stång|bw|back,triceps,chest||Häng i stången.;Dra dig explosivt upp mot stången.;Fäll över överkroppen och pressa ut till raka armar.|bar muscle up,muscle up,crossfit
+muring|Muscle-up i ringar|bw|back,triceps,chest||Häng i ringarna med falskt grepp.;Dra upp mot bröstet.;Fäll över och pressa ut till raka armar.|ring muscle up,crossfit
+ringrow|Ringrodd|bw|back,biceps||Häng under ringarna med rak kropp.;Dra bröstet upp mot ringarna.;Sänk lugnt. Brantare vinkel = tyngre.|ring row,crossfit
+hspu|Handstående armhävningar|bw|shoulders,triceps||Stå på händerna mot väggen.;Sänk huvudet mot golvet.;Pressa upp till raka armar.|handstand push up,hspu,crossfit
+hswalk|Gå på händer|bw|shoulders,core||Gå upp i handstående.;Gå framåt på händerna.;Skriv meter som reps.|handstand walk,crossfit
+wallwalk|Wall walks|bw|shoulders,core||Ligg på mage med fötterna mot väggen.;Gå upp med fötterna på väggen och händerna in mot väggen.;Gå tillbaka ner.|wall walk,crossfit
+ropeclimb|Repklättring|other|back,biceps,forearms||Greppa repet och lås det mellan fötterna.;Res dig och flytta händerna uppåt.;Klättra till toppen och ta dig ner kontrollerat.|rope climb,crossfit
+ghdsit|GHD sit-ups|mach|core||Sitt i GHD med fötterna fast.;Fäll bakåt tills händerna nuddar golvet.;Kom upp och nudda fötterna.|ghd situp,ghd sit up,crossfit
+vup|V-ups|bw|core||Ligg på rygg med raka armar och ben.;Lyft armar och ben samtidigt så de möts på mitten.;Sänk kontrollerat.|v up,crossfit
+hollow|Hollow hold|bw|core||Ligg på rygg och tryck ländryggen i golvet.;Lyft armar och ben en bit från golvet.;Håll. Skriv sekunder som reps.|hollow body,crossfit
+mclimb|Mountain climbers|bw|core,shoulders||Stå i plankan med raka armar.;Dra knäna växelvis mot bröstet i högt tempo.;Varje ben är en rep.|mountain climber,bergsklattrare,crossfit
+tgu|Turkish get-up|kb|shoulders,core,glutes|u|Ligg med klockan rakt upp i ena handen.;Res dig steg för steg till stående med armen rak.;Gå samma väg ner. Byt sida.|turkish get up,tgu,crossfit
+kbclean|Kettlebell clean|kb|glutes,hams,back|u|Klockan mellan fötterna.;Dra upp den explosivt med höften.;Ta emot den mjukt vid axeln. Byt arm.|kb clean,crossfit
+kbsnatch|Kettlebell snatch|kb|glutes,shoulders,hams|u|Svinga klockan mellan benen.;Dra den explosivt hela vägen upp.;Ta emot med rak arm över huvudet. Byt arm.|kb snatch,crossfit
+kbthruster|Kettlebell thrusters|kb|quads,shoulders,glutes||Håll klockan eller klockorna vid axlarna.;Gå ner i en böj.;Res dig och pressa upp i samma rörelse.|kb thruster,crossfit
+slamball|Slam ball|other|core,shoulders,back||Lyft bollen över huvudet.;Slå den i golvet med hela kroppen.;Ta upp den och upprepa.|ball slam,medicinboll slam,crossfit
+sandbag|Sandsäck över axeln|other|back,glutes,hams||Stå över säcken och greppa den.;Lyft den till höften.;Kasta den över axeln och ta ner den igen.|sandbag over shoulder,sandsack,crossfit
+sledpush|Slädpush|other|quads,glutes,calves||Greppa handtagen med raka armar.;Luta dig framåt och tryck med korta, kraftiga steg.;Skriv meter som reps.|sled push,prowler,slade,crossfit
+dbwlunge|Utfall med vikt över huvudet|db|quads,glutes,shoulders,core|u|Håll vikten rakt upp med rak arm.;Ta ett långt steg och sänk bakre knät.;Res dig och byt ben. Reps per ben.|overhead lunge,crossfit
+battle|Battle ropes|other|shoulders,core||Stå med lätt böjda knän och ett rep i varje hand.;Slå vågor med armarna i högt tempo.;Skriv sekunder som reps.|battle rope,crossfit
+du|Double unders|other|calves||Hoppa rep med lite högre hopp.;Snurra repet två varv per hopp.;Skriv antal som reps.|double under,dubbelhopp,crossfit
+jumprope|Hopprep|other|calves||Hoppa lätt på fotbollarna.;Ett varv per hopp.;Skriv antal som reps.|single unders,jump rope,hoppa rep,crossfit
+jacks|Jumping jacks|bw|calves,shoulders||Stå med fötterna ihop.;Hoppa isär benen och för armarna över huvudet.;Hoppa tillbaka. Skriv antal som reps.|jumping jacks,hampelmann,crossfit
+highknees|Höga knän|bw|quads,core||Spring på stället.;Dra upp knäna till höfthöjd.;Skriv sekunder eller antal som reps.|high knees,crossfit
+rower|Roddmaskin|card|||Tryck ifrån med benen först.;Dra handtaget mot nedre bröstet.;Skriv kalorier eller meter som reps.|rowing,row erg,concept2,rodd maskin,crossfit
+airbike|Assault bike|card|||Trampa och tryck och dra med armarna samtidigt.;Kör jämnt eller i intervaller.;Skriv kalorier som reps.|assault bike,air bike,echo bike,crossfit
+skierg|Skierg|card|||Dra ner handtagen med raka armar och fäll i höften.;Res dig och låt handtagen gå upp.;Skriv kalorier som reps.|ski erg,crossfit
+run|Löpning|card|||Spring i jämn takt.;Skriv meter som reps.;Minuter skriver du i anteckningen.|running,lopning,springa,crossfit`.split("\n").map(l=>{const[id,name,eq,m,f,st,al]=l.split("|");
   return{id,name,eq,m:m?m.split(","):[],u:f==="u",st:st?st.split(";"):[],al:al?al.split(","):[]}});
 const LIB_BY=Object.fromEntries(LIB.map(L=>[L.id,L]));
 /* namn → nyckel som tål plural och skiljetecken: "Hammer curls" = "hammercurl" = "Hammer curl" */
@@ -1594,6 +1647,7 @@ function points(S,from,to){const inR=d=>(!from||d>=from)&&(!to||d<=to),det={pass
   det.pass=sessionDates(S).filter(inR).length;
   Object.keys(S.days).filter(inR).forEach(d=>(S.days[d]||[]).forEach(id=>{const h=S.habits.find(x=>x.id===id);if(h&&!h.auto)det.habits++}));
   Object.keys(S.sessions).filter(inR).forEach(d=>{const w=S.sessions[d].walks||{};["pre","post"].forEach(k=>{if(w[k])det.walk+=+w[k].min||0})});
+  allActs(S).filter(a=>inR(a.d)).forEach(a=>{if(a.type==="walk")det.walk+=+a.min||0;else det.pass++});
   det.checkin=Object.keys(S.checkins||{}).filter(inR).length;
   return{p:det.pass*10+det.habits*2+Math.floor(det.walk/5)+det.checkin,det}}
 let boardRows=null,boardT=0,boardPushT=0;
@@ -1735,6 +1789,41 @@ function renderWatchNudge(){if(store.mode!=="supa"||!sbUser)return"";const last=
   return `<div class="mod cta"><div><b>${last?"Klockdatan är "+Math.round((Date.now()-last)/36e5)+" h gammal":"Koppla in Apple Watch"}</b><span>${last?"Hämta färska värden för dagsformen":"Inställningar → Apple Watch visar hur"}</span></div>${last?`<a class="btn" href="${SHORTCUT_URL}">Hämta</a>`:`<button class="btn" data-goset="1">Visa</button>`}</div>`}
 
 /* ---------- render: Pass ---------- */
+/* ---------- annan träning: promenad ute, fotboll, intervallpass ---------- */
+const ACT={walk:{n:"Promenad ute",s:"Promenad"},foot:{n:"Fotbollsträning",s:"Fotboll"},hiit:{n:"Intervallpass",s:"Intervall"}};
+const HIIT_F=["Intervaller","Tabata","AMRAP","EMOM","For time"],INT_L=["Lätt","Lagom","Tufft","Max"];
+let actOpen=null,actF={};
+function allActs(S){const o=[];Object.keys(S.acts||{}).sort().forEach(d=>(S.acts[d]||[]).forEach(a=>o.push(Object.assign({d},a))));return o}
+function actHR(a){if(!a.at||!a.live||!health.workouts.length)return null;const st=a.at-(+a.min||0)*6e4;let best=null,bo=0;
+  health.workouts.forEach(w=>{if(w.type==="puls20")return;const o=Math.min(a.at+15*6e4,w.end)-Math.max(st-15*6e4,w.start);if(o>bo&&w.hr){bo=o;best=w}});return best}
+function actLine(a){const h=actHR(a);return [a.min+" min",a.km?fmt(a.km,1)+" km":"",a.fmt||"",a.rd?a.rd+" varv":"",a.int?INT_L[a.int-1]:"",h?"puls "+Math.round(h.hr):""].filter(Boolean).join(" · ")}
+function actGrab(){["min","km","rd","note"].forEach(x=>{const el=$("#ac-"+x);if(el)actF[x]=el.value})}
+function renderActs(S){const t=today(),all=allActs(S),todays=all.filter(a=>a.d===t);
+  let h=`<div class="mod"><div class="lbl"><span>Annan träning</span><span>${todays.length?todays.length+" idag":"Utanför gymmet"}</span></div>`;
+  if(!actOpen){h+=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px">${Object.keys(ACT).map(k=>`<button class="btn" data-act="${k}" style="white-space:nowrap;padding-left:4px;padding-right:4px;font-size:14px">+ ${ACT[k].s}</button>`).join("")}</div>`}
+  else{const k=actOpen,f=actF,last=all.filter(a=>a.type===k).pop(),day=f.day||t,v=x=>esc(f[x]!=null?f[x]:"");
+    h+=`<div class="lbl" style="margin-top:14px"><span style="color:var(--fg)">${ACT[k].n}</span><span class="seg3"><button class="${day===t?"on":""}" data-actday="0">Idag</button><button class="${day!==t?"on":""}" data-actday="-1">Igår</button></span></div>
+      <div class="form"><label>Minuter<input id="ac-min" inputmode="numeric" placeholder="${last?last.min:k==="foot"?90:k==="hiit"?30:45}" value="${v("min")}"></label>
+      ${k==="walk"?`<label>Kilometer<input id="ac-km" inputmode="decimal" placeholder="valfritt" value="${v("km")}"></label>`:""}
+      ${k==="hiit"?`<label>Varv eller rundor<input id="ac-rd" inputmode="numeric" placeholder="valfritt" value="${v("rd")}"></label>`:""}
+      <label>${k==="hiit"?"Övningar och tider":"Anteckning"}<input id="ac-note" placeholder="${k==="hiit"?"t.ex. 10 burpees, 15 wall balls":k==="foot"?"t.ex. match, spelövningar":"valfritt"}" value="${v("note")}"></label></div>
+      ${k==="hiit"?`<div class="chips">${HIIT_F.map(x=>`<button class="chip ${f.fmt===x?"on":""}" data-actfmt="${x}">${x}</button>`).join("")}</div>`:""}
+      <p class="note" style="margin-top:10px">Hur tufft var det?</p><div class="seg3 big" style="margin-top:6px">${INT_L.map((x,i)=>`<button class="${f.int===i+1?"on":""}" data-actint="${i+1}">${x}</button>`).join("")}</div>
+      ${day===t?`<p class="note" style="margin-top:10px">${k==="walk"?"Starta <b>Utomhuspromenad</b> på klockan":k==="foot"?"Starta <b>Fotboll</b> (eller Lagsport) på klockan":"Starta <b>HIIT</b> på klockan"} och spara här när du är klar, så hämtas pulsen.</p>`:""}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px"><button class="btn ghost" id="actCancel">Avbryt</button><button class="btn solid" id="actSave">Spara</button></div>`}
+  const rec=all.slice(-5).reverse();
+  if(rec.length)h+=`<div style="margin-top:10px">${rec.map(a=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)"><div style="min-width:0;flex:1"><b style="font-weight:600">${ACT[a.type]?ACT[a.type].n:a.type}</b><span style="display:block;font-size:13px;color:var(--muted)">${dayName(a.d)} · ${actLine(a)}${a.note?" · "+esc(a.note):""}</span></div><button class="del ${confirmDel==="a"+a.id?"sure":""}" style="flex:none;width:auto;padding:7px 12px" data-actdel="${a.d}|${a.id}">${confirmDel==="a"+a.id?"Säker?":"Ta bort"}</button></div>`).join("")}</div>`;
+  else if(!actOpen)h+=`<p class="note" style="margin-top:10px">Promenader ute, fotboll och intervallpass. Ger poäng i topplistan och bockar av Tränat.</p>`;
+  return h+`</div>`}
+function actSave(){actGrab();const k=actOpen,f=actF,min=num(f.min);if(!(min>0)){toast("Skriv hur många minuter.");return}
+  ensureReal();const t=today(),d=f.day||t,a={id:Date.now().toString(36),type:k,min:Math.round(min)};
+  const km=num(f.km),rd=num(f.rd);if(k==="walk"&&km>0)a.km=Math.round(km*100)/100;if(k==="hiit"){if(f.fmt)a.fmt=f.fmt;if(rd>0)a.rd=Math.round(rd)}
+  if(f.int)a.int=f.int;const nt=String(f.note||"").trim();if(nt)a.note=nt.slice(0,300);
+  if(d===t){a.at=Date.now();a.live=true}else a.at=parse(d).getTime()+18*36e5;
+  real.acts=real.acts||{};real.acts[d]=(real.acts[d]||[]).concat(a);saveMonth(d);markTrained(d);
+  actOpen=null;actF={};toast(ACT[k].n+" sparad.");render()}
+function actDel(v){const[d,id]=v.split("|");if(confirmDel!=="a"+id){confirmDel="a"+id;render();return}
+  ensureReal();real.acts[d]=(real.acts[d]||[]).filter(a=>a.id!==id);if(!real.acts[d].length)delete real.acts[d];confirmDel=null;saveMonth(d);render()}
 function renderGym(){
   if(wo&&!demoOn)return renderWorkout();
   if(summaryDay&&!demoOn)return renderSummary(summaryDay);
@@ -1758,6 +1847,7 @@ function renderGym(){
     if(!S.programs.length)h+=`<p class="empty">Inga pass. Lägg till ett nedan.</p>`;
     h+=`</div>`;
   }
+  if(!demoOn)h+=renderActs(S);
   if(!demoOn){if(deloadOn(S))h+=`<div class="mod cta" style="border-color:rgba(157,184,255,.3)"><div><b>Lätt vecka till ${shortDate(S.deloadUntil)}</b><span>Förslagen är 20 % lättare så kroppen hinner återhämta sig.</span></div><button class="btn ghost" id="dlEnd">Avsluta</button></div>`;
     else{const dn=deloadNeed(S);if(dn&&!(meta().dlSkip&&meta().dlSkip>=today()))h+=`<div class="mod expc"><div class="lbl"><span>Förslag</span><span>Lätt vecka</span></div><p>${dn}</p><small>En vecka med 20 % lättare vikter brukar ge mer styrka efteråt.</small><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px"><button class="btn ghost" id="dlSkip">Inte nu</button><button class="btn solid" id="dlStart">Starta lätt vecka</button></div></div>`}}
   // programs
@@ -2142,9 +2232,14 @@ function renderStats(){
         {l:"Kcal på gång",v:kc.length?cu(Math.round(kc.reduce((a,b)=>a+b,0))):"–",s:"totalt"}]);
       if(hrp.length<2)body+=hint("Starta Inomhuspromenad på klockan när du går, så fylls pulsen i här.");
     }else body+=hint("Ingen gång loggad än. Gången före och efter passet hamnar här.");
+    {const ac=allActs(S),a30=ac.filter(x=>daysBetween(x.d,t)<30);
+      if(ac.length){const by=k=>a30.filter(x=>x.type===k),sm=l=>l.reduce((s,x)=>s+(+x.min||0),0),w=by("walk"),km=w.reduce((s,x)=>s+(+x.km||0),0);
+        body+=strip("kond.a",[{l:"Promenad ute",v:cu(sm(w))+"<small>min</small>",s:w.length+" st"+(km?" · "+fmt(km,1)+" km":"")+" · 30 d"},
+          {l:"Fotboll",v:cu(by("foot").length)+"<small>st</small>",s:sm(by("foot"))+" min · 30 d"},
+          {l:"Intervallpass",v:cu(by("hiit").length)+"<small>st</small>",s:sm(by("hiit"))+" min · 30 d"}],{per:3})}}
     if(hdays.length)body+=strip("kond.h",[ht("steps","Steg",0,"","Steg per dag"),ht("kcal","Kcal",0,"","Aktiva kalorier per dag"),ht("exmin","Träning",0,"min","Träningsminuter per dag"),{l:"VO2 max",v:hLast("vo2")?cu(hLast("vo2"),1):"–",s:"senast"}],{per:4})+
       hint("Från klockan, snitt 7 dagar. Innehåller redan gången på bandet och ger inga poäng.");
-    h+=area("kondition","Zon 2: "+lo+"–"+hi,wk.length?m30+" min gång"+(st7?" · "+fmt(st7,0)+" steg":""):st7?fmt(st7,0)+" steg per dag":"ingen gång än",body,"förslaget på lutning och fart utifrån pulsen. Var femte minut gång ger 1 poäng.")}
+    h+=area("kondition","Zon 2: "+lo+"–"+hi,wk.length?m30+" min gång"+(st7?" · "+fmt(st7,0)+" steg":""):st7?fmt(st7,0)+" steg per dag":"ingen gång än",body,"förslaget på lutning och fart utifrån pulsen. Var femte minut gång ger 1 poäng, även promenader ute. Fotboll och intervallpass ger 10 poäng var.")}
 
   // 06 Återhämtning
   {let body="";const sl7=hAvg("sleep",7),hv7=hAvg("hrv",7);
@@ -2283,8 +2378,8 @@ function renderBoard(){const t=today(),mk=t.slice(0,7),mName=MONTHS_LONG[parse(t
   if(boardRows===null)h+=`<p class="empty">Hämtar…</p>`;else if(!rows.length)h+=`<p class="empty">Ingen är med än.</p>`;
   else h+=`<div class="board">${rows.map((r,i)=>`<div class="${r.user_id===sbUser.id?"me":""}"><span class="pos">${i+1}</span><b>${esc(r.name)}${r.user_id===sbUser.id?"<small>du</small>":""}</b><span class="pts">${r.wk} p</span><span class="tot">${r.total_pts} totalt</span></div>`).join("")}</div>`;
   h+=`</div><div class="mod"><div class="lbl"><span>Dina poäng i ${mName}</span><span>${me.p} p</span></div>
-    <div class="det" style="margin-top:6px"><div><b>Pass</b><span>${me.det.pass} × 10 = ${me.det.pass*10} p</span></div><div><b>Avbockade vanor</b><span>${me.det.habits} × 2 = ${me.det.habits*2} p</span></div>
-    <div><b>Gång</b><span>${me.det.walk} min = ${Math.floor(me.det.walk/5)} p</span></div><div><b>Dagens frågor</b><span>${me.det.checkin} × 1 = ${me.det.checkin} p</span></div></div>
+    <div class="det" style="margin-top:6px"><div><b>Pass, fotboll, intervall</b><span>${me.det.pass} × 10 = ${me.det.pass*10} p</span></div><div><b>Avbockade vanor</b><span>${me.det.habits} × 2 = ${me.det.habits*2} p</span></div>
+    <div><b>Gång, band och ute</b><span>${me.det.walk} min = ${Math.floor(me.det.walk/5)} p</span></div><div><b>Dagens frågor</b><span>${me.det.checkin} × 1 = ${me.det.checkin} p</span></div></div>
     <p class="foot" style="margin-top:10px">Pass 10 p · avbockad vana 2 p · var femte minut gång 1 p · dagens frågor 1 p. Vanan Tränat räknas inte, den ingår i passet. Listan nollställs den 1:a varje månad, totalen sparas.</p></div>`;
   return h}
 let guideOpen=false;
@@ -2629,6 +2724,13 @@ document.addEventListener("click",e=>{
   if(D.rir){const[ex,k,v]=D.rir.split("|");const s=clone(real.sessions[wo.day]);const st=s.sets.find(x=>x.e===ex&&(x.n||0)===+k);if(st){st.rir=st.rir===+v?undefined:+v;if(st.rir===undefined)delete st.rir}real.sessions[wo.day]=s;saveSession(wo.day);render();return}
   if(b.id==="dlStart"){ensureReal();real.deloadUntil=addDays(today(),6);real.lastDeload=today();saveConfig();toast("Lätt vecka startad. Förslagen är 20 % lättare.");render();return}
   if(b.id==="dlSkip"){setMeta({dlSkip:addDays(today(),7)});render();return}
+  if(D.act){actOpen=D.act;actF={};confirmDel=null;render();return}
+  if(D.actday!==undefined){actGrab();actF.day=D.actday==="0"?null:addDays(today(),-1);render();return}
+  if(D.actfmt){actGrab();actF.fmt=actF.fmt===D.actfmt?null:D.actfmt;render();return}
+  if(D.actint){actGrab();actF.int=actF.int===+D.actint?null:+D.actint;render();return}
+  if(b.id==="actCancel"){actOpen=null;actF={};render();return}
+  if(b.id==="actSave"){actSave();return}
+  if(D.actdel){actDel(D.actdel);return}
   if(b.id==="dlEnd"){ensureReal();real.deloadUntil=null;saveConfig();render();return}
   if(D.goal){const v=num($("#goalIn").value);ensureReal();if(!$("#goalIn").value.trim()){delete real.goals[D.goal];saveConfig();render();return}
     if(!(v>0&&v<1000)){toast("Skriv målet i kg, t.ex. 100.");return}real.goals[D.goal]=Math.round(v*10)/10;saveConfig();toast("Målet är sparat.");render();return}
